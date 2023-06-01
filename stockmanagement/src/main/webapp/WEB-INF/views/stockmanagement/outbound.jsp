@@ -20,7 +20,7 @@
 	type="text/css" />
 <link rel="stylesheet" href="/resources/css/custom.css" type="text/css" />
 <link rel="stylesheet" href="/resources/css/core/flag-icon.min.css" type="text/css" />
-<title>Welcome</title>
+<title>Outbound</title>
 <script type="text/javascript" src="/resources/js/navbar-scripts.js"></script>
 </head>
 <body>
