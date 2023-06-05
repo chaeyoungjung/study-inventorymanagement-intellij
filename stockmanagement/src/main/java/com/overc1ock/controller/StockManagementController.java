@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.OutBoundVO;
 import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.service.OutBoundService;
@@ -27,14 +28,16 @@ public class StockManagementController {
 	OutBoundService observice;
 	
 	@GetMapping("/outbound")
-	public void outbound(Model model) {
+	public void outbound(Model model,Criteria cri) {
 		log.info("*******************get outbound controller**********************");
-		model.addAttribute("obList", observice.getOutboundList());
+//		model.addAttribute("obList", observice.getOutboundList());
+		log.info(cri);
+		model.addAttribute("obList", observice.getOutboundListWithCriteria(cri));
 		model.addAttribute("pnList", observice.getProductNameList());
 	}
 	
 	@PostMapping("/outbound")
-	public String outbound(OutBoundVO outBoundVO) {
+	public String outbound(OutBoundVO outBoundVO, Criteria cri) {
 		log.info("*******************post outbound controller**********************");
 		List<OutBoundVO> list = new ArrayList<OutBoundVO>();
 		for (OutBoundVO vo : outBoundVO.getOutBoundVOList()) {
@@ -47,6 +50,7 @@ public class StockManagementController {
 			log.info("출고량 입력 수행되나");
 			observice.insertOutbound(list);
 		}
+//		return "redirect:/stockmanagement/outbound?startDate="+cri.getStartDate()+"&endDate="+cri.getEndDate()+"&word="+cri.getWord();
 		return "redirect:/stockmanagement/outbound";
 	}
 	

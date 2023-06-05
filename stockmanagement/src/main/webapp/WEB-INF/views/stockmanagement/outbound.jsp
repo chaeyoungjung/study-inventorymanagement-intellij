@@ -45,16 +45,16 @@
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="#" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="#" id="transactionStatement">거래명세서 발행</a>
+							class="nav-link" href="transactionstatement" id="transactionStatement">거래명세서 발행</a>
 						</li>
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="#" id="outbound">출고처리</a></li>
+							class="nav-link" href="outbound" id="outbound">출고처리</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="#" id="stockCalculation">재고산출</a></li>
+							class="nav-link" href="stockcalculation" id="stockCalculation">재고산출</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="#" id="report">현황관리리포트(재고금액)</a></li>
+							class="nav-link" href="report" id="report">현황관리리포트(재고금액)</a></li>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->
@@ -117,9 +117,9 @@
 								<div class="col-md-3">
 									<div class="input-group mb-3">
 										<span class="input-group-text">제품명</span> <input type="text"
-											name="productName" list="productName"
+											name="word" list="productName"
 											style="border: 1px solid #ced4da;">
-										<datalist id="productName" name="searchTransaction.makeId"
+										<datalist id="productName"
 											style="border: 1px solid #DBE0E4;">
 											<c:forEach var="list" items="${pnList }">
 												<option value="${list.product_name }"></option>

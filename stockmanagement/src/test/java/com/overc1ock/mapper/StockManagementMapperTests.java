@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.overc1ock.domain.OutBoundVO;
 import com.overc1ock.domain.ProductionPlanVO;
-import com.overc1ock.domain.RequestDTO;
+import com.overc1ock.domain.Criteria;
 
 import lombok.extern.log4j.Log4j;
 
@@ -27,6 +27,18 @@ public class StockManagementMapperTests {
 	@Test
 	public void testGetOutboundList() {
 		List<ProductionPlanVO> list = mapper.getOutboundList();
+		for (ProductionPlanVO vo : list) {
+			log.info("*****************************"+vo);
+		}
+	}
+	
+	@Test
+	public void testGetOutboundListWithCriteria() {
+		Criteria cri = new Criteria();
+		cri.setStartDate("2023-06-01");
+		cri.setEndDate("2023-06-11");
+		cri.setWord("test제품2");
+		List<ProductionPlanVO> list = mapper.getOutboundListWithCriteria(cri);
 		for (ProductionPlanVO vo : list) {
 			log.info("*****************************"+vo);
 		}

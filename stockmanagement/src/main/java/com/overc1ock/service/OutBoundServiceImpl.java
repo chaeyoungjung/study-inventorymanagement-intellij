@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.OutBoundVO;
 import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.mapper.StockManagementMapper;
@@ -27,6 +28,12 @@ public class OutBoundServiceImpl implements OutBoundService {
 	}
 
 	@Override
+	public List<ProductionPlanVO> getOutboundListWithCriteria(Criteria cri) {
+		log.info("*******************get Outbound List With Criteria service**********************");
+		return mapper.getOutboundListWithCriteria(cri);
+	}
+	
+	@Override
 	public List<ProductionPlanVO> getProductNameList() {
 		log.info("*******************product name list service**********************");
 		return mapper.getProductNameList();
@@ -37,5 +44,6 @@ public class OutBoundServiceImpl implements OutBoundService {
 		log.info("*******************product name list service**********************");
 		return mapper.insertOutbound(list);
 	}
+
 
 }

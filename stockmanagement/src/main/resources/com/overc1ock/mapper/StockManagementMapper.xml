@@ -4,6 +4,16 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="com.overc1ock.mapper.StockManagementMapper">
+
+	<sql id = "criteria">
+		<if test="startDate != null and endDate != null">
+	    	AND between date(#{startDate}) and date(endDate)+1
+		</if>
+		<if test="word != null">
+	    	AND product_name like #{word}
+		</if>
+	</sql>
+
 	<select id="getOutboundList" resultType="com.overc1ock.domain.ProductionPlanVO">
 		select product_name,item_code,item_name,production_date,consumption,(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0)) stock_amount,ifnull(goq,0) total_amount,iup_code 
 		from (select * from item_use_plan join products_production_plan using(ppp_code)) p 
@@ -14,6 +24,23 @@
         left outer join (SELECT iup_code, sum(outbound_quantity) goq FROM outbound group by iup_code) go using(iup_code)
         where consumption != ifnull(goq,0)
 	</select>
+	
+	<select id="getOutboundListWithCriteria" resultType="com.overc1ock.domain.ProductionPlanVO">
+		select product_name,item_code,item_name,production_date,consumption,(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0)) stock_amount,ifnull(goq,0) total_amount,iup_code 
+		from (select * from item_use_plan join products_production_plan using(ppp_code)) p 
+		join item using(item_code) 
+        left outer join (SELECT item_code, sum(inbound_quantity) iq FROM inbound group by item_code) i using(item_code)
+        left outer join (SELECT item_code, sum(outbound_quantity) oq FROM outbound group by item_code) o using(item_code)
+        left outer join (SELECT item_code, sum(es_quantity) eq FROM existing_stock group by item_code) e using(item_code)
+        left outer join (SELECT iup_code, sum(outbound_quantity) goq FROM outbound group by iup_code) go using(iup_code)
+        where consumption != ifnull(goq,0)
+			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+		    	AND production_date between date(#{startDate}) and date(#{endDate})+1
+			</if>
+			<if test="word != null and word != ''">
+		    	AND product_name = #{word}
+			</if>
+    </select>
 	
 	<select id="getProductNameList" resultType="com.overc1ock.domain.ProductionPlanVO">
 		SELECT product_name FROM mesdb.products_production_plan
