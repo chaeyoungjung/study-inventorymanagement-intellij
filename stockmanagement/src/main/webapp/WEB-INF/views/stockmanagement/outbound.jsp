@@ -187,10 +187,10 @@
 												value="${list.production_date}"
 												pattern="yyyy-MM-dd HH:mm:ss(E)" /></span></td>
 									<td style="text-align: center;"><span>${list.consumption}</span></td>
-									<td style="text-align: center;"><span>${list.stock_amount}</span></td>
+									<td style="text-align: center;"><span id="stockAmount">${list.stock_amount}</span></td>
 									<td style="text-align: center;"><span>${list.total_amount}</span></td>
-									<td style="text-align: center;"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount"></td>
-									<td style="text-align: center;"><input type="date" name="outBoundVOList[${no-1}].date" id="date"></td>
+									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" ></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
+									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="date" name="outBoundVOList[${no-1}].date" id="date" ></c:if></td>
 								</tr>
 								<input type="hidden" value="${list.iup_code}" name="outBoundVOList[${no-1}].iup_code">
 								<input type="hidden" value="${list.item_code}" name="outBoundVOList[${no-1}].item_code">
@@ -257,6 +257,7 @@
 					console.log("출고일 값 없음");
 				}
 			});
+
 		});
 	</script>
 
