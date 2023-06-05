@@ -1,5 +1,7 @@
 package com.overc1ock.mapper;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -8,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.overc1ock.domain.InOutBoundVO;
+import com.overc1ock.domain.OutBoundVO;
 import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.domain.RequestDTO;
 
@@ -24,11 +26,36 @@ public class StockManagementMapperTests {
 	
 	@Test
 	public void testGetOutboundList() {
-		RequestDTO rdto = new RequestDTO();
-		List<ProductionPlanVO> list = mapper.getOutboundList(rdto);
+		List<ProductionPlanVO> list = mapper.getOutboundList();
 		for (ProductionPlanVO vo : list) {
 			log.info("*****************************"+vo);
 		}
+	}
+	
+	@Test
+	public void testGetProductNameList() {
+		List<ProductionPlanVO> list = mapper.getProductNameList();
+		for (ProductionPlanVO vo : list) {
+			log.info("*****************************"+vo);
+		}
+	}
+	
+	@Test
+	public void testInsertOutbound() {
+		List<OutBoundVO> list = new ArrayList<OutBoundVO>();
+		OutBoundVO vo1 = new OutBoundVO();
+		vo1.setItem_code(1);
+		vo1.setIup_code(1);
+		vo1.setAmount(20);
+		vo1.setDate(new Date());
+		list.add(vo1);
+		OutBoundVO vo2 = new OutBoundVO();
+		vo2.setItem_code(2);
+		vo2.setIup_code(2);
+		vo2.setAmount(40);
+		vo2.setDate(new Date());
+		list.add(vo2);
+		log.info("insert outbound 수행결과 "+mapper.insertOutbound(list));
 	}
 
 }

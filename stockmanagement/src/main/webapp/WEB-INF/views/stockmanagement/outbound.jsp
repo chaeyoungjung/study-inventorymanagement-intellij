@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,9 +21,13 @@
 <link rel="stylesheet" href="/resources/css/core/bootstrap-5.min.css"
 	type="text/css" />
 <link rel="stylesheet" href="/resources/css/custom.css" type="text/css" />
-<link rel="stylesheet" href="/resources/css/core/flag-icon.min.css" type="text/css" />
-<title>Outbound</title>
+<link rel="stylesheet" href="/resources/css/core/flag-icon.min.css"
+	type="text/css" />
+<title>출고처리</title>
 <script type="text/javascript" src="/resources/js/navbar-scripts.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"
+	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+	crossorigin="anonymous"></script>
 </head>
 <body>
 	<div>
@@ -76,8 +82,7 @@
 			<br />
 		</div>
 	</div>
-	<form method="POST" action="listTransactions"
-		style="position: relative;">
+	<div style="position: relative;">
 		<div class="container"
 			style="position: absolute; left: 250px; width: 3000px;">
 			<div class="wrap">
@@ -85,50 +90,50 @@
 					<div class="card-header">
 						<b>생산계획 조회</b>
 					</div>
-					<div class="card-body">
-						<div class="row g-3">
-							<div class="col-md-3">
-								<div class="input-group mb-3">
-									<span class="input-group-text">생산일 (From)</span> <input
-										type="date" id="txnReportStartDate"
-										class="form-control datepicker"
-										name="txnReportTransactionVO.startDate"
-										aria-label="Reported Date (From)"> <span
-										class="input-group-text"><img src="/resources/img/calendar3.svg"
-										alt="" width="16" height="16" title="calendar" /></span> <b
-										style="position: relative; left: 10px; font-size: x-large;">~</b>
+					<form action="outbound">
+						<div class="card-body">
+							<div class="row g-3">
+								<div class="col-md-3">
+									<div class="input-group mb-3">
+										<span class="input-group-text">생산일 (From)</span> <input
+											type="date" id="startDate" class="form-control datepicker"
+											name="startDate" aria-label="Reported Date (From)"> <span
+											class="input-group-text"><img
+											src="/resources/img/calendar3.svg" alt="" width="16"
+											height="16" title="calendar" /></span> <b
+											style="position: relative; left: 10px; font-size: x-large;">~</b>
+									</div>
 								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="input-group mb-3">
-									<span class="input-group-text">생산일 (To)</span> <input
-										type="date" id="txnReportEndDate"
-										class="form-control datepicker"
-										name="txnReportTransactionVO.endDate"
-										aria-label="Reported Date (To)"> <span
-										class="input-group-text"><img src="/resources/img/calendar3.svg"
-										alt="" width="16" height="16" title="calendar" /></span>
+								<div class="col-md-3">
+									<div class="input-group mb-3">
+										<span class="input-group-text">생산일 (To)</span> <input
+											type="date" id="endDate" class="form-control datepicker"
+											name="endDate" aria-label="Reported Date (To)"> <span
+											class="input-group-text"><img
+											src="/resources/img/calendar3.svg" alt="" width="16"
+											height="16" title="calendar" /></span>
+									</div>
 								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="input-group mb-3">
-									<label for="makeId" class="input-group-text">제품명</label> <select
-										id="makeId" class="form-select" tabindex="1"
-										onchange="changeTheModel();" name="searchTransaction.makeId">
-										<option value=""><-- 제품선택 --></option>
-										<option value="1">Apple
-										<option value="2">Dell
-										<option value="3">Lenovo
-										<option value="4">HP
-										<option value="5">Toshiba
-									</select>
+								<div class="col-md-3">
+									<div class="input-group mb-3">
+										<span class="input-group-text">제품명</span> <input type="text"
+											name="productName" list="productName"
+											style="border: 1px solid #ced4da;">
+										<datalist id="productName" name="searchTransaction.makeId"
+											style="border: 1px solid #DBE0E4;">
+											<c:forEach var="list" items="${pnList }">
+												<option value="${list.product_name }"></option>
+											</c:forEach>
+										</datalist>
+									</div>
 								</div>
-							</div>
-							<div class="col-md-3">
-								<button type="button" class="btn btn-primary" onclick="search()">조회</button>
+								<div class="col-md-3">
+									<button type="submit" class="btn btn-primary"
+										onclick="search()">조회</button>
+								</div>
 							</div>
 						</div>
-					</div>
+					</form>
 				</div>
 				<br /> <br />
 				<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -148,62 +153,58 @@
 						d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
 		                </symbol>
 		            </svg>
-
-				<table id='myTable'
-					class="table table-bordered table-striped table-hover caption-top">
-					<caption style="color: black;">
-						<b>생산계획 및 출고처리</b>
-					</caption>
-					<button type="button" class="btn btn-primary"
-						style="position: absolute; left: 1220px;">출고등록</button>
-					<thead class="table-dark">
-						<tr>
-							<th scope="col" style="text-align: center;">순번</th>
-							<th scope="col" style="text-align: center;">제품명</th>
-							<th scope="col" style="text-align: center;">품목코드</th>
-							<th scope="col" style="text-align: center;">품목명</th>
-							<th scope="col" style="text-align: center;">소요량</th>
-							<th scope="col" style="text-align: center;">생산일</th>
-							<th scope="col" style="text-align: center;">재고수량</th>
-							<th scope="col" style="text-align: center;">총 출고량</th>
-							<th scope="col" style="text-align: center;">출고수량</th>
-							<th scope="col" style="text-align: center;">출고일</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td style="text-align: center;">1</td>
-							<td style="text-align: center;"><span>WON2N1</span></td>
-							<td style="text-align: center;"><span>John Wick</span></td>
-							<td style="text-align: center;"><span>2020-06-15T00:00</span></td>
-							<td style="text-align: center;"><span>Apple</span></td>
-							<td style="text-align: center;"><span>MacBook Pro</span></td>
-							<td style="text-align: center;"><span>AEPEP88990</span></td>
-							<td style="text-align: center;"><span>ACCEPTED</span></td>
-							<td style="text-align: center;"><input type="number"></td>
-							<td style="text-align: center;"><input type="date"></td>
-						</tr>
-						<tr>
-							<td style="text-align: center;">2</td>
-							<td style="text-align: center;"><span>WON2N2</span></td>
-							<td style="text-align: center;"><span>Nick Fury</span></td>
-							<td style="text-align: center;"><span>2020-06-16T00:00</span></td>
-							<td style="text-align: center;"><span>Apple</span></td>
-							<td style="text-align: center;"><span>MacBook Air</span></td>
-							<td style="text-align: center;"><span>PQRS12345</span></td>
-							<td style="text-align: center;"><span>VERIFIED</span></td>
-							<td style="text-align: center;"><input type="number"></td>
-							<td style="text-align: center;"><input type="date"></td>
-						</tr>
-
-					</tbody>
-				</table>
+				<form action="outbound" method="post">
+					<table id='myTable'
+						class="table table-bordered table-striped table-hover caption-top">
+						<caption style="color: black;">
+							<b>생산계획 및 출고처리</b>
+						</caption>
+						<button type="submit" class="btn btn-primary"
+							style="position: absolute; left: 1220px;">출고등록</button>
+						<thead class="table-dark">
+							<tr>
+								<th scope="col" style="text-align: center;">순번</th>
+								<th scope="col" style="text-align: center;">제품명</th>
+								<th scope="col" style="text-align: center;">품목코드</th>
+								<th scope="col" style="text-align: center;">품목명</th>
+								<th scope="col" style="text-align: center;">생산일</th>
+								<th scope="col" style="text-align: center;">소요량</th>
+								<th scope="col" style="text-align: center;">재고수량</th>
+								<th scope="col" style="text-align: center;">총 출고량</th>
+								<th scope="col" style="text-align: center;">출고수량</th>
+								<th scope="col" style="text-align: center;">출고일</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:set value="0" var="no" />
+							<c:forEach var="list" items="${obList}">
+								<tr>
+									<td style="text-align: center;">${no = no+1}</td>
+									<td style="text-align: center;"><span>${list.product_name}</span></td>
+									<td style="text-align: center;"><span>${list.item_code}</span></td>
+									<td style="text-align: center;"><span>${list.item_name}</span></td>
+									<td style="text-align: center;"><span><fmt:formatDate
+												value="${list.production_date}"
+												pattern="yyyy-MM-dd HH:mm:ss(E)" /></span></td>
+									<td style="text-align: center;"><span>${list.consumption}</span></td>
+									<td style="text-align: center;"><span>${list.stock_amount}</span></td>
+									<td style="text-align: center;"><span>${list.total_amount}</span></td>
+									<td style="text-align: center;"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount"></td>
+									<td style="text-align: center;"><input type="date" name="outBoundVOList[${no-1}].date" id="date"></td>
+								</tr>
+								<input type="hidden" value="${list.iup_code}" name="outBoundVOList[${no-1}].iup_code">
+								<input type="hidden" value="${list.item_code}" name="outBoundVOList[${no-1}].item_code">
+							</c:forEach>
+						</tbody>
+					</table>
+				</form>
 			</div>
 		</div>
-	</form>
+	</div>
 	<input type="hidden" value="2" id="flag">
 	<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
-	<script src="/resources/js/core/bootstrap-5.min.js" type="text/javascript"></script>
+	<script src="/resources/js/core/bootstrap-5.min.js"
+		type="text/javascript"></script>
 	<script>
 		if (document.getElementById("flag").value == 2) {
 			document.getElementById("outbound").style.backgroundColor = "#fff";
@@ -213,6 +214,50 @@
 			document.getElementById("stock").style.color = "#000000";
 			document.getElementById("stock").style.fontWeight = "bold";
 		}
+	</script>
+	<script>
+		$(document).ready(function() {
+			$('#startDate').change(function() {
+				if ($('#startDate').val() != ''){
+					$('#endDate').attr('required', true);
+					console.log("시작일 값 있음");
+				}
+				else{
+					$('#endDate').attr('required', false);
+					console.log("시작일 값 없음");
+				}
+			});
+			$('#endDate').change(function() {
+				if ($('#endDate').val() != ''){
+					$('#startDate').attr('required', true);
+					console.log("종료일 값 있음");
+				}
+				else{
+					$('#startDate').attr('required', false);
+					console.log("종료일 값 없음");
+				}
+			});
+			$('#amount').change(function() {
+				if ($('#amount').val() != ''){
+					$('#date').attr('required', true);
+					console.log("출고량 값 있음");
+				}
+				else{
+					$('#date').attr('required', false);
+					console.log("출고량 값 없음");
+				}
+			});
+			$('#date').change(function() {
+				if ($('#date').val() != ''){
+					$('#amount').attr('required', true);
+					console.log("출고일 값 있음");
+				}
+				else{
+					$('#amount').attr('required', false);
+					console.log("출고일 값 없음");
+				}
+			});
+		});
 	</script>
 
 </body>

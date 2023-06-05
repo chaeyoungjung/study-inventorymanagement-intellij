@@ -14,6 +14,9 @@
 	<logger name="com.overc1ock.controller">
 		<level value="info" />
 	</logger>
+	<logger name="com.overc1ock.service">
+		<level value="info" />
+	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">

@@ -1,6 +1,8 @@
 package com.overc1ock.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -9,11 +11,14 @@ import lombok.Data;
 @Component
 @Data
 public class ProductionPlanVO {
-	String product_name;
+	private String product_name;
 	Integer item_code;
-	String item_name;
-	Integer consumption;
-	Date production_date;
-	Integer stock_amount;
-	Integer total_amount;
+	private String item_name;
+	private Integer consumption;
+	private Date production_date;
+	private Integer stock_amount;
+	private Integer total_amount;
+	Integer iup_code;
+	
+	
 }

@@ -4,11 +4,14 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import lombok.Data;
+
 @Component
+@Data
 public class RequestDTO {
-	Date fromDate;
-	Date toDate;
-	String category;
-	String word;
+	private Date startDate;
+	private Date endDate;
+	private String category;
+	private String word;
 
 }
