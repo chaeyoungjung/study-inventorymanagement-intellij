@@ -51,5 +51,34 @@
     	insert into outbound(outbound_quantity,shipping_date,item_code,iup_code)
     		values(#{vo.amount},#{vo.date},#{vo.item_code},#{vo.iup_code})
     	</foreach>
-    </insert>    
+    </insert>
+    
+    <select id="chartItemCode" resultType="com.overc1ock.domain.ReportVO">
+        <![CDATA[
+		    select item_code labelsarr, (supply_price*(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0))) valuesarr 
+			from item_use_plan left join procurement_plan using(iup_code)
+			left join purchase_order using(po_code)
+			left join contract using(po_code)
+			left outer join (SELECT item_code, sum(inbound_quantity) iq FROM inbound group by item_code) i using(item_code)
+			left outer join (SELECT item_code, sum(outbound_quantity) oq FROM outbound group by item_code) o using(item_code)
+			left outer join (SELECT item_code, sum(es_quantity) eq FROM existing_stock group by item_code) e using(item_code)
+			where (supply_price*(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0))) > 0
+    	]]>
+    </select>    
+    
+    <select id="chartItemName" resultType="com.overc1ock.domain.ReportVO">
+    	<![CDATA[
+			select item_name labelsarr, sum((supply_price*(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0)))) valuesarr 
+			from item
+			left join item_use_plan using(item_code)
+			left join procurement_plan using(iup_code)
+			left join purchase_order using(po_code)
+			left join contract using(po_code)
+			left outer join (SELECT item_code, sum(inbound_quantity) iq FROM inbound group by item_code) i using(item_code)
+			left outer join (SELECT item_code, sum(outbound_quantity) oq FROM outbound group by item_code) o using(item_code)
+			left outer join (SELECT item_code, sum(es_quantity) eq FROM existing_stock group by item_code) e using(item_code)
+			where (supply_price*(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0))) > 0
+			group by item_name
+		]]>
+    </select>
 </mapper>
