@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.overc1ock.domain.OutBoundVO;
 import com.overc1ock.domain.ProductionPlanVO;
+import com.overc1ock.domain.ReportVO;
+import com.overc1ock.domain.StockCalculationVO;
 import com.overc1ock.domain.Criteria;
 
 import lombok.extern.log4j.Log4j;
@@ -68,6 +70,15 @@ public class StockManagementMapperTests {
 		vo2.setDate(new Date());
 		list.add(vo2);
 		log.info("insert outbound 수행결과 "+mapper.insertOutbound(list));
+	}
+	
+	@Test
+	public void testChartDate() {
+		Criteria cri = new Criteria();
+		cri.setStartDate("2023-05-01");
+		cri.setEndDate("2023-05-01");
+		List<ReportVO> list = mapper.chartDate(cri);
+		log.info(list);
 	}
 
 }

@@ -81,4 +81,53 @@
 			group by item_name
 		]]>
     </select>
+    
+    <select id="chartDate" resultType="com.overc1ock.domain.ReportVO">
+        	<![CDATA[
+			    select  mylabel, sum(myvalue) myvalue
+				from (select t1.일자 mylabel, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (order by t1.일자) as 재고량, (ifnull(c.supply_price,0)*sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by t1.일자))  myvalue
+				from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+						from (select *
+							from (WITH RECURSIVE CTE  AS (
+															  SELECT DATE_FORMAT("2022-01-01", '%Y-%m-%d') AS DT FROM DUAL
+															  UNION ALL
+															  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
+															  WHERE DT < last_day(date(#{startDate}))) SELECT DT AS 일자 FROM CTE) t1,
+									(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 
+					 left join 
+						 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+						  union all
+						  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
+						  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
+					  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+					  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound
+									group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
+					  on t1.일자=t2.일자 and t1.item_code=t2.item_code
+					  left join (select item_code, max(supply_price) supply_price from contract group by item_code) c on t1.item_code=c.item_code) t1
+			          where mylabel >= date(#{startDate})
+			          group by mylabel
+          		]]>
+    </select>
+    
+    <select id = "getStockCalculationList" resultType="com.overc1ock.domain.StockCalculationVO">
+    	select item_code, item_name, standard, material, subcontractor_name, ifnull(iq,0)+ifnull(eq,0) inbound_amount, ifnull(oq,0) outbound_amount, (ifnull(iq,0)+ifnull(eq,0)-ifnull(oq,0))stock_amount,supply_price
+			from(select contract_code, sum(inbound_quantity) iq 
+					from item join inbound using(item_code) 
+					join existing_stock using(item_code) 
+					join contract using(item_code) 
+				group by contract_code) i
+			join (select contract_code, sum(outbound_quantity) oq 
+					from item join outbound using(item_code) 
+					join contract using(item_code) 
+					group by contract_code) o using(contract_code)
+			join (select contract_code, sum(es_quantity) eq
+					from item join existing_stock using(item_code) 
+					join contract using(item_code)
+					group by contract_code) e using(contract_code)
+			join contract using(contract_code)
+			join item using(item_code)
+			join subcontractor using(subcontractor_name)
+    </select>
+    
+    
 </mapper>

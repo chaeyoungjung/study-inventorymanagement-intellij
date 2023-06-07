@@ -59,5 +59,11 @@ public class StockManagementController {
 		
 	}
 	
+	@GetMapping("/stockcalculation")
+	public void stockcalculation() {
+		
+	}
+	
+	
 
 }
