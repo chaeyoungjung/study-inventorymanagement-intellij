@@ -19,7 +19,8 @@
 <link rel="stylesheet" href="/resources/css/core/bootstrap-5.min.css"
 	type="text/css" />
 <link rel="stylesheet" href="/resources/css/custom.css" type="text/css" />
-<link rel="stylesheet" href="/resources/css/apexcharts.css" type="text/css" />
+<link rel="stylesheet" href="/resources/css/apexcharts.css"
+	type="text/css" />
 <link rel="stylesheet" href="/resources/css/core/flag-icon.min.css"
 	type="text/css" />
 <title>Report</title>
@@ -108,16 +109,16 @@
 		<div class="wrap">
 			<div class="card">
 				<div class="card-header">Report :</div>
-					<div id="chart" style="height: 80%; width: 100%;"></div>
+				<div id="chart" style="height: 80%; width: 100%;"></div>
 			</div>
 		</div>
 	</div>
 	</form>
 	<input type="hidden" value="4" id="flag">
-<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
-<script src="/resources/js/core/bootstrap-5.min.js"
+	<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
+	<script src="/resources/js/core/bootstrap-5.min.js"
 		type="text/javascript"></script>
-<script>
+	<script>
 	if (document.getElementById("flag").value == 4) {
 		document.getElementById("report").style.backgroundColor = "#fff";
 		document.getElementById("report").style.color = "#000000";
@@ -128,7 +129,7 @@
 
 	}
 </script>
-<script type="text/javascript">
+	<script type="text/javascript">
 	var itemReport = `<div class="card">
 		<div class="card-body">
 		<div class="row g-3">
@@ -166,7 +167,7 @@
 				</div>
 			</div>
 			<div class="col-md-3">
-				<button type="submit" class="btn btn-primary">조회</button>
+				<button type="button" class="btn btn-primary" id="itemchartbtn">조회</button>
 			</div>
 		</div>
 		<div class="col-md-6">
@@ -193,7 +194,7 @@ var dateReport = `<div class="card">
 			</div>
 		</div>
 		<div class="col-md-3">
-			<button type="submit" class="btn btn-primary">조회</button>
+			<button type="button" class="btn btn-primary" id="datechartbtn" onclick="getDateChart()">조회</button>
 		</div>
 	</div>
 </div>
@@ -213,50 +214,66 @@ var dateReport = `<div class="card">
 
 		})
 </script>
-<script>
-	window.onload = function () {
-		
-        var options = {
-                series: [{
-                data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 13800,400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380,400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
-              }],
-                chart: {
-                type: 'bar',
-              },
-              plotOptions: {
-                bar: {
-                  borderRadius: 4,
-                  horizontal: true,
-                }
-              },
-              dataLabels: {
-                  enabled: true,
-                  textAnchor: 'start',
-                  style: {
-                    colors: ['#fff']
-                  },
-                  formatter: function (val, opt) {
-                    return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
-                  },
-                  offsetX: 0,
-                  dropShadow: {
-                    enabled: true
-                  }
-                },
-              xaxis: {
-                categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
-                  'United States', 'China', 'Germany','South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
-                  'United States', 'China', 'Germany','South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
-                  'United States', 'China', 'Germany'
-                ],
-              }
-              };
 
-              var chart = new ApexCharts(document.querySelector("#chart"), options);
-              chart.render();
-	
-	}
+
+<script type="text/javascript">
+
+	function getDateChart() {
+		    var month = $('#month').val();
+			console.log("입력된 달 : "+month);
+		    
+		    $.ajax({
+		        type: 'get',
+		        url: '/stockmanagement/api/chartdate?month='+month,
+		        contentType: 'application/json; charset=utf-8',
+		        success: function(data, status, xhr){
+		            
+		            var chartLabels = [];
+		            var chartData = [];
+		            
+		            chartLabels.push(data.labelsarr);
+		            chartData.push(data.valuesarr);
+		            
+		            var options = {
+		                    series: [{
+		                        data: chartData,
+		                        chart: {
+		                            type: 'bar',
+		                        },
+		                    plotOptions: {
+		                        bar: {
+		                        borderRadius: 4,
+		                        horizontal: true,
+		                        }
+		                    },
+		                    dataLabels: {
+		                        enabled: true,
+		                        textAnchor: 'start',
+		                        style: {
+		                            colors: ['#fff']
+		                        },
+		                        formatter: function (val, opt) {
+		                            return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+		                        },
+		                        offsetX: 0,
+		                        dropShadow: {
+		                            enabled: true
+		                        }
+		                        },
+		                    xaxis: {
+		                        categories: chartLabels,
+		                    }
+		                  }]
+		            }
+		                  var chart = new ApexCharts(document.querySelector("#chart"), options);
+		                  chart.render();
+		        }
+		        
+		        
+		    })
+		}
 </script>
+
 </body>
 </html>
 
