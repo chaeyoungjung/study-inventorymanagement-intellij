@@ -29,6 +29,11 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 	crossorigin="anonymous"></script>
+ <style>
+    select option[value=""][disabled] {
+     display: none;
+    }
+</style>
 </head>
 <body>
 	<div>
@@ -107,7 +112,7 @@
 		</form>
 		<br /> <br />
 		<div class="wrap">
-			<div class="card">
+			<div class="card" id="chartarea">
 				<div class="card-header">Report :</div>
 				<div id="chart" style="height: 80%; width: 100%;"></div>
 			</div>
@@ -136,34 +141,33 @@
 			<div class="col-md-3">
 				<div class="input-group mb-3">
 					<span class="input-group-text">산출일</span> <input type="date"
-						id="txnReportStartDate" class="form-control datepicker"
+						id="startDate" class="form-control datepicker"
 						name="startDate" aria-label="Reported Date (From)" required>
 					<span class="input-group-text"><img
 						src="/resources/img/calendar3.svg" alt="" width="16"
 						height="16" title="calendar" /></span>
-
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="input-group mb-3">
-					<label class="input-group-text" for="txnReportMakeId">품목군</label>
-					<select class="form-select" id="txnReportMakeId"
-						name="category">
-						<option value="" selected><-- 품목군 선택 --></option>
-						<option value="L">대
-						<option value="M">중
-						<option value="S">소
-					</select>
 				</div>
 			</div>
 			<div class="col-md-3">
 				<div class="input-group mb-3">
 					<span class="input-group-text">재고금액(원)</span> <input
-						type="number" id="txnReportCustomerName" name="word"
+						type="number" id="num" name="num"
 						class="form-control" placeholder="금액 입력"
 						aria-label="txnReportCustomerName"
 						aria-describedby="basic-addon1"> <span
 						class="input-group-text">이상</span>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="input-group mb-3" id="itemCategory">
+					<label class="input-group-text" for="txnReportMakeId">품목군</label>
+					<select class="form-select" id="category"
+						name="category" required>
+						<option value="" disabled selected><-- 품목군 선택 --></option>
+						<option value="L">대</option>
+						<option value="M">중
+						<option value="S">소
+					</select>
 				</div>
 			</div>
 			<div class="col-md-3">
@@ -172,8 +176,8 @@
 		</div>
 		<div class="col-md-6">
 			<input type="checkbox" class="form-check-input"
-				id="txnReportIncludes" value="true"
-				name="txnReportTransactionVO.includes" /> <label
+				id="itemCodeCheck" 
+				name="itemCodeCheck" onclick='check(this)' /> <label
 				class="form-check-label" for="includes"> 품목코드 기준 산출 </label>
 		</div>
 	</div>
@@ -185,7 +189,7 @@ var dateReport = `<div class="card">
 		<div class="col-md-3">
 			<div class="input-group mb-3">
 				<span class="input-group-text">산출월</span> <input
-					type="month" id="startDate"
+					type="month" id="month"
 					class="form-control datepicker" name="startDate"
 					aria-label="Reported Date (From)" required> <span
 					class="input-group-text"><img
@@ -194,7 +198,7 @@ var dateReport = `<div class="card">
 			</div>
 		</div>
 		<div class="col-md-3">
-			<button type="button" class="btn btn-primary" id="datechartbtn" onclick="getDateChart()">조회</button>
+			<button type="button" class="btn btn-primary" id="datechartbtn">조회</button>
 		</div>
 	</div>
 </div>
@@ -211,67 +215,233 @@ var dateReport = `<div class="card">
 					$('#reportByItem').text('');
 					$('#reportByDate').html(dateReport);
 				});
-
 		})
+		
+		function check(box){
+			if(box.checked == true){
+				$('#itemCategory').html('');
+			}else{
+				$('#itemCategory').html(`					<label class="input-group-text" for="txnReportMakeId">품목군</label>
+					<select class="form-select" id="category"
+						name="category" required>
+						<option value="" disabled selected><-- 품목군 선택 --></option>
+						<option value="L">대</option>
+						<option value="M">중
+						<option value="S">소
+					</select>`);
+			}
+		}
+</script>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		$(document).on("click","#itemchartbtn",function(){
+			var startDate = '';
+			var num = 0;
+			var url = '';
+			var category = '';
+			var title='';
+			
+			if($('#itemCodeCheck'). prop("checked") && $('#startDate').val() != ''){
+				console.log("품목코드 기준 데이터 요청")
+				
+				title="품목코드별 재고금액 현황관리 리포트";
+			    startDate = $('#startDate').val();
+				console.log("입력된 날짜 : "+startDate);
+			    num = $('#num').val();
+				console.log("입력된 재고금액 : "+num);
+				url = "chartitemcode?startDate="+startDate+"&num="+num
+						
+			}else if(!($('#itemCodeCheck'). prop("checked")) && $('#startDate').val() != ''){
+				console.log("품목군 기준 데이터 요청");
+				
+				title="품목군별 재고금액 현황관리 리포트";
+			    startDate = $('#startDate').val();
+				console.log("입력된 날짜 : "+startDate);
+			    num = $('#num').val();
+				console.log("입력된 재고금액 : "+num);
+				category = $('#category').val();
+				console.log("입력된 품목군 : "+category);
+				
+				if($('#category').val() == null){
+					alert("품목군을 선택해주세요.");
+				}else{
+					url = "chartitemcategory?startDate="+startDate+"&num="+num+"&category="+category;
+				}
+			}else{
+				alert("산출일을 선택해주세요.");
+			}
+		    
+			if(url != ''){
+				console.log("api 요청, 요청 url = "+url)
+			    $.ajax({
+			        type: 'get',
+			        url: '/stockmanagement/api/'+url,
+			        contentType: 'application/json; charset=utf-8',
+			        success: function(data, status, xhr){
+			            
+			            var chartLabels = [];
+			            var chartData = [];
+			            
+			            chartLabels.push(data.labelsarr);
+			            chartData.push(data.valuesarr);
+			            console.log(chartLabels[0]);
+			            console.log(chartData[0]);
+			            
+			            var options = {
+			                    series: [{
+			                    data: chartData[0],
+			                    name: "재고금액"
+			                  }],
+			                    chart: {
+			                    type: 'bar',
+			                  },
+			                  plotOptions: {
+			                    bar: {
+			                      borderRadius: 4,
+			                      horizontal: true,
+			                    }
+			                  },
+			                  dataLabels: {
+			                    enabled: false
+			                  },
+			                  title: {
+			                      text: title,
+			                      align: 'center',
+			                      margin: 50,
+			                      offsetX: 0,
+			                      offsetY: 0,
+			                      floating: false,
+			                      style: {
+			                        fontSize:  '25px',
+			                        fontWeight:  'bold',
+			                        fontFamily:  undefined,
+			                      },
+			                    },
+			                  xaxis: {
+			                    categories: chartLabels[0],
+			                    labels: {
+			                        formatter: function (val) {
+			                          return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+			                        }
+			                      }
+			                  },
+			                  tooltip: {
+			                	  y: {
+			                          formatter: function (val) {
+				                          return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+			                      	  }
+			                	  
+			                  	  }
+			                  }
+
+			            };
+			            $('#chart').remove();
+			            $('#chartarea').append('<div id="chart" style="height: 80%; width: 100%;"></div>');
+			                  var chart = new ApexCharts(document.querySelector("#chart"), options);
+			                  chart.render();
+			        }
+			        
+			        
+			    })
+			}
+			
+		})
+	})
+
+
 </script>
 
 
 <script type="text/javascript">
 
-	function getDateChart() {
+	$(document).ready(function(){
+		$(document).on("click","#datechartbtn",function(){
+			
 		    var month = $('#month').val();
 			console.log("입력된 달 : "+month);
+			
+			if(month != ''){
+			    $.ajax({
+			        type: 'get',
+			        url: '/stockmanagement/api/chartdate?month='+month,
+			        contentType: 'application/json; charset=utf-8',
+			        success: function(data, status, xhr){
+			            
+			            var chartLabels = [];
+			            var chartData = [];
+			            
+			            chartLabels.push(data.labelsarr);
+			            chartData.push(data.valuesarr);
+			            console.log(chartLabels[0]);
+			            console.log(chartData[0]);
+			            
+			            var options = {
+			                    series: [{
+			                    data: chartData[0],
+			                    name: "재고금액"
+			                  }],
+			                    chart: {
+			                    type: 'bar',
+			                  },
+			                  plotOptions: {
+			                    bar: {
+			                      borderRadius: 4,
+			                      horizontal: true,
+			                    }
+			                  },
+			                  dataLabels: {
+			                    enabled: false
+			                  },
+			                  title: {
+			                      text: '날짜별 재고금액 현황관리 리포트',
+			                      align: 'center',
+			                      margin: 50,
+			                      offsetX: 0,
+			                      offsetY: 0,
+			                      floating: false,
+			                      style: {
+			                        fontSize:  '25px',
+			                        fontWeight:  'bold',
+			                        fontFamily:  undefined,
+			                      },
+			                    },
+			                  xaxis: {
+				                    categories: chartLabels[0],
+				                    labels: {
+				                        formatter: function (val) {
+				                          return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+				                        }
+				                      }
+				                  },
+				                  tooltip: {
+				                	  y: {
+				                          formatter: function (val) {
+					                          return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+
+				                      	  }
+				                	  
+				                  	  }
+				                  }
+			            };
+			            $('#chart').remove();
+			            $('#chartarea').append('<div id="chart" style="height: 80%; width: 100%;"></div>');
+			                  var chart = new ApexCharts(document.querySelector("#chart"), options);
+			                  chart.render();
+			        }
+			        
+			    })
+				
+			}else{
+				alert("산출월을 선택해주세요.");
+			}
 		    
-		    $.ajax({
-		        type: 'get',
-		        url: '/stockmanagement/api/chartdate?month='+month,
-		        contentType: 'application/json; charset=utf-8',
-		        success: function(data, status, xhr){
-		            
-		            var chartLabels = [];
-		            var chartData = [];
-		            
-		            chartLabels.push(data.labelsarr);
-		            chartData.push(data.valuesarr);
-		            
-		            var options = {
-		                    series: [{
-		                        data: chartData,
-		                        chart: {
-		                            type: 'bar',
-		                        },
-		                    plotOptions: {
-		                        bar: {
-		                        borderRadius: 4,
-		                        horizontal: true,
-		                        }
-		                    },
-		                    dataLabels: {
-		                        enabled: true,
-		                        textAnchor: 'start',
-		                        style: {
-		                            colors: ['#fff']
-		                        },
-		                        formatter: function (val, opt) {
-		                            return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
-		                        },
-		                        offsetX: 0,
-		                        dropShadow: {
-		                            enabled: true
-		                        }
-		                        },
-		                    xaxis: {
-		                        categories: chartLabels,
-		                    }
-		                  }]
-		            }
-		                  var chart = new ApexCharts(document.querySelector("#chart"), options);
-		                  chart.render();
-		        }
-		        
-		        
-		    })
-		}
+		})
+	})
+
+
 </script>
 
 </body>

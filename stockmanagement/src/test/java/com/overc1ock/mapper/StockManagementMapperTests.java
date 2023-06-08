@@ -76,9 +76,27 @@ public class StockManagementMapperTests {
 	public void testChartDate() {
 		Criteria cri = new Criteria();
 		cri.setStartDate("2023-05-01");
-		cri.setEndDate("2023-05-01");
 		List<ReportVO> list = mapper.chartDate(cri);
 		log.info(list);
+	}
+	
+	@Test
+	public void testChartItemCode() {
+		Criteria cri = new Criteria();
+		cri.setStartDate("2023-06-08");
+//		cri.setNum(200000);
+		List<ReportVO> list = mapper.chartItemCode(cri);
+		list.forEach(vo -> log.info(vo));
+	}
+	
+	@Test
+	public void testChartItemCategory() {
+		Criteria cri = new Criteria();
+		cri.setStartDate("2023-06-08");
+		cri.setCategory("S");
+//		cri.setNum(200000);
+		List<ReportVO> list = mapper.chartItemCategory(cri);
+		list.forEach(vo -> log.info(vo));
 	}
 
 }

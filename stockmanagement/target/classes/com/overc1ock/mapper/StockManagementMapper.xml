@@ -5,15 +5,6 @@
     
 <mapper namespace="com.overc1ock.mapper.StockManagementMapper">
 
-	<sql id = "criteria">
-		<if test="startDate != null and endDate != null">
-	    	AND between date(#{startDate}) and date(endDate)+1
-		</if>
-		<if test="word != null">
-	    	AND product_name like #{word}
-		</if>
-	</sql>
-
 	<select id="getOutboundList" resultType="com.overc1ock.domain.ProductionPlanVO">
 		select product_name,item_code,item_name,production_date,consumption,(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0)) stock_amount,ifnull(goq,0) total_amount,iup_code 
 		from (select * from item_use_plan join products_production_plan using(ppp_code)) p 
@@ -40,10 +31,11 @@
 			<if test="word != null and word != ''">
 		    	AND product_name = #{word}
 			</if>
+		order by production_date
     </select>
 	
 	<select id="getProductNameList" resultType="com.overc1ock.domain.ProductionPlanVO">
-		SELECT product_name FROM mesdb.products_production_plan
+		SELECT product_name FROM products_production_plan order by product_name
     </select>
     
     <insert id="insertOutbound" parameterType="java.util.List">
@@ -55,31 +47,144 @@
     
     <select id="chartItemCode" resultType="com.overc1ock.domain.ReportVO">
         <![CDATA[
-		    select item_code labelsarr, (supply_price*(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0))) valuesarr 
-			from item_use_plan left join procurement_plan using(iup_code)
-			left join purchase_order using(po_code)
-			left join contract using(po_code)
-			left outer join (SELECT item_code, sum(inbound_quantity) iq FROM inbound group by item_code) i using(item_code)
-			left outer join (SELECT item_code, sum(outbound_quantity) oq FROM outbound group by item_code) o using(item_code)
-			left outer join (SELECT item_code, sum(es_quantity) eq FROM existing_stock group by item_code) e using(item_code)
-			where (supply_price*(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0))) > 0
+select t1.item_code mylabel, ifnull(재고금액,0) myvalue from
+(select 일자, t1.item_code, item_name, 재고금액, mc_code, mc_name, sc_code, sc_name
+from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량, (c.supply_price*sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자)) 재고금액
+	from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+			from (select *
+					from (WITH RECURSIVE CTE  AS (
+													  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
+													  UNION ALL
+													  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
+													  WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1, -- 기간내의 날짜 모두 출력
+						(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 -- 모든 날짜(t1)와 재고가 있는 아이템 코드(t2)의 조인 >> from절에 ,로 두개 테이블을 적으면 크로스 조인(모든 경우의 수 row를 가진 테이블 출력, 날짜별 모든 품목코드를 가짐)
+		 left join 
+			 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+			  union all
+			  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
+			  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+		  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound -- 기존재고량, 입고량, 출고량 조인
+						group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code
+		  left join (select item_code, item_name, max(supply_price) supply_price from contract join item using(item_code) group by item_code, item_name) c on t1.item_code=c.item_code) t1
+          left join (select * from item join sub_category using(sc_code) join major_category using(mc_code)) t2 on t1.item_code=t2.item_code) t1
+                    join (select item_code, max(일자) 일자 from (
+	select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량
+	from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+	from (select *
+	from (WITH RECURSIVE CTE  AS (
+		  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
+		  UNION ALL
+		  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
+		  WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
+		  (select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1
+		 left join 
+		 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+		  union all
+		  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
+		  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+		  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1
+group by item_code) t2 on t1.item_code=t2.item_code and t1.일자 = t2.일자
+
     	]]>
+		<if test="num != null and num != ''">
+		  <![CDATA[
+	    	where 재고금액 >= #{num}
+	    	]]>
+		</if>
+		order by t1.item_code
+
     </select>    
     
-    <select id="chartItemName" resultType="com.overc1ock.domain.ReportVO">
+    <select id="chartItemCategory" resultType="com.overc1ock.domain.ReportVO">
+select 
+	    			<choose>
+	    				<when test = 'category == "L"'>
+	    					mc_name
+	    				</when>
+	    				<when test = 'category == "M"'>
+	    					sc_name
+	    				</when>
+	    				<when test = 'category == "S"'>
+	    					item_name
+	    				</when>
+	    			</choose>
+ mylabel, 
     	<![CDATA[
-			select item_name labelsarr, sum((supply_price*(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0)))) valuesarr 
-			from item
-			left join item_use_plan using(item_code)
-			left join procurement_plan using(iup_code)
-			left join purchase_order using(po_code)
-			left join contract using(po_code)
-			left outer join (SELECT item_code, sum(inbound_quantity) iq FROM inbound group by item_code) i using(item_code)
-			left outer join (SELECT item_code, sum(outbound_quantity) oq FROM outbound group by item_code) o using(item_code)
-			left outer join (SELECT item_code, sum(es_quantity) eq FROM existing_stock group by item_code) e using(item_code)
-			where (supply_price*(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0))) > 0
-			group by item_name
+sum(ifnull(재고금액,0)) myvalue from
+(select 일자, t1.item_code, item_name, 재고금액, mc_code, mc_name, sc_code, sc_name
+from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량, (c.supply_price*sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자)) 재고금액
+	from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+			from (select *
+					from (WITH RECURSIVE CTE  AS (
+													  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
+													  UNION ALL
+													  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
+													  WHERE DT < DATE_FORMAT('20230608', '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1, -- 기간내의 날짜 모두 출력
+						(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 -- 모든 날짜(t1)와 재고가 있는 아이템 코드(t2)의 조인 >> from절에 ,로 두개 테이블을 적으면 크로스 조인(모든 경우의 수 row를 가진 테이블 출력, 날짜별 모든 품목코드를 가짐)
+		 left join 
+			 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+			  union all
+			  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
+			  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+		  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound -- 기존재고량, 입고량, 출고량 조인
+						group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code
+		  left join (select item_code, item_name, max(supply_price) supply_price from contract join item using(item_code) group by item_code, item_name) c on t1.item_code=c.item_code) t1
+          left join (select * from item join sub_category using(sc_code) join major_category using(mc_code)) t2 on t1.item_code=t2.item_code) t1
+                    join (select item_code, max(일자) 일자 from (
+	select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량
+	from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+	from (select *
+	from (WITH RECURSIVE CTE  AS (
+		  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
+		  UNION ALL
+		  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
+		  WHERE DT < DATE_FORMAT('20230608', '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
+		  (select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1
+		 left join 
+		 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+		  union all
+		  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
+		  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+		  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1
+group by item_code) t2 on t1.item_code=t2.item_code and t1.일자 = t2.일자
 		]]>
+		<if test="num != null and num != ''">
+		  <![CDATA[
+	    	where 재고금액 >= #{num}
+	    	]]>
+		</if>
+group by 
+	    			<choose>
+	    				<when test = 'category == "L"'>
+	    					mc_name
+	    				</when>
+	    				<when test = 'category == "M"'>
+	    					sc_name
+	    				</when>
+	    				<when test = 'category == "S"'>
+	    					item_name
+	    				</when>
+	    			</choose>
+order by 
+	    			<choose>
+	    				<when test = 'category == "L"'>
+	    					mc_name
+	    				</when>
+	    				<when test = 'category == "M"'>
+	    					sc_name
+	    				</when>
+	    				<when test = 'category == "S"'>
+	    					item_name
+	    				</when>
+	    			</choose>
     </select>
     
     <select id="chartDate" resultType="com.overc1ock.domain.ReportVO">
@@ -106,6 +211,7 @@
 					  left join (select item_code, max(supply_price) supply_price from contract group by item_code) c on t1.item_code=c.item_code) t1
 			          where mylabel >= date(#{startDate})
 			          group by mylabel
+			          order by mylabel
           		]]>
     </select>
     

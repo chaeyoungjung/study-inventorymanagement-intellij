@@ -14,5 +14,6 @@ public class Criteria {
 	private String endDate;
 	private String category;
 	private String word;
+	private Integer num;
 
 }

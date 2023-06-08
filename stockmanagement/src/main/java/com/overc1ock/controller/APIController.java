@@ -22,12 +22,27 @@ public class APIController {
 	
 	@GetMapping("/chartdate")
 	public ChartReportVO getchartdate(String month) {
+		log.info("날짜별 재고금액리포트 restcontroller");
 		String startDate = month+"-01";
 		log.info("전송된 월을 해당 월의 첫날로 바꿈 > "+startDate);
 		Criteria cri = new Criteria();
 		cri.setStartDate(startDate);
 		
 		return service.chartDate(cri);
+	}
+	
+	@GetMapping("/chartitemcode")
+	public ChartReportVO getchartItemCode(Criteria cri) {
+		log.info("품목별 재고금액리포트 >>품목코드 restcontroller");
+
+		return service.chartItemCode(cri);
+	}
+	
+	@GetMapping("/chartitemcategory")
+	public ChartReportVO getchartItemCategory(Criteria cri) {
+		log.info("품목별 재고금액리포트 >>품목군 restcontroller");
+
+		return service.chartItemCategory(cri);
 	}
 	
 

@@ -23,25 +23,25 @@ public class OutBoundServiceImpl implements OutBoundService {
 
 	@Override
 	public List<ProductionPlanVO> getOutboundList() {
-		log.info("*******************outbound list service**********************");
+		log.info("*******************출고목록 서비스**********************");
 		return mapper.getOutboundList();
 	}
 
 	@Override
 	public List<ProductionPlanVO> getOutboundListWithCriteria(Criteria cri) {
-		log.info("*******************get Outbound List With Criteria service**********************");
+		log.info("*******************조건 포함 출고목록 서비스**********************");
 		return mapper.getOutboundListWithCriteria(cri);
 	}
 	
 	@Override
 	public List<ProductionPlanVO> getProductNameList() {
-		log.info("*******************product name list service**********************");
+		log.info("*******************제품명 목록 서비스**********************");
 		return mapper.getProductNameList();
 	}
 
 	@Override
 	public Integer insertOutbound(List<OutBoundVO> list) {
-		log.info("*******************product name list service**********************");
+		log.info("*******************출고등록 서비스**********************");
 		return mapper.insertOutbound(list);
 	}
 

@@ -14,8 +14,8 @@ public interface StockManagementMapper {
 	List<ProductionPlanVO>getOutboundListWithCriteria(Criteria cri);
 	List<ProductionPlanVO>getProductNameList();
 	Integer insertOutbound(List<OutBoundVO> list);
-	List<ReportVO> chartItemName();
-	List<ReportVO> chartItemCode();
+	List<ReportVO> chartItemCategory(Criteria cri);
+	List<ReportVO> chartItemCode(Criteria cri);
 	List<ReportVO> chartDate(Criteria cri);
 	List<StockCalculationVO> getStockCalculationList();
 }
