@@ -15,6 +15,7 @@ import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.domain.ReportVO;
 import com.overc1ock.domain.StockCalculationVO;
 import com.overc1ock.domain.Criteria;
+import com.overc1ock.domain.ExistingStockVO;
 
 import lombok.extern.log4j.Log4j;
 
@@ -97,6 +98,23 @@ public class StockManagementMapperTests {
 //		cri.setNum(200000);
 		List<ReportVO> list = mapper.chartItemCategory(cri);
 		list.forEach(vo -> log.info(vo));
+	}
+	
+	@Test
+	public void testInsertExistingStock() {
+		ExistingStockVO vo = new ExistingStockVO();
+		vo.setAmount(20);
+		vo.setItem_code(3);
+		mapper.insertExistingStock(vo);
+	}
+	
+	@Test
+	public void testGetStockCalculationList() {
+		Criteria cri = new Criteria();
+		cri.setStartDate("2023-06-07");
+		cri.setCategory("name");
+		cri.setWord("test");
+		mapper.getStockCalculationList(cri).forEach(vo -> log.info(vo));
 	}
 
 }
