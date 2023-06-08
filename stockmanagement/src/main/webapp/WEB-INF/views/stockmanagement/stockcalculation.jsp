@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -26,6 +27,11 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 	crossorigin="anonymous"></script>
+<style>
+   select option[value=""][disabled] {
+    display: none;
+   }
+</style>
 </head>
 <body>
 	<div>
@@ -107,12 +113,12 @@
 								<label for="makeId" class="input-group-text">검색</label> <select
 									id="makeId" class="form-select" tabindex="1"
 									onchange="changeTheModel();" name="searchTransaction.makeId"
-									style="width: 90px;">
-									<option value="1">품목명</option>
-									<option value="2">규격
-									<option value="3">재질
-									<option value="4">협력회사
-									<option value="5">제품명
+									style="width: 90px;" required>
+									<option value="" disabled selected>선택</option>
+									<option value="name">품목명</option>
+									<option value="std">규격
+									<option value="mat">재질
+									<option value="sub">협력회사
 								</select> <input type="text" class="form-control" id="customerName"
 									name="customerVO.customerName" value="" style="width: 150px";>
 							</div>
@@ -162,30 +168,19 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td style="text-align: center;">1</td>
-						<td style="text-align: center;"><span>WON2N1</span></td>
-						<td style="text-align: center;"><span>John Wick</span></td>
-						<td style="text-align: center;"><span>2020-06-15T00:00</span></td>
-						<td style="text-align: center;"><span>Apple</span></td>
-						<td style="text-align: center;"><span>MacBook Pro</span></td>
-						<td style="text-align: center;"><span>AEPEP88990a</span></td>
-						<td style="text-align: center;"><span>ACCEPTED</span></td>
-						<td style="text-align: center;"><span>VERIFIED</span></td>
-
-					</tr>
-					<tr>
-						<td style="text-align: center;">2</td>
-						<td style="text-align: center;"><span>WON2N2</span></td>
-						<td style="text-align: center;"><span>Nick Fury</span></td>
-						<td style="text-align: center;"><span>2020-06-16T00:00</span></td>
-						<td style="text-align: center;"><span>Apple</span></td>
-						<td style="text-align: center;"><span>MacBook Air</span></td>
-						<td style="text-align: center;"><span>PQRS12345</span></td>
-						<td style="text-align: center;"><span>VERIFIED</span></td>
-						<td style="text-align: center;"><span>VERIFIED</span></td>
-
-					</tr>
+					<c:forEach var="list" items="${scList}">
+						<tr>
+							<td style="text-align: center;"><span>${list.item_code}</span></td>
+							<td style="text-align: center;"><span>${list.item_name}</span></td>
+							<td style="text-align: center;"><span>${list.standard}</span></td>
+							<td style="text-align: center;"><span>${list.material}</span></td>
+							<td style="text-align: center;"><span>${list.subcontractor_name}</span></td>
+							<td style="text-align: center;"><span>${list.inbound_amount}</span></td>
+							<td style="text-align: center;"><span>${list.outbound_amount}</span></td>
+							<td style="text-align: center;"><span>${list.stock_amount}</span></td>
+							<td style="text-align: center;"><span>${list.supply_price}</span></td>
+						</tr>
+					</c:forEach>
 
 				</tbody>
 			</table>

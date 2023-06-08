@@ -111,7 +111,7 @@ public class StockManagementMapperTests {
 	@Test
 	public void testGetStockCalculationList() {
 		Criteria cri = new Criteria();
-		cri.setStartDate("2023-06-07");
+		cri.setStartDate("2023-06-08");
 		cri.setCategory("name");
 		cri.setWord("test");
 		mapper.getStockCalculationList(cri).forEach(vo -> log.info(vo));

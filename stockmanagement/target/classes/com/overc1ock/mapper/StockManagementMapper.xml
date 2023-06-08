@@ -234,7 +234,7 @@ from (WITH RECURSIVE CTE  AS (
       SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
       UNION ALL
       SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
-      WHERE DT < DATE_FORMAT('20230608', '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
+      WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
       (select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1
      left join 
      (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
