@@ -30,7 +30,7 @@
 		    	AND production_date between date(#{startDate}) and date(#{endDate})+1
 			</if>
 			<if test="word != null and word != ''">
-		    	AND product_name = #{word}
+		    	AND product_name like concat('%',#{word},'%')
 			</if>
 		order by production_date
     </select>

@@ -40,7 +40,7 @@ public class StockManagementMapperTests {
 		Criteria cri = new Criteria();
 		cri.setStartDate("2023-06-01");
 		cri.setEndDate("2023-06-11");
-		cri.setWord("test제품2");
+		cri.setWord("1");
 		List<ProductionPlanVO> list = mapper.getOutboundListWithCriteria(cri);
 		for (ProductionPlanVO vo : list) {
 			log.info("*****************************"+vo);
