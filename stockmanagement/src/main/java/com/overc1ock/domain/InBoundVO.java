@@ -12,10 +12,12 @@ import lombok.Data;
 @Component
 @Data
 public class InBoundVO {
+	private Integer item_code;
 	private Integer amount;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd") //input date 를 받을때 패턴 지정해줘야 400에러 안남
 	private Date date;
+	private Integer po_code;
 	private ArrayList<InBoundVO> inOutBoundVOList;
 	
 	

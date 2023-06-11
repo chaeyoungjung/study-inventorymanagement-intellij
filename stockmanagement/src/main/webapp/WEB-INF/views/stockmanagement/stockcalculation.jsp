@@ -187,6 +187,7 @@ select option[value=""][disabled] {
 				</table>
 			</div>
 		</div>
+	</form>
 		<div id="newInvoiceModal" class="modal fade" tabindex="-1"
 			aria-labelledby="newInvoiceModal" aria-hidden="true">
 
@@ -208,25 +209,26 @@ select option[value=""][disabled] {
 									<th scope="col" style="text-align: center;"></th>
 								</tr>
 							</thead>
+							<form method = "post" action="">
 							<tbody>
 								<tr>
 									<td style="text-align: center;"><span> <input
-											type="number" style="width: 90px;">
+											type="number" style="width: 90px;" name="item_code">
 									</span></td>
-									<td style="text-align: center;"><span>WON2N1</span></td>
+									<td style="text-align: center;"><span></span></td>
 									<td style="text-align: center;"><span><input
-											type="number" style="width: 90px;"></span></td>
-									<td><button type="button" id="saveModal"
+											type="number" style="width: 90px;" name="amount"></span></td>
+									<td><button type="submit" id="saveModal"
 											class="btn btn-primary">등록</button></td>
 								</tr>
 							</tbody>
+							</form>
 						</table>
 					</div>
 					<div class="modal-footer"></div>
 				</div>
 			</div>
 		</div>
-	</form>
 	<input type="hidden" value="3" id="flag">
 	<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
 	<script src="/resources/js/core/bootstrap-5.min.js"
@@ -249,6 +251,16 @@ select option[value=""][disabled] {
 		$("#close").click(function() {
 			$("#newInvoiceModal").fadeOut(); //닫기를 누르면 모달창 사라짐
 		});
+	</script>
+	<script>
+	var item_code = "${svo.item_code}";
+	var amount = "${svo.amount}";
+	console.log("컨트롤러에서 전달한 기존재고 정보 >> 품목코드: "+item_code+"기존재고 등록량: "+amount);
+	if(item_code != null && amount != null  && item_code != "" && amount != ""){
+		alert("품목코드 : "+item_code+"\n"+amount+"개의 기존재고 등록이 완료되었습니다.");
+		item_code = 0;
+		amount = 0;
+	}
 	</script>
 </body>
 </html>

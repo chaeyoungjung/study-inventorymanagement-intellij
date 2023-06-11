@@ -63,7 +63,7 @@ from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0
 													  WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1, -- 기간내의 날짜 모두 출력
 						(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 -- 모든 날짜(t1)와 재고가 있는 아이템 코드(t2)의 조인 >> from절에 ,로 두개 테이블을 적으면 크로스 조인(모든 경우의 수 row를 가진 테이블 출력, 날짜별 모든 품목코드를 가짐)
 		 left join 
-			 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+			 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, sum(es_quantity) 입고량 from existing_stock group by item_code,DATE_FORMAT(es_date, '%Y-%m-%d')
 			  union all
 			  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
 			  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
@@ -131,7 +131,7 @@ from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0
 													  WHERE DT < DATE_FORMAT('20230608', '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1, -- 기간내의 날짜 모두 출력
 						(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 -- 모든 날짜(t1)와 재고가 있는 아이템 코드(t2)의 조인 >> from절에 ,로 두개 테이블을 적으면 크로스 조인(모든 경우의 수 row를 가진 테이블 출력, 날짜별 모든 품목코드를 가짐)
 		 left join 
-			 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+			 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, sum(es_quantity) 입고량 from existing_stock group by item_code,DATE_FORMAT(es_date, '%Y-%m-%d')
 			  union all
 			  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
 			  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
@@ -237,7 +237,7 @@ from (WITH RECURSIVE CTE  AS (
       WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
       (select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1
      left join 
-     (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+     (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, sum(es_quantity) 입고량 from existing_stock group by item_code,DATE_FORMAT(es_date, '%Y-%m-%d')
 	  union all
 	  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
 	  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2 on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 

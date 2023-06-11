@@ -12,8 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.overc1ock.domain.Criteria;
+import com.overc1ock.domain.ExistingStockVO;
 import com.overc1ock.domain.OutBoundVO;
 import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.service.OutBoundService;
@@ -73,6 +75,13 @@ public class StockManagementController {
 			cri.setStartDate(format.format(new Date())+"");
 		}
 		model.addAttribute("scList", scService.getStockCalculationList(cri));
+	}
+	
+	@PostMapping("/stockcalculation")
+	public String inputStock(ExistingStockVO vo, RedirectAttributes rttr) {
+		scService.insertExistingStock(vo);
+		rttr.addFlashAttribute("svo", vo);
+		return "redirect:/stockmanagement/stockcalculation";
 	}
 	
 	
