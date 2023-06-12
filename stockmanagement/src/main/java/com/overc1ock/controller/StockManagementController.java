@@ -43,6 +43,11 @@ public class StockManagementController {
 		log.info("*******************get 입고처리(마감) 발주품목페이지 controller**********************");
 	}
 	
+	@GetMapping("/transactionstatement")
+	public void transactionstatement() {
+		log.info("*******************get 거래명세서 시작페이지 controller**********************");
+	}
+	
 	
 	@GetMapping("/outbound")
 	public void outbound(Model model,Criteria cri) {
