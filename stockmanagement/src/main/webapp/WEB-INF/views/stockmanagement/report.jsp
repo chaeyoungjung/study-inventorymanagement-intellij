@@ -23,7 +23,7 @@
 	type="text/css" />
 <link rel="stylesheet" href="/resources/css/core/flag-icon.min.css"
 	type="text/css" />
-<title>Report</title>
+<title>재고금액현황관리리포트</title>
 <script type="text/javascript" src="/resources/js/navbar-scripts.js"></script>
 <script type="text/javascript" src="/resources/js/apexcharts.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.js"
@@ -51,7 +51,7 @@
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inboundintro" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="transactionstatement"
 							id="transactionStatement">거래명세서 발행</a></li>

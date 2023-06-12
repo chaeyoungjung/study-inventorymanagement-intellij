@@ -123,6 +123,11 @@ public class StockManagementMapperTests {
 		mapper.getStockCalculationList(cri).forEach(vo -> log.info(vo));
 	}
 	
+	@Test
+	public void testGetItemCodeList() {
+		mapper.getItemCodeList().forEach(vo -> log.info(vo));
+	}
+	
 	//입고처리
 	@Test
 	public void testGetPurchaseOrderList() {

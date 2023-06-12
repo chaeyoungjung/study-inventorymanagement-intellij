@@ -34,4 +34,10 @@ public class StockCalculationServiceImpl implements StockCalculationService {
 		return mapper.insertExistingStock(vo);
 	}
 
+	@Override
+	public List<Integer> getItemCodeList() {
+		log.info("기존재고가 없는 품목코드 목록 서비스");
+		return mapper.getItemCodeList();
+	}
+
 }

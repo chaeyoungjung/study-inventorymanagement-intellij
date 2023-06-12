@@ -49,7 +49,7 @@ select option[value=""][disabled] {
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inboundintro" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="transactionstatement"
 							id="transactionStatement">거래명세서 발행</a></li>
@@ -180,6 +180,7 @@ select option[value=""][disabled] {
 								<td style="text-align: center;"><span>${list.outbound_amount}</span></td>
 								<td style="text-align: center;"><span>${list.stock_amount}</span></td>
 								<td style="text-align: center;"><span>${list.supply_price}</span></td>
+									</span></td>
 							</tr>
 						</c:forEach>
 
@@ -213,7 +214,14 @@ select option[value=""][disabled] {
 							<tbody>
 								<tr>
 									<td style="text-align: center;"><span> <input
-											type="number" style="width: 90px;" name="item_code">
+											type="number" style="width: 90px;" name="item_code" list="itemCode">
+										<datalist id="itemCode"
+											style="border: 1px solid #DBE0E4;">
+											<c:forEach var="list" items="${icList}">
+												<option value="${list}"></option>
+											</c:forEach>
+											
+										</datalist>
 									</span></td>
 									<td style="text-align: center;"><span></span></td>
 									<td style="text-align: center;"><span><input

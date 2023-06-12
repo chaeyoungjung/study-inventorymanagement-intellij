@@ -33,6 +33,17 @@ public class StockManagementController {
 	OutBoundService obService;
 	StockCalculationService scService;
 	
+	@GetMapping("/inboundintro")
+	public void inboundintro() {
+		log.info("*******************get 입고처리(마감) 시작페이지 controller**********************");
+	}
+	
+	@GetMapping("/inboundwork")
+	public void inboundwork() {
+		log.info("*******************get 입고처리(마감) 발주품목페이지 controller**********************");
+	}
+	
+	
 	@GetMapping("/outbound")
 	public void outbound(Model model,Criteria cri) {
 		log.info("*******************get 출고처리 controller**********************");
@@ -60,11 +71,6 @@ public class StockManagementController {
 		return "redirect:/stockmanagement/outbound";
 	}
 	
-	@GetMapping("/report")
-	public void report() {
-		log.info("*******************get 재고금액현황관리리포트 controller**********************");
-		
-	}
 	
 	@GetMapping("/stockcalculation")
 	public void stockcalculation(Model model, Criteria cri) {
@@ -75,6 +81,7 @@ public class StockManagementController {
 			cri.setStartDate(format.format(new Date())+"");
 		}
 		model.addAttribute("scList", scService.getStockCalculationList(cri));
+		model.addAttribute("icList", scService.getItemCodeList());
 	}
 	
 	@PostMapping("/stockcalculation")
@@ -84,6 +91,11 @@ public class StockManagementController {
 		return "redirect:/stockmanagement/stockcalculation";
 	}
 	
+	@GetMapping("/report")
+	public void report() {
+		log.info("*******************get 재고금액현황관리리포트 controller**********************");
+		
+	}
 	
 
 }

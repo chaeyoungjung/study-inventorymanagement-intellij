@@ -26,6 +26,7 @@ public interface StockManagementMapper {
 	List<ReportVO> chartDate(Criteria cri);
 	
 	//재고산출
+	List<Integer> getItemCodeList();
 	List<StockCalculationVO> getStockCalculationList(Criteria cri);
 	Integer insertExistingStock(ExistingStockVO vo);
 	

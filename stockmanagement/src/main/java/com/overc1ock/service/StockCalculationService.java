@@ -10,5 +10,6 @@ public interface StockCalculationService {
 	
 	List<StockCalculationVO> getStockCalculationList(Criteria cri);
 	Integer insertExistingStock(ExistingStockVO vo);
+	List<Integer> getItemCodeList();
 
 }

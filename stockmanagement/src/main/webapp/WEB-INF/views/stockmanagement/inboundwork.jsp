@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,8 +11,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="author" content="Suraj">
-<!--meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/-->
+<!--meta name="_csrf" th:content=""/>
+    <meta name="_csrf_header" th:content=""/-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="/resources/css/custom.css" type="text/css" />
 <link rel="stylesheet" href="/resources/css/core/flag-icon.min.css"
 	type="text/css" />
-<title>출고처리</title>
+<title>입고처리(마감)</title>
 <script type="text/javascript" src="/resources/js/navbar-scripts.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
@@ -85,51 +85,22 @@
 	<div style="position: relative;">
 		<div class="container"
 			style="position: absolute; left: 250px; width: 3000px;">
+			<button type="button" class="btn btn-primary"
+			style="position: relative; left: 1300px;background-color: rgb(29, 204, 81);border-color: rgb(29, 204, 81);" data-bs-toggle="modal" data-bs-target="#newInvoiceModal" id="modalbtn">조달계획조회</button>
+			<button type="button" class="btn btn-primary"
+			style="position: relative; left: 1300px;">입고등록</button>
 			<div class="wrap">
-				<div class="card">
-					<div class="card-header">
-						<b>생산계획 조회</b>
-					</div>
+				<div class="card" style="border-color: #FFFFFF;">
 					<form action="outbound">
-						<div class="card-body">
+						<div class="card-body" >
 							<div class="row g-3">
 								<div class="col-md-3">
-									<div class="input-group mb-3">
-										<span class="input-group-text">생산일 (From)</span> <input
-											type="date" id="startDate" class="form-control datepicker"
-											name="startDate" aria-label="Reported Date (From)"> <span
-											class="input-group-text"><img
-											src="/resources/img/calendar3.svg" alt="" width="16"
-											height="16" title="calendar" /></span> <b
-											style="position: relative; left: 10px; font-size: x-large;">~</b>
-									</div>
+									<b style="font-size: large;">조달납기: <span></span></b>
 								</div>
 								<div class="col-md-3">
-									<div class="input-group mb-3">
-										<span class="input-group-text">생산일 (To)</span> <input
-											type="date" id="endDate" class="form-control datepicker"
-											name="endDate" aria-label="Reported Date (To)"> <span
-											class="input-group-text"><img
-											src="/resources/img/calendar3.svg" alt="" width="16"
-											height="16" title="calendar" /></span>
-									</div>
+									<b style="font-size: large;">협력업체: <span></span></b>
 								</div>
 								<div class="col-md-3">
-									<div class="input-group mb-3">
-										<span class="input-group-text">제품명</span> <input type="text"
-											name="word" list="productName"
-											style="border: 1px solid #ced4da;">
-										<datalist id="productName"
-											style="border: 1px solid #DBE0E4;">
-											<c:forEach var="list" items="${pnList }">
-												<option value="${list.product_name }"></option>
-											</c:forEach>
-										</datalist>
-									</div>
-								</div>
-								<div class="col-md-3">
-									<button type="submit" class="btn btn-primary"
-										onclick="search()">조회</button>
 								</div>
 							</div>
 						</div>
@@ -157,48 +128,81 @@
 					<table id='myTable'
 						class="table table-bordered table-striped table-hover caption-top">
 						<caption style="color: black;">
-							<b>생산계획 및 출고처리</b>
+							<b>발주품목 목록</b>
 						</caption>
-						<button type="submit" class="btn btn-primary"
-							style="position: absolute; left: 1220px;">출고등록</button>
 						<thead class="table-dark">
 							<tr>
 								<th scope="col" style="text-align: center;">순번</th>
-								<th scope="col" style="text-align: center;">제품명</th>
 								<th scope="col" style="text-align: center;">품목코드</th>
-								<th scope="col" style="text-align: center;">품목명</th>
-								<th scope="col" style="text-align: center;">생산일</th>
-								<th scope="col" style="text-align: center;">소요량</th>
-								<th scope="col" style="text-align: center;">재고수량</th>
-								<th scope="col" style="text-align: center;">총 출고량</th>
-								<th scope="col" style="text-align: center;">출고수량</th>
-								<th scope="col" style="text-align: center;">출고일</th>
+								<th scope="col" style="text-align: center;">발주수량</th>
+								<th scope="col" style="text-align: center;">조달계획 완료여부</th>
+								<th scope="col" style="text-align: center;">입고수량</th>
+								<th scope="col" style="text-align: center;">입고일</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:set value="0" var="no" />
-							<c:forEach var="list" items="${obList}">
+							
+							
 								<tr>
-									<td style="text-align: center;">${no = no+1}</td>
-									<td style="text-align: center;"><span>${list.product_name}</span></td>
-									<td style="text-align: center;"><span>${list.item_code}</span></td>
-									<td style="text-align: center;"><span>${list.item_name}</span></td>
-									<td style="text-align: center;"><span><fmt:formatDate
-												value="${list.production_date}"
-												pattern="yyyy-MM-dd HH:mm:ss(E)" /></span></td>
-									<td style="text-align: center;"><span>${list.consumption}</span></td>
-									<td style="text-align: center;"><span id="stockAmount">${list.stock_amount}</span></td>
-									<td style="text-align: center;"><span>${list.total_amount}</span></td>
-									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" ></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
-									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="date" name="outBoundVOList[${no-1}].date" id="date" ></c:if></td>
+									<td style="text-align: center;">1</td>
+									<td style="text-align: center;"><span>1</span></td>
+									<td style="text-align: center;"><span>test품목1</span></td>
+									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
+									<td style="text-align: center;"><input type="number" name="outBoundVOList[0].amount" id="amount" ></td>
+									<td style="text-align: center;"><input type="date" name="outBoundVOList[0].date" id="date" ></td>
 								</tr>
-								<input type="hidden" value="${list.iup_code}" name="outBoundVOList[${no-1}].iup_code">
-								<input type="hidden" value="${list.item_code}" name="outBoundVOList[${no-1}].item_code">
-							</c:forEach>
+								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
+								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
+					
+							
 						</tbody>
 					</table>
 				</form>
 			</div>
+		</div>
+		<div id="newInvoiceModal" class="modal fade" tabindex="-1" aria-labelledby="newInvoiceModal" aria-hidden="true">
+			<form action="" method="post">
+				<div class="modal-dialog  modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">조달계획조회</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close"></button>
+						</div>
+						<div id="invoiceModalBody" class="modal-body">
+							<table id='myModalTable' class="table table-bordered table-striped table-hover caption-top">
+								<thead class="table-dark">
+									<tr>
+										<th scope="col" style="text-align: center;">순번</th>
+										<th scope="col" style="text-align: center;">품목코드</th>
+										<th scope="col" style="text-align: center;">품목명</th>
+										<th scope="col" style="text-align: center;">자재소요공정</th>
+										<th scope="col" style="text-align: center;">생산일</th>
+										<th scope="col" style="text-align: center;">소요량</th>
+										<th scope="col" style="text-align: center;">조달납기</th>
+										<th scope="col" style="text-align: center;">완료여부</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td style="text-align: center;"><span>WON2N1</span></td>
+										<td style="text-align: center;"><span>WON2N1</span></td>
+										<td style="text-align: center;"><span>WON2N1</span></td>
+										<td style="text-align: center;"><span>WON2N1</span></td>
+										<td style="text-align: center;"><span>WON2N1</span></td>
+										<td style="text-align: center;"><span>WON2N1</span></td>
+										<td style="text-align: center;"><span>WON2N1</span></td>
+										<td style="text-align: center;"><span>WON2N1</span></td>
+										
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							
+						</div>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
 	<input type="hidden" value="2" id="flag">
@@ -260,6 +264,14 @@
 			});
 
 
+		});
+	</script>
+	<script>
+		$("#modalbtn").click(function () {
+		$("#newInvoiceModal").fadeIn();
+		}); //로그인버튼을 누르면 모달창 생성 
+		$("#close").click(function () {
+			$("#newInvoiceModal").fadeOut(); //닫기를 누르면 모달창 사라짐
 		});
 	</script>
 
