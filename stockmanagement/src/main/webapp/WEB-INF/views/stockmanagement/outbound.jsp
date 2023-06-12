@@ -237,7 +237,8 @@
 					console.log("종료일 값 없음");
 				}
 			});
-			$('#amount').change(function() {
+			
+			$(document).on("change",'#amount',function() {
 				if ($('#amount').val() != ''){
 					$('#date').attr('required', true);
 					console.log("출고량 값 있음");
@@ -247,7 +248,7 @@
 					console.log("출고량 값 없음");
 				}
 			});
-			$('#date').change(function() {
+			$(document).on("change",'#date',function() {
 				if ($('#date').val() != ''){
 					$('#amount').attr('required', true);
 					console.log("출고일 값 있음");
@@ -257,6 +258,7 @@
 					console.log("출고일 값 없음");
 				}
 			});
+
 
 		});
 	</script>
