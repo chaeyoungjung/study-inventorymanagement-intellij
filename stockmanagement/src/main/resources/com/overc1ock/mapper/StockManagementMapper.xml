@@ -5,6 +5,8 @@
     
 <mapper namespace="com.overc1ock.mapper.StockManagementMapper">
 
+<!-- 출고처리 -->
+
 	<select id="getOutboundList" resultType="com.overc1ock.domain.ProductionPlanVO">
 		select product_name,item_code,item_name,production_date,consumption,(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0)) stock_amount,ifnull(goq,0) total_amount,iup_code 
 		from (select * from item_use_plan join products_production_plan using(ppp_code)) p 
@@ -48,13 +50,14 @@
     	</foreach>
     </insert>
     
-    
+<!-- 재고금액현황관리리스트 -->    
+
     <select id="chartItemCode" resultType="com.overc1ock.domain.ReportVO">
         <![CDATA[
 select t1.item_code mylabel, ifnull(재고금액,0) myvalue from
 (select 일자, t1.item_code, item_name, 재고금액, mc_code, mc_name, sc_code, sc_name
 from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량, (c.supply_price*sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자)) 재고금액
-	from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+	from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량
 			from (select *
 					from (WITH RECURSIVE CTE  AS (
 													  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
@@ -67,7 +70,8 @@ from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0
 			  union all
 			  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
 			  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
-		  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code
+		  group by 일자, item_code) t1 
 		  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound -- 기존재고량, 입고량, 출고량 조인
 						group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
 		  on t1.일자=t2.일자 and t1.item_code=t2.item_code
@@ -122,7 +126,7 @@ select
 sum(ifnull(재고금액,0)) myvalue from
 (select 일자, t1.item_code, item_name, 재고금액, mc_code, mc_name, sc_code, sc_name
 from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량, (c.supply_price*sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자)) 재고금액
-	from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+	from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량
 			from (select *
 					from (WITH RECURSIVE CTE  AS (
 													  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
@@ -135,7 +139,8 @@ from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0
 			  union all
 			  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
 			  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
-		  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+		  on t1.일자=t2.일자 and t1.item_code=t2.item_code
+		  group by 일자, item_code) t1 
 		  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound -- 기존재고량, 입고량, 출고량 조인
 						group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
 		  on t1.일자=t2.일자 and t1.item_code=t2.item_code
@@ -196,21 +201,22 @@ order by
     <select id="chartDate" resultType="com.overc1ock.domain.ReportVO">
         	<![CDATA[
 			    select  mylabel, sum(myvalue) myvalue
-				from (select t1.일자 mylabel, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (order by t1.일자) as 재고량, (ifnull(c.supply_price,0)*sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by t1.일자))  myvalue
-				from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+				from (select t1.일자 mylabel, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by t1.일자) as 재고량, (ifnull(c.supply_price,0)*(sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by t1.일자)))  myvalue
+				from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량
 						from (select *
 							from (WITH RECURSIVE CTE  AS (
-															  SELECT DATE_FORMAT("2022-01-01", '%Y-%m-%d') AS DT FROM DUAL
+															  SELECT DATE_FORMAT("2023-05-01", '%Y-%m-%d') AS DT FROM DUAL
 															  UNION ALL
 															  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
 															  WHERE DT < last_day(date(#{startDate}))) SELECT DT AS 일자 FROM CTE) t1,
 									(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 
 					 left join 
-						 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
+						 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, sum(es_quantity) 입고량 from existing_stock group by item_code ,DATE_FORMAT(es_date, '%Y-%m-%d')
 						  union all
 						  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
 						  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
-					  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+					  on t1.일자=t2.일자 and t1.item_code=t2.item_code
+                      group by  일자, item_code) t1 
 					  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound
 									group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
 					  on t1.일자=t2.일자 and t1.item_code=t2.item_code
@@ -220,7 +226,10 @@ order by
 			          order by mylabel
           		]]>
     </select>
-    
+
+
+<!-- 재고산출 -->
+
     <insert id="insertExistingStock" parameterType="com.overc1ock.domain.ExistingStockVO">
 		insert into existing_stock(es_quantity,item_code) values(#{amount},#{item_code})
     </insert>
@@ -228,7 +237,7 @@ order by
     <select id = "getStockCalculationList" resultType="com.overc1ock.domain.StockCalculationVO">
     	<![CDATA[
       select item_code, item_name, standard, material, subcontractor_name, inbound_amount, outbound_amount, stock_amount, supply_price from (select 일자, t1.item_code item_code,item_name,standard,material,subcontractor_name,sum(ifnull(입고량,0)) over(partition by item_code order by 일자) inbound_amount,sum(ifnull(출고량,0)) over(partition by item_code order by 일자) outbound_amount,재고량 stock_amount,supply_price from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량
-from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
+from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량
 from (select *
 from (WITH RECURSIVE CTE  AS (
       SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
@@ -240,7 +249,8 @@ from (WITH RECURSIVE CTE  AS (
      (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, sum(es_quantity) 입고량 from existing_stock group by item_code,DATE_FORMAT(es_date, '%Y-%m-%d')
 	  union all
 	  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
-	  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2 on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
+	  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2 on t1.일자=t2.일자 and t1.item_code=t2.item_code
+	  group by item_code,일자) t1 
       left join( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
       on t1.일자=t2.일자 and t1.item_code=t2.item_code) t2
       join (select i.item_code,subcontractor_name,supply_price,item_name,standard,material from
@@ -270,6 +280,45 @@ from (WITH RECURSIVE CTE  AS (
 			      
     
     </select>
+
+<!-- 입고처리(마감) -->
+
+    <select id="getPurchaseOrderList" resultType="com.overc1ock.domain.PurchaseOrderVO">
+	   select po_code, subcontractor_name supplier, po_date from purchase_order join contract using(po_code)
+	   where close_status = 0
+		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+			and po_date between DATE(#{startDate}) and DATE(#{endDate})+1 
+		</if>
+		order by po_date
+    </select>
+
+    <select id="getProcurementPlanList" resultType="com.overc1ock.domain.ProcurementPlanVO">
+		select item_code, item_name, `process`, production_date, consumption amount,procurement_date,pp_status from (select item_code, `process`, production_date, consumption,procurement_date,pp_status,contract.po_code  from purchase_order
+		join contract using(po_code) join (select * from procurement_plan join item_use_plan using(iup_code) join products_production_plan using(ppp_code)) t1 using(item_code)) t1
+		join item using(item_code)
+		where po_code = #{po_code}
+		order by item_code
+    </select>
     
+    <select id="getOrderItemList" resultType="com.overc1ock.domain.ProcurementPlanVO">
+		select item_code, item_name, consumption amount,pp_status,procurement_date,subcontractor_name supplier from (select item_code, `process`, production_date, consumption,procurement_date,pp_status,contract.po_code, subcontractor_name  from purchase_order
+		join contract using(po_code) join (select * from procurement_plan join item_use_plan using(iup_code) join products_production_plan using(ppp_code)) t1 using(item_code)) t1
+		join item using(item_code)
+		where po_code = #{po_code}
+		order by item_code
+    </select>
+    
+    <insert id="insertInbound" parameterType="java.util.List">
+    	<foreach collection="list" item="vo" separator=";">
+    	insert into inbound(inbound_quantity,arrival_date,item_code,po_code)
+    		values(#{vo.amount},#{vo.date},#{vo.item_code},#{vo.po_code})
+    	</foreach>
+    </insert>
+    
+    <update id="updateProcurementPlanStatus">
+    	update procurement_plan set pp_status = 1 where po_code in (select t1.po_code from (select * from procurement_plan join item_use_plan using(iup_code) join purchase_order using(po_code)) t1
+		left join inbound t2 on t1.po_code=t2.po_code and t1.item_code=t2.item_code
+		where consumption = inbound_quantity)
+    </update>
     
 </mapper>

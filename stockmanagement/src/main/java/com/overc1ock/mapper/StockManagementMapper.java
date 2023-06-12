@@ -3,11 +3,14 @@ package com.overc1ock.mapper;
 import java.util.List;
 
 import com.overc1ock.domain.OutBoundVO;
+import com.overc1ock.domain.ProcurementPlanVO;
 import com.overc1ock.domain.ProductionPlanVO;
+import com.overc1ock.domain.PurchaseOrderVO;
 import com.overc1ock.domain.ReportVO;
 import com.overc1ock.domain.StockCalculationVO;
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.ExistingStockVO;
+import com.overc1ock.domain.InBoundVO;
 
 public interface StockManagementMapper {
 	
@@ -25,5 +28,14 @@ public interface StockManagementMapper {
 	//재고산출
 	List<StockCalculationVO> getStockCalculationList(Criteria cri);
 	Integer insertExistingStock(ExistingStockVO vo);
+	
+	//입고처리(마감)
+	List<PurchaseOrderVO> getPurchaseOrderList(Criteria cri);
+	List<ProcurementPlanVO> getProcurementPlanList(Integer po_code);
+	List<ProcurementPlanVO> getOrderItemList(Integer po_code);
+	Integer insertInbound(List<InBoundVO> list);
+	Integer updateProcurementPlanStatus();
+	
+	
 	
 }
