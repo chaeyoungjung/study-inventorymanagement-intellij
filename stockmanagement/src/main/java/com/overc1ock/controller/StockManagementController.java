@@ -48,6 +48,11 @@ public class StockManagementController {
 		log.info("*******************get 거래명세서 시작페이지 controller**********************");
 	}
 	
+	@GetMapping("/statement")
+	public void statement() {
+		log.info("*******************get 거래명세서 발행페이지 controller**********************");
+	}
+	
 	
 	@GetMapping("/outbound")
 	public void outbound(Model model,Criteria cri) {
