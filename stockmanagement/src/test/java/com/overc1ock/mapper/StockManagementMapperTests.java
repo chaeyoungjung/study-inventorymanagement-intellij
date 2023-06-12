@@ -127,7 +127,7 @@ public class StockManagementMapperTests {
 	@Test
 	public void testGetPurchaseOrderList() {
 		Criteria cri = new Criteria();
-		cri.setStartDate("2023-06-02");
+		cri.setStartDate("2023-06-01");
 		cri.setEndDate("2023-06-03");
 		mapper.getPurchaseOrderList(cri).forEach(vo -> log.info(vo));
 	}

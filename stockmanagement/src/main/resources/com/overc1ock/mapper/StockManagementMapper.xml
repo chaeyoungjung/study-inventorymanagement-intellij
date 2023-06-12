@@ -284,7 +284,8 @@ from (WITH RECURSIVE CTE  AS (
 <!-- 입고처리(마감) -->
 
     <select id="getPurchaseOrderList" resultType="com.overc1ock.domain.PurchaseOrderVO">
-	   select po_code, subcontractor_name supplier, po_date from purchase_order join contract using(po_code)
+	   select purchase_order.po_code, subcontractor_name supplier, po_date 
+	   from procurement_plan join item_use_plan using(iup_code) join contract using(item_code) join purchase_order on procurement_plan.po_code = purchase_order.po_code
 	   where close_status = 0
 		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
 			and po_date between DATE(#{startDate}) and DATE(#{endDate})+1 
@@ -320,5 +321,8 @@ from (WITH RECURSIVE CTE  AS (
 		left join inbound t2 on t1.po_code=t2.po_code and t1.item_code=t2.item_code
 		where consumption = inbound_quantity)
     </update>
+    
+ <!-- 거래명세서 발행 -->
+ 
     
 </mapper>

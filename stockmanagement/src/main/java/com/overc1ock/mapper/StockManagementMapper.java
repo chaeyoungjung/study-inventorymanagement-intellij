@@ -36,6 +36,7 @@ public interface StockManagementMapper {
 	Integer insertInbound(List<InBoundVO> list);
 	Integer updateProcurementPlanStatus();
 	
+	//거래명세서 발행
 	
 	
 }
