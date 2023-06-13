@@ -156,9 +156,7 @@
 							<b>구매발주서 목록</b>
 						</caption>
 						<button type="submit" class="btn btn-primary"
-							style="position: absolute; left: 870px;">거래명세서 발행</button>
-						<button type="submit" class="btn btn-primary"
-							style="position: absolute; left: 1020px;background-color: rgb(29, 204, 81);border-color: rgb(29, 204, 81);">거래명세서 수정</button>
+							style="position: absolute; left: 1020px;">거래명세서 발행</button>
 						<button type="submit" class="btn btn-primary"
 							style="position: absolute; left: 1170px;background-color: red;border-color: red;">거래명세서 삭제</button>
 						<thead class="table-dark">

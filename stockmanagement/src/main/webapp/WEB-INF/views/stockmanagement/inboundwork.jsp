@@ -205,15 +205,15 @@
 			</form>
 		</div>
 	</div>
-	<input type="hidden" value="2" id="flag">
+	<input type="hidden" value="0" id="flag">
 	<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
 	<script src="/resources/js/core/bootstrap-5.min.js"
 		type="text/javascript"></script>
 	<script>
-		if (document.getElementById("flag").value == 2) {
-			document.getElementById("outbound").style.backgroundColor = "#fff";
-			document.getElementById("outbound").style.color = "#000000";
-			document.getElementById("outbound").style.fontWeight = "bold";
+		if (document.getElementById("flag").value == 0) {
+			document.getElementById("inbound").style.backgroundColor = "#fff";
+			document.getElementById("inbound").style.color = "#000000";
+			document.getElementById("inbound").style.fontWeight = "bold";
 			document.getElementById("stock").style.backgroundColor = "#fff";
 			document.getElementById("stock").style.color = "#000000";
 			document.getElementById("stock").style.fontWeight = "bold";

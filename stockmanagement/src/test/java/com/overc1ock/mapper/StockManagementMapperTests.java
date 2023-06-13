@@ -15,6 +15,7 @@ import com.overc1ock.domain.ProcurementPlanVO;
 import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.domain.PurchaseOrderVO;
 import com.overc1ock.domain.ReportVO;
+import com.overc1ock.domain.RequestTransactionStatementDTO;
 import com.overc1ock.domain.StockCalculationVO;
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.ExistingStockVO;
@@ -130,11 +131,11 @@ public class StockManagementMapperTests {
 	
 	//입고처리
 	@Test
-	public void testGetPurchaseOrderList() {
+	public void testGetPurchaseOrderListAtInbound() {
 		Criteria cri = new Criteria();
 		cri.setStartDate("2023-06-01");
 		cri.setEndDate("2023-06-03");
-		mapper.getPurchaseOrderList(cri).forEach(vo -> log.info(vo));
+		mapper.getPurchaseOrderListAtInbound(cri).forEach(vo -> log.info(vo));
 	}
 	
 	@Test
@@ -169,5 +170,32 @@ public class StockManagementMapperTests {
 	public void testUpdateProcurementPlanStatus() {
 		log.info(mapper.updateProcurementPlanStatus());
 	}
-
+	
+	//거래명세서 발행
+	@Test
+	public void testGetPurchaseOrderListAtTransactionStatement() {
+		Criteria cri = new Criteria();
+		cri.setStartDate("2023-06-01");
+		cri.setEndDate("2023-06-03");
+		mapper.getPurchaseOrderListAtTransactionStatement(cri).forEach(vo -> log.info(vo));
+	}
+	
+	@Test
+	public void testGetTransactionStatement() {
+		mapper.getTransactionStatement(3).forEach(vo -> log.info(vo));
+	}
+	
+	@Test
+	public void testInsertTransactionStatement() {
+		RequestTransactionStatementDTO dto = new RequestTransactionStatementDTO();
+		dto.setPerson("인수한 사람");
+		dto.setDate(new Date());
+		dto.setPo_code(3);
+		log.info(mapper.insertTransactionStatement(dto));
+	}
+	
+	@Test
+	public void testDeleteTransactionStatement() {
+		log.info(mapper.deleteTransactionStatement(3));
+	}
 }

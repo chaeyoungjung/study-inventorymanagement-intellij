@@ -286,15 +286,13 @@ from (WITH RECURSIVE CTE  AS (
     </select>
 
 <!-- 입고처리(마감) -->
-	<!-- 이거 수정 필요 -->
-    <select id="getPurchaseOrderList" resultType="com.overc1ock.domain.PurchaseOrderVO">
-	   select purchase_order.po_code, subcontractor_name supplier, po_date 
-	   from procurement_plan join item_use_plan using(iup_code) join contract using(item_code) join purchase_order on procurement_plan.po_code = purchase_order.po_code
-	   where close_status = 0
+    <select id="getPurchaseOrderListAtInbound" resultType="com.overc1ock.domain.PurchaseOrderVO">
+	   select po_code, subcontractor_name supplier,po_date from purchase_order join contract_has_purchase_order using(po_code) join contract using(contract_code)
+	   where close_status=0 
 		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
 			and po_date between DATE(#{startDate}) and DATE(#{endDate})+1 
 		</if>
-		order by po_date
+		group by po_code, subcontractor_name,po_date order by po_date
     </select>
 
     <select id="getProcurementPlanList" resultType="com.overc1ock.domain.ProcurementPlanVO">
@@ -327,6 +325,34 @@ from (WITH RECURSIVE CTE  AS (
     </update>
     
  <!-- 거래명세서 발행 -->
+ 	<select id="getPurchaseOrderListAtTransactionStatement" resultType="com.overc1ock.domain.PurchaseOrderVO">
+       select po_code, subcontractor_name supplier,po_date,ifnull(ts_save,-1) save from purchase_order
+       left join transaction_statement using(po_code) join contract_has_purchase_order using(po_code) join contract using(contract_code)
+       		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+			where po_date between DATE(#{startDate}) and DATE(#{endDate})+1 
+		</if>
+       group by po_code, subcontractor_name,po_date, save
+		order by po_date
+ 	</select>
+ 	
+ 	<select id="getTransactionStatement" resultType="com.overc1ock.domain.TransactionStatementVO">
+       select item_name,consumption amount,supply_price price,subcontractor_name,subcontractor_address,subcontractor_tel,subcontractor_person,subcontractor_email,acceptor,deal_date from (select * from (select item_code, subcontractor_name,supply_price,po_code from purchase_order 
+       join contract_has_purchase_order using(po_code) join contract using(contract_code) where po_code=#{po_code})t1
+       join subcontractor using(subcontractor_name)) t1
+       join (select item_code, item_name, consumption from purchase_order 
+       join procurement_plan using(po_code) join item_use_plan using(iup_code) join item using(item_code) 
+       where po_code=#{po_code}) t2 using(item_code)
+       left join transaction_statement using(po_code)
+ 	</select>
+ 	
+ 	<insert id="insertTransactionStatement">
+ 	insert into transaction_statement(acceptor,deal_date,po_code) values(#{person},date(#{date}),#{po_code});
+
+ 	</insert>
+ 	
+ 	<delete id="deleteTransactionStatement">
+ 	delete from transaction_statement where po_code=#{po_code}
+ 	</delete>
  
     
 </mapper>

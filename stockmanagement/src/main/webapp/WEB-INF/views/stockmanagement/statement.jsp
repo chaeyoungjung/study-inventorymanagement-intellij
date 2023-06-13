@@ -101,7 +101,7 @@
         <strong>인수자 : </strong>
       </td>
       <td class="my_content">
-        우리회사 담당자
+        <input type="text">
       </td>
       <td class="sub_title_right">
         <strong>담당자 성명 : </strong>
@@ -128,30 +128,30 @@
   <table class="line-items-container">
     <thead>
       <tr>
-        <th class="heading-description">품목명</th>
-        <th class="heading-quantity">수량</th>
-        <th class="heading-price">공급가격</th>
-        <th class="heading-subtotal">합계금액</th>
+        <th class="heading-description" style="font-size: medium;">품목명</th>
+        <th class="heading-quantity" style="font-size: medium; text-align: center;">수량</th>
+        <th class="heading-price" style="font-size: medium; text-align: center;">공급가격</th>
+        <th class="heading-subtotal" style="font-size: medium; text-align: center;">합계금액</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Blue large widgets</td>
-        <td>2</td>
-        <td class="right">$15.00</td>
-        <td class="bold">$30.00</td>
+        <td >Blue large widgets</td>
+        <td style="text-align: center;">2</td>
+        <td class="right"  style="text-align: center;">$15.00</td>
+        <td class="bold" style="text-align: center;">$30.00</td>
       </tr>
       <tr>
         <td>Green medium widgets</td>
-        <td>3</td>
-        <td class="right">$10.00</td>
-        <td class="bold">$40.00</td>
+        <td style="text-align: center;">3</td>
+        <td class="right" style="text-align: center;">$10.00</td>
+        <td class="bold" style="text-align: center;">$40.00</td>
       </tr>
       <tr>
         <td>Red small widgets with logo</td>
-        <td>10</td>
-        <td class="right">$7.00</td>
-        <td class="bold">$35.00</td>
+        <td style="text-align: center;">10</td>
+        <td class="right" style="text-align: center;">$7.00</td>
+        <td class="bold" style="text-align: center;">$35.00</td>
       </tr>
     </tbody>
   </table>
@@ -160,17 +160,21 @@
   <table class="line-items-container has-bottom-border">
     <thead>
       <tr>
-        <th>공급가액</th>
-        <th>세액</th>
-        <th>총 합계금액</th>
+      	<th style="font-size: medium;">거래일자</th>
+        <th style="font-size: medium;">공급가액</th>
+        <th style="font-size: medium;">세액</th>
+        <th style="font-size: medium;">총 합계금액</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="payment-info">
+         <td class="payment-info" style="font-size: medium;">
+          <div><input type="date"></div>
+        </td>
+        <td class="payment-info" style="font-size: medium;">
           <div>2,000</div>
         </td>
-        <td class="payment-info">
+        <td class="payment-info" style="font-size: medium;">
           <div>10%</div>
         </td>
         <td class="large">
@@ -194,8 +198,6 @@
 
 </div>
 
-<script type="text/javascript">
-  load(document.querySelector('.web-container'), './invoice.html');
-</script>
+
 
 </body></html>
