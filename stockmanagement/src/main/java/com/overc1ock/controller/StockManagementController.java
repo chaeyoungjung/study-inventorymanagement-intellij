@@ -41,24 +41,24 @@ public class StockManagementController {
 	//입고처리(마감)
 	@GetMapping("/inboundmain")
 	public void inboundmain() {
-		log.info("*******************get 입고처리(마감) 시작페이지 controller**********************");
+		log.info("get 입고처리(마감) 메인페이지 controller");
 	}
 	
 	@GetMapping("/inboundwork")
 	public void inboundwork() {
-		log.info("*******************get 입고처리(마감) 발주품목페이지 controller**********************");
+		log.info("get 입고처리(마감) 입고처리페이지 controller");
 	}
 	
 	//거래명세서 발행
 	@GetMapping("/transactionstatementmain")
 	public void transactionstatementmain(Model model, Criteria cri) {
-		log.info("*******************get 거래명세서 시작페이지 controller**********************");
+		log.info("get 거래명세서 메인페이지 요청 controller");
 		model.addAttribute("poList", tsService.getPurchaseOrderListAtTransactionStatement(cri));
 	}
 	
 	@GetMapping("/transactionstatement")
 	public void transactionstatement(Model model, Integer po_code) {
-		log.info("*******************get 거래명세서 발행페이지 controller**********************");
+		log.info("get 거래명세서 발행페이지 요청 controller");
 		
 		List<TransactionStatementVO> list = tsService.getTransactionStatement(po_code);
 		
@@ -79,7 +79,7 @@ public class StockManagementController {
 	
 	@PostMapping("/inputtransactionstatement")
 	public String inputtransactionstatement(RequestTransactionStatementDTO dto) {
-		log.info("*******************post 거래명세서 등록요청 controller**********************");
+		log.info("post 거래명세서 등록요청 controller");
 		log.info(dto);
 		tsService.insertTransactionStatement(dto);
 		return "redirect:/stockmanagement/transactionstatement?po_code="+dto.getPo_code();
@@ -87,7 +87,7 @@ public class StockManagementController {
 	
 	@PostMapping("/deletetransactionstatement")
 	public String transactionstatement(Integer po_code) {
-		log.info("*******************post 거래명세서 삭제요청 controller**********************");
+		log.info("post 거래명세서 삭제요청 controller");
 		tsService.deleteTransactionStatement(po_code);
 		return "redirect:/stockmanagement/transactionstatementmain";
 	}
@@ -95,7 +95,7 @@ public class StockManagementController {
 	//출고처리
 	@GetMapping("/outbound")
 	public void outbound(Model model,Criteria cri) {
-		log.info("*******************get 출고처리 controller**********************");
+		log.info("get 출고처리 요청 controller");
 //		model.addAttribute("obList", observice.getOutboundList());
 		log.info(cri);
 		model.addAttribute("obList", obService.getOutboundListWithCriteria(cri));
@@ -104,7 +104,7 @@ public class StockManagementController {
 	
 	@PostMapping("/outbound")
 	public String outbound(OutBoundVO outBoundVO, Criteria cri) {
-		log.info("*******************post 출고처리 controller**********************");
+		log.info("post 출고처리 출고등록 요청 controller");
 		List<OutBoundVO> list = new ArrayList<OutBoundVO>();
 		for (OutBoundVO vo : outBoundVO.getOutBoundVOList()) {
 			if (vo.getAmount() != null && vo.getDate() != null) {
@@ -123,7 +123,7 @@ public class StockManagementController {
 	//재고산출
 	@GetMapping("/stockcalculation")
 	public void stockcalculation(Model model, Criteria cri) {
-		log.info("*******************get 재고산출 controller**********************");
+		log.info("get 재고산출 요청 controller");
 		log.info(cri);
 		if (cri.getStartDate() == null || cri.getStartDate().isEmpty()) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -135,6 +135,7 @@ public class StockManagementController {
 	
 	@PostMapping("/stockcalculation")
 	public String inputStock(ExistingStockVO vo, RedirectAttributes rttr) {
+		log.info("get 재고산출 기존재고등록 요청 controller");
 		scService.insertExistingStock(vo);
 		rttr.addFlashAttribute("svo", vo);
 		return "redirect:/stockmanagement/stockcalculation";
@@ -143,7 +144,7 @@ public class StockManagementController {
 	//재고금액현황관리리포트
 	@GetMapping("/report")
 	public void report() {
-		log.info("*******************get 재고금액현황관리리포트 controller**********************");
+		log.info("get 재고금액현황관리리포트 controller");
 		
 	}
 	

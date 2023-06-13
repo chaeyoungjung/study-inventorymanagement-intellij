@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%> 
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -179,7 +180,7 @@ select option[value=""][disabled] {
 								<td style="text-align: center;"><span>${list.inbound_amount}</span></td>
 								<td style="text-align: center;"><span>${list.outbound_amount}</span></td>
 								<td style="text-align: center;"><span>${list.stock_amount}</span></td>
-								<td style="text-align: center;"><span>${list.supply_price}</span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.supply_price}" pattern="#,###"/></span></td>
 									</span></td>
 							</tr>
 						</c:forEach>
