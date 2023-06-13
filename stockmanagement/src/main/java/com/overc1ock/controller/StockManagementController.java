@@ -16,11 +16,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.ExistingStockVO;
+import com.overc1ock.domain.InBoundVO;
 import com.overc1ock.domain.OutBoundVO;
+import com.overc1ock.domain.ProcurementPlanVO;
 import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.domain.RequestTransactionStatementDTO;
 import com.overc1ock.domain.TransactionInfoVO;
 import com.overc1ock.domain.TransactionStatementVO;
+import com.overc1ock.service.InboundService;
 import com.overc1ock.service.OutBoundService;
 import com.overc1ock.service.StockCalculationService;
 import com.overc1ock.service.TransactionStatementService;
@@ -37,16 +40,28 @@ public class StockManagementController {
 	OutBoundService obService;
 	StockCalculationService scService;
 	TransactionStatementService tsService;
+	InboundService ibService;
 	
 	//입고처리(마감)
 	@GetMapping("/inboundmain")
-	public void inboundmain() {
+	public void inboundmain(Model model,Criteria cri) {
 		log.info("get 입고처리(마감) 메인페이지 controller");
+		model.addAttribute("poList", ibService.getPurchaseOrderListAtInbound(cri));
 	}
 	
 	@GetMapping("/inboundwork")
-	public void inboundwork() {
+	public void inboundwork(Model model, Integer po_code) {
 		log.info("get 입고처리(마감) 입고처리페이지 controller");
+		List<ProcurementPlanVO> list=ibService.getOrderItemList(po_code);
+		model.addAttribute("supplier", list.get(0).getSupplier());
+		model.addAttribute("oiList", list);
+		model.addAttribute("ppList", ibService.getProcurementPlanList(po_code));
+		model.addAttribute("po_code", po_code);
+	}
+	
+	@PostMapping("/insertinbound")
+	public void insertinbound(InBoundVO vo) {
+		
 	}
 	
 	//거래명세서 발행
