@@ -3,24 +3,17 @@ package com.overc1ock.domain;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
 @Data
-public class TransactionStatementVO {
+@Component
+public class TransactionStatementVO extends TransactionInfoVO {
 	
 	private String item_name;
 	private Integer amount;
 	private Integer price;
-	private String subcontractor_name;
-	private String subcontractor_address;
-	private String subcontractor_tel;
-	private String subcontractor_person;
-	private String subcontractor_email;
-	private String acceptor;
-	
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date deal_date;
 	
 	
 

@@ -135,6 +135,7 @@ public class StockManagementMapperTests {
 		Criteria cri = new Criteria();
 		cri.setStartDate("2023-06-01");
 		cri.setEndDate("2023-06-03");
+		cri.setWord("유");
 		mapper.getPurchaseOrderListAtInbound(cri).forEach(vo -> log.info(vo));
 	}
 	
@@ -175,8 +176,9 @@ public class StockManagementMapperTests {
 	@Test
 	public void testGetPurchaseOrderListAtTransactionStatement() {
 		Criteria cri = new Criteria();
-		cri.setStartDate("2023-06-01");
-		cri.setEndDate("2023-06-03");
+//		cri.setStartDate("2023-06-01");
+//		cri.setEndDate("2023-06-03");
+//		cri.setWord("유");
 		mapper.getPurchaseOrderListAtTransactionStatement(cri).forEach(vo -> log.info(vo));
 	}
 	

@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping("/stockmanagement/api/*")
+@RequestMapping("stockmanagement/api/*")
 @Log4j
 @AllArgsConstructor
 public class APIController {	

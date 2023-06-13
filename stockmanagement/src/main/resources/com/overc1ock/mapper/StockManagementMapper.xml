@@ -292,6 +292,9 @@ from (WITH RECURSIVE CTE  AS (
 		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
 			and po_date between DATE(#{startDate}) and DATE(#{endDate})+1 
 		</if>
+		<if test="word != null and word != ''">
+	    	AND subcontractor_name like concat('%',#{word},'%')
+		</if>
 		group by po_code, subcontractor_name,po_date order by po_date
     </select>
 
@@ -328,9 +331,16 @@ from (WITH RECURSIVE CTE  AS (
  	<select id="getPurchaseOrderListAtTransactionStatement" resultType="com.overc1ock.domain.PurchaseOrderVO">
        select po_code, subcontractor_name supplier,po_date,ifnull(ts_save,-1) save from purchase_order
        left join transaction_statement using(po_code) join contract_has_purchase_order using(po_code) join contract using(contract_code)
-       		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+       	<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
 			where po_date between DATE(#{startDate}) and DATE(#{endDate})+1 
 		</if>
+		<if test="(word != null and word != '') and (startDate != null and startDate != '' and endDate != null and endDate != '')">
+	    	AND subcontractor_name like concat('%',#{word},'%')
+		</if>
+		<if test="(word != null and word != '') and (startDate == null or startDate == '' or endDate == null or endDate == '')">
+	    	where subcontractor_name like concat('%',#{word},'%')
+		</if>
+		
        group by po_code, subcontractor_name,po_date, save
 		order by po_date
  	</select>

@@ -49,9 +49,9 @@ select option[value=""][disabled] {
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inboundintro" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inboundmain" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="transactionstatement"
+							class="nav-link" href="transactionstatementmain"
 							id="transactionStatement">거래명세서 발행</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="outbound" id="outbound">출고처리</a></li>

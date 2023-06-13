@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <!DOCTYPE html>
 <html>
@@ -23,7 +24,7 @@
 <link rel="stylesheet" href="/resources/css/custom.css" type="text/css" />
 <link rel="stylesheet" href="/resources/css/core/flag-icon.min.css"
 	type="text/css" />
-<title>입고처리(마감)</title>
+<title>거래명세서 발행</title>
 <script type="text/javascript" src="/resources/js/navbar-scripts.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
@@ -45,10 +46,10 @@
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inboundintro" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inboundmain" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="transactionstatement" id="transactionStatement">거래명세서 발행</a>
-						</li>
+							class="nav-link" href="transactionstatementmain"
+							id="transactionStatement">거래명세서 발행</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="outbound" id="outbound">출고처리</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
@@ -90,12 +91,12 @@
 					<div class="card-header">
 						<b>구매발주서 조회</b>
 					</div>
-					<form action="outbound">
+					<form action="transactionstatementmain">
 						<div class="card-body">
 							<div class="row g-3">
 								<div class="col-md-3">
 									<div class="input-group mb-3">
-										<span class="input-group-text">생산일 (From)</span> <input
+										<span class="input-group-text">등록일 (From)</span> <input
 											type="date" id="startDate" class="form-control datepicker"
 											name="startDate" aria-label="Reported Date (From)"> <span
 											class="input-group-text"><img
@@ -106,7 +107,7 @@
 								</div>
 								<div class="col-md-3">
 									<div class="input-group mb-3">
-										<span class="input-group-text">생산일 (To)</span> <input
+										<span class="input-group-text">등록일 (To)</span> <input
 											type="date" id="endDate" class="form-control datepicker"
 											name="endDate" aria-label="Reported Date (To)"> <span
 											class="input-group-text"><img
@@ -122,8 +123,7 @@
 									</div>
 								</div>
 								<div class="col-md-3">
-									<button type="submit" class="btn btn-primary"
-										onclick="search()">조회</button>
+									<button type="submit" class="btn btn-primary">조회</button>
 								</div>
 							</div>
 						</div>
@@ -147,88 +147,59 @@
 						d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
 		                </symbol>
 		            </svg>
-				<form action="outbound" method="post">
+		            
+				<form method="post" action="deletetransactionstatement" >
 					<table id='myTable'
 						class="table table-bordered table-striped table-hover caption-top">
 						<caption style="color: black;">
 							<b>구매발주서 목록</b>
 						</caption>
+						<button type="button" class="btn btn-primary"
+							style="position: absolute; left: 1020px;" onclick=transactionstatement()>거래명세서 발행</button>
 						<button type="submit" class="btn btn-primary"
-							style="position: absolute; left: 1220px;">입고처리</button>
+							style="position: absolute; left: 1170px; background-color: red; border-color: red;">거래명세서
+							삭제</button>
 						<thead class="table-dark">
 							<tr>
 								<th scope="col" style="text-align: center;">선택</th>
-								<th scope="col" style="text-align: center;">순번</th>
 								<th scope="col" style="text-align: center;">문서번호</th>
 								<th scope="col" style="text-align: center;">협력업체</th>
 								<th scope="col" style="text-align: center;">등록일</th>
+								<th scope="col" style="text-align: center;">거래명세서 저장여부</th>
 							</tr>
 						</thead>
 						<tbody>
-							
-							
+
+							<c:forEach var="list" items="${poList}">
 								<tr>
-									<td style="text-align: center;"><input type="radio" name="po"></td>
-									<td style="text-align: center;">1</td>
-									<td style="text-align: center;"><span>1</span></td>
-									<td style="text-align: center;"><span>test품목1</span></td>
-									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
+									<td style="text-align: center;"><input type="radio"
+										name="po_code" value=${list.po_code}></td>
+									<td style="text-align: center;"><span>${list.po_code}</span></td>
+									<td style="text-align: center;"><span>${list.supplier}</span></td>
+									<td style="text-align: center;"><span><fmt:formatDate
+												value="${list.po_date}" pattern="yyyy-MM-dd HH:mm:ss(E)" /></span></td>
+									<td style="text-align: center;"><span> <c:if
+												test="${list.save == -1}">미저장</c:if> <c:if
+												test="${list.save != -1}">저장완료</c:if></span></td>
 								</tr>
-								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
-								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
-								<tr>
-									<td style="text-align: center;"><input type="radio" name="po"></td>
-									<td style="text-align: center;">1</td>
-									<td style="text-align: center;"><span>1</span></td>
-									<td style="text-align: center;"><span>test품목1</span></td>
-									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
-								</tr>
-								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
-								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
-								<tr>
-									<td style="text-align: center;"><input type="radio" name="po"></td>
-									<td style="text-align: center;">1</td>
-									<td style="text-align: center;"><span>1</span></td>
-									<td style="text-align: center;"><span>test품목1</span></td>
-									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
-								</tr>
-								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
-								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
-								<tr>
-									<td style="text-align: center;"><input type="radio" name="po"></td>
-									<td style="text-align: center;">1</td>
-									<td style="text-align: center;"><span>1</span></td>
-									<td style="text-align: center;"><span>test품목1</span></td>
-									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
-								</tr>
-								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
-								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
-								<tr>
-									<td style="text-align: center;"><input type="radio" name="po"></td>
-									<td style="text-align: center;">1</td>
-									<td style="text-align: center;"><span>1</span></td>
-									<td style="text-align: center;"><span>test품목1</span></td>
-									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
-								</tr>
-								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
-								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
-					
-							
+							</c:forEach>
+
+
 						</tbody>
 					</table>
 				</form>
 			</div>
 		</div>
 	</div>
-	<input type="hidden" value="0" id="flag">
+	<input type="hidden" value="1" id="flag">
 	<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
 	<script src="/resources/js/core/bootstrap-5.min.js"
 		type="text/javascript"></script>
 	<script>
-		if (document.getElementById("flag").value == 0) {
-			document.getElementById("inbound").style.backgroundColor = "#fff";
-			document.getElementById("inbound").style.color = "#000000";
-			document.getElementById("inbound").style.fontWeight = "bold";
+		if (document.getElementById("flag").value == 1) {
+			document.getElementById("transactionStatement").style.backgroundColor = "#fff";
+			document.getElementById("transactionStatement").style.color = "#000000";
+			document.getElementById("transactionStatement").style.fontWeight = "bold";
 			document.getElementById("stock").style.backgroundColor = "#fff";
 			document.getElementById("stock").style.color = "#000000";
 			document.getElementById("stock").style.fontWeight = "bold";
@@ -237,42 +208,38 @@
 	<script>
 		$(document).ready(function() {
 			$('#startDate').change(function() {
-				if ($('#startDate').val() != ''){
+				if ($('#startDate').val() != '') {
 					$('#endDate').attr('required', true);
 					console.log("시작일 값 있음");
-				}
-				else{
+				} else {
 					$('#endDate').attr('required', false);
 					console.log("시작일 값 없음");
 				}
 			});
 			$('#endDate').change(function() {
-				if ($('#endDate').val() != ''){
+				if ($('#endDate').val() != '') {
 					$('#startDate').attr('required', true);
 					console.log("종료일 값 있음");
-				}
-				else{
+				} else {
 					$('#startDate').attr('required', false);
 					console.log("종료일 값 없음");
 				}
 			});
-			
-			$(document).on("change",'#amount',function() {
-				if ($('#amount').val() != ''){
+
+			$(document).on("change", '#amount', function() {
+				if ($('#amount').val() != '') {
 					$('#date').attr('required', true);
 					console.log("출고량 값 있음");
-				}
-				else{
+				} else {
 					$('#date').attr('required', false);
 					console.log("출고량 값 없음");
 				}
 			});
-			$(document).on("change",'#date',function() {
-				if ($('#date').val() != ''){
+			$(document).on("change", '#date', function() {
+				if ($('#date').val() != '') {
 					$('#amount').attr('required', true);
 					console.log("출고일 값 있음");
-				}
-				else{
+				} else {
 					$('#amount').attr('required', false);
 					console.log("출고일 값 없음");
 				}
@@ -280,6 +247,22 @@
 
 
 		});
+	</script>
+	<script>
+	var po_data=0;
+	$(document).on("change", 'input[type=radio][name="po_code"]', function() {
+		po_data=$('input[name=po_code]:checked').val();
+		console.log(po_data);
+	});
+	
+	function transactionstatement(){
+		var newForm=$('<form></form>')
+		newForm.attr("action","transactionstatement");
+		newForm.append($('<input/>',{type:'hidden', name:'po_code', value:po_data}))
+		newForm.appendTo('body')
+		
+		newForm.submit();
+	}
 	</script>
 
 </body>

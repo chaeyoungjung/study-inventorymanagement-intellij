@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,8 +11,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
 <meta name="author" content="Suraj">
-<!--meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/-->
+<!--meta name="_csrf" th:content=""/>
+    <meta name="_csrf_header" th:content=""/-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="/resources/css/custom.css" type="text/css" />
 <link rel="stylesheet" href="/resources/css/core/flag-icon.min.css"
 	type="text/css" />
-<title>출고처리</title>
+<title>입고처리(마감)</title>
 <script type="text/javascript" src="/resources/js/navbar-scripts.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
@@ -88,7 +88,7 @@
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
-						<b>생산계획 조회</b>
+						<b>구매발주서 조회</b>
 					</div>
 					<form action="outbound">
 						<div class="card-body">
@@ -116,15 +116,9 @@
 								</div>
 								<div class="col-md-3">
 									<div class="input-group mb-3">
-										<span class="input-group-text">제품명</span> <input type="text"
+										<span class="input-group-text">협력업체</span> <input type="text"
 											name="word" list="productName"
 											style="border: 1px solid #ced4da;">
-										<datalist id="productName"
-											style="border: 1px solid #DBE0E4;">
-											<c:forEach var="list" items="${pnList }">
-												<option value="${list.product_name }"></option>
-											</c:forEach>
-										</datalist>
 									</div>
 								</div>
 								<div class="col-md-3">
@@ -157,59 +151,84 @@
 					<table id='myTable'
 						class="table table-bordered table-striped table-hover caption-top">
 						<caption style="color: black;">
-							<b>생산계획 및 출고처리</b>
+							<b>구매발주서 목록</b>
 						</caption>
 						<button type="submit" class="btn btn-primary"
-							style="position: absolute; left: 1220px;">출고등록</button>
+							style="position: absolute; left: 1220px;">입고처리</button>
 						<thead class="table-dark">
 							<tr>
+								<th scope="col" style="text-align: center;">선택</th>
 								<th scope="col" style="text-align: center;">순번</th>
-								<th scope="col" style="text-align: center;">제품명</th>
-								<th scope="col" style="text-align: center;">품목코드</th>
-								<th scope="col" style="text-align: center;">품목명</th>
-								<th scope="col" style="text-align: center;">생산일</th>
-								<th scope="col" style="text-align: center;">소요량</th>
-								<th scope="col" style="text-align: center;">재고수량</th>
-								<th scope="col" style="text-align: center;">총 출고량</th>
-								<th scope="col" style="text-align: center;">출고수량</th>
-								<th scope="col" style="text-align: center;">출고일</th>
+								<th scope="col" style="text-align: center;">문서번호</th>
+								<th scope="col" style="text-align: center;">협력업체</th>
+								<th scope="col" style="text-align: center;">등록일</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:set value="0" var="no" />
-							<c:forEach var="list" items="${obList}">
+							
+							
 								<tr>
-									<td style="text-align: center;">${no = no+1}</td>
-									<td style="text-align: center;"><span>${list.product_name}</span></td>
-									<td style="text-align: center;"><span>${list.item_code}</span></td>
-									<td style="text-align: center;"><span>${list.item_name}</span></td>
-									<td style="text-align: center;"><span><fmt:formatDate
-												value="${list.production_date}"
-												pattern="yyyy-MM-dd(E)" /></span></td>
-									<td style="text-align: center;"><span>${list.consumption}</span></td>
-									<td style="text-align: center;"><span id="stockAmount">${list.stock_amount}</span></td>
-									<td style="text-align: center;"><span>${list.total_amount}</span></td>
-									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" ></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
-									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="date" name="outBoundVOList[${no-1}].date" id="date" ></c:if></td>
+									<td style="text-align: center;"><input type="radio" name="po"></td>
+									<td style="text-align: center;">1</td>
+									<td style="text-align: center;"><span>1</span></td>
+									<td style="text-align: center;"><span>test품목1</span></td>
+									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
 								</tr>
-								<input type="hidden" value="${list.iup_code}" name="outBoundVOList[${no-1}].iup_code">
-								<input type="hidden" value="${list.item_code}" name="outBoundVOList[${no-1}].item_code">
-							</c:forEach>
+								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
+								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
+								<tr>
+									<td style="text-align: center;"><input type="radio" name="po"></td>
+									<td style="text-align: center;">1</td>
+									<td style="text-align: center;"><span>1</span></td>
+									<td style="text-align: center;"><span>test품목1</span></td>
+									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
+								</tr>
+								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
+								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
+								<tr>
+									<td style="text-align: center;"><input type="radio" name="po"></td>
+									<td style="text-align: center;">1</td>
+									<td style="text-align: center;"><span>1</span></td>
+									<td style="text-align: center;"><span>test품목1</span></td>
+									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
+								</tr>
+								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
+								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
+								<tr>
+									<td style="text-align: center;"><input type="radio" name="po"></td>
+									<td style="text-align: center;">1</td>
+									<td style="text-align: center;"><span>1</span></td>
+									<td style="text-align: center;"><span>test품목1</span></td>
+									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
+								</tr>
+								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
+								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
+								<tr>
+									<td style="text-align: center;"><input type="radio" name="po"></td>
+									<td style="text-align: center;">1</td>
+									<td style="text-align: center;"><span>1</span></td>
+									<td style="text-align: center;"><span>test품목1</span></td>
+									<td style="text-align: center;"><span>2023-06-03 00:00:00(토)</span></td>
+								</tr>
+								<input type="hidden" value="1" name="outBoundVOList[0].iup_code">
+								<input type="hidden" value="1" name="outBoundVOList[0].item_code">
+					
+							
 						</tbody>
 					</table>
 				</form>
 			</div>
 		</div>
 	</div>
-	<input type="hidden" value="2" id="flag">
+	<input type="hidden" value="0" id="flag">
 	<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
 	<script src="/resources/js/core/bootstrap-5.min.js"
 		type="text/javascript"></script>
 	<script>
-		if (document.getElementById("flag").value == 2) {
-			document.getElementById("outbound").style.backgroundColor = "#fff";
-			document.getElementById("outbound").style.color = "#000000";
-			document.getElementById("outbound").style.fontWeight = "bold";
+		if (document.getElementById("flag").value == 0) {
+			document.getElementById("inbound").style.backgroundColor = "#fff";
+			document.getElementById("inbound").style.color = "#000000";
+			document.getElementById("inbound").style.fontWeight = "bold";
 			document.getElementById("stock").style.backgroundColor = "#fff";
 			document.getElementById("stock").style.color = "#000000";
 			document.getElementById("stock").style.fontWeight = "bold";

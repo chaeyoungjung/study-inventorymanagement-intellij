@@ -18,8 +18,12 @@ import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.ExistingStockVO;
 import com.overc1ock.domain.OutBoundVO;
 import com.overc1ock.domain.ProductionPlanVO;
+import com.overc1ock.domain.RequestTransactionStatementDTO;
+import com.overc1ock.domain.TransactionInfoVO;
+import com.overc1ock.domain.TransactionStatementVO;
 import com.overc1ock.service.OutBoundService;
 import com.overc1ock.service.StockCalculationService;
+import com.overc1ock.service.TransactionStatementService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -32,9 +36,11 @@ public class StockManagementController {
 	
 	OutBoundService obService;
 	StockCalculationService scService;
+	TransactionStatementService tsService;
 	
-	@GetMapping("/inboundintro")
-	public void inboundintro() {
+	//입고처리(마감)
+	@GetMapping("/inboundmain")
+	public void inboundmain() {
 		log.info("*******************get 입고처리(마감) 시작페이지 controller**********************");
 	}
 	
@@ -43,17 +49,50 @@ public class StockManagementController {
 		log.info("*******************get 입고처리(마감) 발주품목페이지 controller**********************");
 	}
 	
-	@GetMapping("/transactionstatement")
-	public void transactionstatement() {
+	//거래명세서 발행
+	@GetMapping("/transactionstatementmain")
+	public void transactionstatementmain(Model model, Criteria cri) {
 		log.info("*******************get 거래명세서 시작페이지 controller**********************");
+		model.addAttribute("poList", tsService.getPurchaseOrderListAtTransactionStatement(cri));
 	}
 	
-	@GetMapping("/statement")
-	public void statement() {
+	@GetMapping("/transactionstatement")
+	public void transactionstatement(Model model, Integer po_code) {
 		log.info("*******************get 거래명세서 발행페이지 controller**********************");
+		
+		List<TransactionStatementVO> list = tsService.getTransactionStatement(po_code);
+		
+		TransactionInfoVO vo = new TransactionInfoVO();
+		vo.setSubcontractor_person(list.get(0).getSubcontractor_person());
+		vo.setSubcontractor_name(list.get(0).getSubcontractor_name());
+		vo.setSubcontractor_address(list.get(0).getSubcontractor_address());
+		vo.setSubcontractor_email(list.get(0).getSubcontractor_email());
+		vo.setSubcontractor_tel(list.get(0).getSubcontractor_tel());
+		vo.setAcceptor(list.get(0).getAcceptor());
+		vo.setDeal_date(list.get(0).getDeal_date());
+		log.info(vo);
+		
+		model.addAttribute("tsList", list);
+		model.addAttribute("tsVO", vo);
+		model.addAttribute("po_code",po_code);
 	}
 	
+	@PostMapping("/inputtransactionstatement")
+	public String inputtransactionstatement(RequestTransactionStatementDTO dto) {
+		log.info("*******************post 거래명세서 등록요청 controller**********************");
+		log.info(dto);
+		tsService.insertTransactionStatement(dto);
+		return "redirect:/stockmanagement/transactionstatement?po_code="+dto.getPo_code();
+	}
 	
+	@PostMapping("/deletetransactionstatement")
+	public String transactionstatement(Integer po_code) {
+		log.info("*******************post 거래명세서 삭제요청 controller**********************");
+		tsService.deleteTransactionStatement(po_code);
+		return "redirect:/stockmanagement/transactionstatementmain";
+	}
+	
+	//출고처리
 	@GetMapping("/outbound")
 	public void outbound(Model model,Criteria cri) {
 		log.info("*******************get 출고처리 controller**********************");
@@ -81,7 +120,7 @@ public class StockManagementController {
 		return "redirect:/stockmanagement/outbound";
 	}
 	
-	
+	//재고산출
 	@GetMapping("/stockcalculation")
 	public void stockcalculation(Model model, Criteria cri) {
 		log.info("*******************get 재고산출 controller**********************");
@@ -101,6 +140,7 @@ public class StockManagementController {
 		return "redirect:/stockmanagement/stockcalculation";
 	}
 	
+	//재고금액현황관리리포트
 	@GetMapping("/report")
 	public void report() {
 		log.info("*******************get 재고금액현황관리리포트 controller**********************");
