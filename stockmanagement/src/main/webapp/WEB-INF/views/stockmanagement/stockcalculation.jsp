@@ -229,7 +229,7 @@ select option[value=""][disabled] {
 									<td style="text-align: center;"><span id="item_name"></span></td>
 									<td style="text-align: center;"><span id="item_amount"><input
 											type="number" style="width: 90px;" name="amount"></span></td>
-									<td id="input_btn"><button type="submit" id="saveModal"
+									<td ><button type="submit" id="saveModal"
 											class="btn btn-primary">등록</button></td>
 								</tr>
 							</tbody>
@@ -277,13 +277,13 @@ select option[value=""][disabled] {
 			            console.log("타입:"+typeof(data));
 			            if (data != '') {
 				            $("#item_name").text(data);
-				            $("#item_amount").html('<input type="number" style="width: 90px;" name="amount">');
-				            $("#input_btn").html('<button type="submit" id="saveModal" class="btn btn-primary">등록</button>');
+				            $("#item_amount").css('display','block');
+				            $("#saveModal").css('display','block');
 				            console.log("item name 태그에 넣어주기 > "+data);
 						}else{
 				            $("#item_name").text("품목없음");
-				            $("#item_amount").text("");
-				            $("#input_btn").text("");
+				            $("#item_amount").css('display','none');
+				            $("#saveModal").css('display','none');
 						}
 			        }
 			        
@@ -291,8 +291,8 @@ select option[value=""][disabled] {
 			}else{
 				console.log("item code 없음");
 				$("#item_name").text("");
-	            $("#item_amount").html('<input type="number" style="width: 90px;" name="amount">');
-	            $("#input_btn").html('<button type="submit" id="saveModal" class="btn btn-primary">등록</button>');
+	            $("#item_amount").css('display','block');
+	            $("#saveModal").css('display','block');
 
 			}
 		});

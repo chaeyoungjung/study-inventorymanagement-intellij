@@ -78,7 +78,7 @@
 					<td class="sub_title_left"><strong>인수자 : </strong></td>
 					<td class="my_content"><c:if test="${tsVO.acceptor != null}">${tsVO.acceptor}</c:if>
 						<c:if test="${tsVO.acceptor == null}">
-							<input type="text" name="person">
+							<input type="text" name="person" required>
 						</c:if></td>
 					<td class="sub_title_right"><strong>담당자 성명 : </strong></td>
 					<td class="my_content">${tsVO.subcontractor_person}</td>
@@ -139,7 +139,7 @@
 										pattern="yyyy-MM-dd (E)" />
 								</c:if>
 								<c:if test="${tsVO.deal_date == null}">
-									<input type="date" name="date">
+									<input type="date" name="date" id="date" required>
 								</c:if>
 							</div>
 						</td>
@@ -177,12 +177,14 @@
 						src="https://github.com/anvilco/html-pdf-invoice-template/raw/main/img/heart.png"
 						alt="heart"> <span>Thank you!</span>
 				</div>
-				<input type="hidden" name=po_code value="${po_code}">
+				<input type="hidden" name="po_code" value="${po_code}">
 			</div>
 		</div>
 	</form>
 
-
+<script>
+	document.getElementById('date').valueAsDate = new Date();
+</script>
 
 
 </body>
