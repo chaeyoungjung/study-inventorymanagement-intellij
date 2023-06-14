@@ -166,7 +166,7 @@
 				<div class="footer-info">
 					<c:if test="${tsVO.acceptor != null}">
 
-				      <button onclick="return window.print()">출력</button> |
+				      <button type="button" onclick="return window.print()">출력</button> |
 				     </c:if>
 					<c:if test="${tsVO.acceptor == null}">
 						<button type="submit">저장</button> |</c:if>
