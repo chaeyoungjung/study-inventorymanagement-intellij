@@ -8,6 +8,7 @@
 <!-- 출고처리 -->
 
 	<select id="getOutboundList" resultType="com.overc1ock.domain.ProductionPlanVO">
+	        <![CDATA[
 		select product_name,item_code,item_name,production_date,consumption,(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0)) stock_amount,ifnull(goq,0) total_amount,iup_code 
 		from (select * from item_use_plan join products_production_plan using(ppp_code)) p 
 		join item using(item_code) 
@@ -15,11 +16,13 @@
         left outer join (SELECT item_code, sum(outbound_quantity) oq FROM outbound group by item_code) o using(item_code)
         left outer join (SELECT item_code, sum(es_quantity) eq FROM existing_stock group by item_code) e using(item_code)
         left outer join (SELECT iup_code, sum(outbound_quantity) goq FROM outbound group by iup_code) go using(iup_code)
-        where consumption != ifnull(goq,0)
+        where consumption > ifnull(goq,0)
+        ]]>
 	</select>
 	
 	
 	<select id="getOutboundListWithCriteria" resultType="com.overc1ock.domain.ProductionPlanVO">
+	<![CDATA[
 		select product_name,item_code,item_name,production_date,consumption,(ifnull(eq,0)+ifnull(iq,0)-ifnull(oq,0)) stock_amount,ifnull(goq,0) total_amount,iup_code 
 		from (select * from item_use_plan join products_production_plan using(ppp_code)) p 
 		join item using(item_code) 
@@ -27,7 +30,8 @@
         left outer join (SELECT item_code, sum(outbound_quantity) oq FROM outbound group by item_code) o using(item_code)
         left outer join (SELECT item_code, sum(es_quantity) eq FROM existing_stock group by item_code) e using(item_code)
         left outer join (SELECT iup_code, sum(outbound_quantity) goq FROM outbound group by iup_code) go using(iup_code)
-        where consumption != ifnull(goq,0)
+        where consumption > ifnull(goq,0)
+        ]]>
 			<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
 		    	AND production_date between date(#{startDate}) and date(#{endDate})+1
 			</if>
@@ -132,7 +136,7 @@ from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0
 													  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
 													  UNION ALL
 													  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
-													  WHERE DT < DATE_FORMAT('20230608', '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1, -- 기간내의 날짜 모두 출력
+													  WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1, -- 기간내의 날짜 모두 출력
 						(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 -- 모든 날짜(t1)와 재고가 있는 아이템 코드(t2)의 조인 >> from절에 ,로 두개 테이블을 적으면 크로스 조인(모든 경우의 수 row를 가진 테이블 출력, 날짜별 모든 품목코드를 가짐)
 		 left join 
 			 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, sum(es_quantity) 입고량 from existing_stock group by item_code,DATE_FORMAT(es_date, '%Y-%m-%d')
@@ -154,7 +158,7 @@ from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0
 		  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
 		  UNION ALL
 		  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
-		  WHERE DT < DATE_FORMAT('20230608', '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
+		  WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
 		  (select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1
 		 left join 
 		 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
@@ -290,15 +294,17 @@ from (WITH RECURSIVE CTE  AS (
 
 <!-- 입고처리(마감) -->
     <select id="getPurchaseOrderListAtInbound" resultType="com.overc1ock.domain.PurchaseOrderVO">
-	   select po_code, subcontractor_name supplier,po_date from purchase_order join contract_has_purchase_order using(po_code) join contract using(contract_code)
-	   where close_status=0 
+		      select po_code, subcontractor_name supplier,po_date, save from purchase_order join contract_has_purchase_order using(po_code) join contract using(contract_code)
+	   join (select po_code,if(c1=c2,1,0) save from (select po_code, count(*) c1 from procurement_plan group by po_code) t1
+	   left join (select po_code, count(pp_status) c2 from procurement_plan where pp_status =1 group by po_code) t2 using(po_code)) t1 using(po_code)
+	   where close_status=0
 		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
 			and po_date between DATE(#{startDate}) and DATE(#{endDate})+1 
 		</if>
 		<if test="word != null and word != ''">
 	    	AND subcontractor_name like concat('%',#{word},'%')
 		</if>
-		group by po_code, subcontractor_name,po_date order by po_date
+		 group by po_code, subcontractor_name,po_date, save order by save, po_date
     </select>
 
     <select id="getProcurementPlanList" resultType="com.overc1ock.domain.ProcurementPlanVO">

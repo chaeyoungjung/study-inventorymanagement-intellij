@@ -164,6 +164,8 @@
 								<th scope="col" style="text-align: center;">문서번호</th>
 								<th scope="col" style="text-align: center;">협력업체</th>
 								<th scope="col" style="text-align: center;">등록일</th>
+								<th scope="col" style="text-align: center;">전체 조달계획 완료여부</th>
+								
 							</tr>
 						</thead>
 						<tbody>
@@ -174,6 +176,9 @@
 									<td style="text-align: center;"><span>${list.supplier}</span></td>
 									<td style="text-align: center;"><span><fmt:formatDate
 												value="${list.po_date}" pattern="yyyy-MM-dd HH:mm:ss(E)" /></span></td>
+									<td style="text-align: center;"><span> <c:if
+												test="${list.save == 0}">미완료</c:if> <c:if
+												test="${list.save == 1}">모두 완료</c:if></span></td>
 								</tr>
 								</c:forEach>
 					
