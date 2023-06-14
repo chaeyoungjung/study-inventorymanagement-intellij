@@ -311,17 +311,18 @@ from (WITH RECURSIVE CTE  AS (
 		t1 join item using(item_code) where po_code = #{po_code} order by item_code
     </select>
     
-    <insert id="insertInbound" parameterType="java.util.List">
-    	<foreach collection="list" item="vo" separator=";">
+    <insert id="insertInbound" parameterType="com.overc1ock.domain.InBoundVO">
     	insert into inbound(inbound_quantity,arrival_date,item_code,po_code)
-    		values(#{vo.amount},#{vo.date},#{vo.item_code},#{vo.po_code})
-    	</foreach>
+    		values(#{amount},#{date},#{item_code},#{po_code})
     </insert>
     
-    <update id="updateProcurementPlanStatus">
-    	update procurement_plan set pp_status = 1 where po_code in (select t1.po_code from (select * from procurement_plan join item_use_plan using(iup_code) join purchase_order using(po_code)) t1
-		left join inbound t2 on t1.po_code=t2.po_code and t1.item_code=t2.item_code
-		where consumption = inbound_quantity)
+    <update id="updateProcurementPlanStatus" parameterType="com.overc1ock.domain.InBoundVO">
+		update procurement_plan set pp_status = 1 where po_code = (select t1.po_code from (select 
+		* from procurement_plan join item_use_plan using(iup_code) join purchase_order using(po_code)) 
+		t1 left join inbound t2 on t1.po_code=t2.po_code and t1.item_code=t2.item_code where consumption 
+		= inbound_quantity and t1.item_code = #{item_code}) and iup_code=(select iup_code from (select * from procurement_plan join item_use_plan using(iup_code) join purchase_order using(po_code)) t1
+				join inbound t2 on t1.po_code=t2.po_code and t1.item_code=t2.item_code
+				where consumption = inbound_quantity and t1.item_code=#{item_code})
     </update>
     
  <!-- 거래명세서 발행 -->
@@ -338,7 +339,7 @@ from (WITH RECURSIVE CTE  AS (
 	    	where subcontractor_name like concat('%',#{word},'%')
 		</if>
 		
-       group b) po_code, subcontractor_name,po_date, save
+       group by po_code, subcontractor_name,po_date, save
 		order by po_date
  	</select>
  	

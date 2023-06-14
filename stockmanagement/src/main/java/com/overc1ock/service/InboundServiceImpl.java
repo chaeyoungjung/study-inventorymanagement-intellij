@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.InBoundVO;
@@ -40,7 +41,11 @@ public class InboundServiceImpl implements InboundService {
 	}
 
 	@Override
-	public Integer insertInbound(List<InBoundVO> list) {
+	@Transactional
+	public Integer insertInbound(InBoundVO vo) {
+		log.info("입고처리(마감) 입고등록 요청 서비스"); 
+		mapper.insertInbound(vo);
+		mapper.updateProcurementPlanStatus(vo);
 		return null;
 	}
 

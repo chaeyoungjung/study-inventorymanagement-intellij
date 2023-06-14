@@ -151,25 +151,19 @@ public class StockManagementMapperTests {
 	
 	@Test
 	public void testInsertInbound() {
-		List<InBoundVO> list = new ArrayList<InBoundVO>();
 		InBoundVO vo1 = new InBoundVO();
 		vo1.setItem_code(1);
 		vo1.setPo_code(1);
 		vo1.setAmount(500);
 		vo1.setDate(new Date());
-		list.add(vo1);
-		InBoundVO vo2 = new InBoundVO();
-		vo2.setItem_code(2);
-		vo2.setPo_code(1);
-		vo2.setAmount(500);
-		vo2.setDate(new Date());
-		list.add(vo2);
-		log.info("insert inbound 수행결과 "+mapper.insertInbound(list));
+		log.info("insert inbound 수행결과 "+mapper.insertInbound(vo1));
 	}
 	
 	@Test
 	public void testUpdateProcurementPlanStatus() {
-		log.info(mapper.updateProcurementPlanStatus());
+		InBoundVO vo1 = new InBoundVO();
+		vo1.setItem_code(1);
+		log.info(mapper.updateProcurementPlanStatus(vo1));
 	}
 	
 	//거래명세서 발행

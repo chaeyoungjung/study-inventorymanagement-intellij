@@ -60,7 +60,20 @@ public class StockManagementController {
 	}
 	
 	@PostMapping("/insertinbound")
-	public void insertinbound(InBoundVO vo) {
+	public String insertinbound(InBoundVO inBoundVO) {
+		
+		log.info("post 입고처리(마감) 입고등록 요청 controller");
+		log.info(inBoundVO.getInBoundVOList());
+		for (InBoundVO vo : inBoundVO.getInBoundVOList()) {
+			if (vo.getAmount() != null && vo.getDate() != null) {
+				log.info(vo);
+				ibService.insertInbound(vo);
+			}
+		}
+		List<InBoundVO> list = inBoundVO.getInBoundVOList();
+		
+		return "redirect:/stockmanagement/inboundwork?po_code="+list.get(0).getPo_code();
+		
 		
 	}
 	

@@ -84,14 +84,14 @@
 		</div>
 	</div>
 	<div style="position: relative;">
-		<form action="insertInbound" method="post">
+		<form action="insertinbound" method="post">
 			<div class="container"
 				style="position: absolute; left: 250px; width: 3000px;">
 				<button type="button" class="btn btn-primary"
 					style="position: relative; left: 1300px; background-color: rgb(29, 204, 81); border-color: rgb(29, 204, 81);"
 					data-bs-toggle="modal" data-bs-target="#newInvoiceModal"
 					id="modalbtn">조달계획조회</button>
-				<button type="button" class="btn btn-primary"
+				<button type="submit" class="btn btn-primary"
 					style="position: relative; left: 1300px;">입고등록</button>
 				<div class="wrap">
 					<div class="card" style="border-color: #FFFFFF;">
@@ -156,9 +156,9 @@
 												<span>미완료</span>
 										</td>
 										<td style="text-align: center;"><input type="number"
-											name="inBoundVOList[0].amount" id="amount"></td>
+											name="inBoundVOList[${no-1}].amount" id="amount"></td>
 										<td style="text-align: center;"><input type="date"
-											name="inBoundVOList[0].date" id="date"></td>
+											name="inBoundVOList[${no-1}].date" id="date"></td>
 									</c:if>
 									<c:if test="${list.pp_status == 1 }">
 										<td style="text-align: center;">
@@ -170,9 +170,9 @@
 									</c:if>
 								</tr>
 								<input type="hidden" value="${list.item_code }"
-									name="inBoundVOList[0].po_code">
+									name="inBoundVOList[${no-1}].item_code">
 								<input type="hidden" value="${po_code}"
-									name="inBoundVOList[0].item_code">
+									name="inBoundVOList[${no-1}].po_code">
 							</c:forEach>
 
 						</tbody>
