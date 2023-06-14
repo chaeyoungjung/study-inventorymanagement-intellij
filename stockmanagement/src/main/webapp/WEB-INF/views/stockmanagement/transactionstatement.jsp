@@ -165,10 +165,9 @@
 			<div class="footer">
 				<div class="footer-info">
 					<c:if test="${tsVO.acceptor != null}">
-						<button onclick="location.href='mailto:aa@aaa.com'">협력사
-							통보</button> |
-      <button onclick="return window.print()">출력</button> |
-     </c:if>
+
+				      <button onclick="return window.print()">출력</button> |
+				     </c:if>
 					<c:if test="${tsVO.acceptor == null}">
 						<button type="submit">저장</button> |</c:if>
 					<button type="button" onclick="location.href='/stockmanagement/transactionstatementmain'">돌아가기</button>
