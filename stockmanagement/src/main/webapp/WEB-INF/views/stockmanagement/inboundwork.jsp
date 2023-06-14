@@ -29,6 +29,8 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 	crossorigin="anonymous"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.9.1/jquery.tablesorter.min.js"></script>
 </head>
 <body>
 	<div>
@@ -85,12 +87,12 @@
 	</div>
 	<div style="position: relative;">
 		<form action="insertinbound" method="post">
-				<button type="button" class="btn btn-primary"
-					style="position: relative; left: 1355px; background-color: rgb(29, 204, 81); border-color: rgb(29, 204, 81);"
-					data-bs-toggle="modal" data-bs-target="#newInvoiceModal"
-					id="modalbtn">조달계획조회</button>
-				<button type="submit" class="btn btn-primary"
-					style="position: relative; left: 1355px;">입고등록</button>
+			<button type="button" class="btn btn-primary"
+				style="position: relative; left: 1355px; background-color: rgb(29, 204, 81); border-color: rgb(29, 204, 81);"
+				data-bs-toggle="modal" data-bs-target="#newInvoiceModal"
+				id="modalbtn">조달계획조회</button>
+			<button type="submit" class="btn btn-primary"
+				style="position: relative; left: 1355px;">입고등록</button>
 			<div class="container"
 				style="position: absolute; left: 250px; width: 3000px;">
 
@@ -153,27 +155,22 @@
 												value="${list.amount }" pattern="#,###" />
 									</span></td>
 									<c:if test="${list.pp_status == 0 }">
-										<td style="text-align: center;">
-												<span>미완료</span>
-										</td>
+										<td style="text-align: center;"><span>미완료</span></td>
 										<td style="text-align: center;"><input type="number"
 											name="inBoundVOList[${no-1}].amount" id="amount"></td>
 										<td style="text-align: center;"><input type="date"
 											name="inBoundVOList[${no-1}].date" id="date"></td>
 									</c:if>
 									<c:if test="${list.pp_status == 1 }">
-										<td style="text-align: center;">
-											<span>완료</span>
-										</td>
-										<td style="text-align: center;" colspan="2">
-											<span>입고완료</span>
+										<td style="text-align: center;"><span>완료</span></td>
+										<td style="text-align: center;" colspan="2"><span>입고완료</span>
 										</td>
 									</c:if>
+									<input type="hidden" value="${list.item_code }"
+										name="inBoundVOList[${no-1}].item_code">
+									<input type="hidden" value="${po_code}"
+										name="inBoundVOList[${no-1}].po_code">
 								</tr>
-								<input type="hidden" value="${list.item_code }"
-									name="inBoundVOList[${no-1}].item_code">
-								<input type="hidden" value="${po_code}"
-									name="inBoundVOList[${no-1}].po_code">
 							</c:forEach>
 
 						</tbody>
@@ -182,9 +179,9 @@
 			</div>
 		</form>
 		<div id="newInvoiceModal" class="modal fade" tabindex="-1"
-			aria-labelledby="newInvoiceModal" aria-hidden="true" >
+			aria-labelledby="newInvoiceModal" aria-hidden="true">
 			<form action="" method="post">
-				<div class="modal-dialog modal-lg" >
+				<div class="modal-dialog modal-lg">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title">조달계획조회</h5>
@@ -303,6 +300,14 @@
 		}); //로그인버튼을 누르면 모달창 생성 
 		$("#close").click(function() {
 			$("#newInvoiceModal").fadeOut(); //닫기를 누르면 모달창 사라짐
+		});
+	</script>
+	<script>
+		$(document).ready(function() {
+			$('#myModalTable').tablesorter();
+		});
+		$(document).ready(function() {
+			$('#myTable').tablesorter();
 		});
 	</script>
 

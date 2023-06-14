@@ -28,6 +28,7 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 	crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.9.1/jquery.tablesorter.min.js"></script>
 </head>
 <body>
 	<div>
@@ -191,9 +192,9 @@
 									<td style="text-align: center;"><span><fmt:formatNumber value="${list.total_amount}" pattern="#,###"/></span></td>
 									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" ></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
 									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="date" name="outBoundVOList[${no-1}].date" id="date" ></c:if></td>
-								</tr>
 								<input type="hidden" value="${list.iup_code}" name="outBoundVOList[${no-1}].iup_code">
 								<input type="hidden" value="${list.item_code}" name="outBoundVOList[${no-1}].item_code">
+								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
@@ -261,6 +262,11 @@
 
 
 		});
+	</script>
+	<script>
+	    $(document).ready(function() {
+	        $('#myTable').tablesorter();
+	      });
 	</script>
 
 </body>

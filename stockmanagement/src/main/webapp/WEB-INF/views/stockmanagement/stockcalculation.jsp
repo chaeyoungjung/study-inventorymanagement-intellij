@@ -28,6 +28,8 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 	crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.9.1/jquery.tablesorter.min.js"></script>
+  
 <style>
 select option[value=""][disabled] {
 	display: none;
@@ -305,6 +307,11 @@ select option[value=""][disabled] {
 		item_code = 0;
 		amount = 0;
 	}
+	</script>
+	<script>
+    $(document).ready(function() {
+        $('#myTable').tablesorter();
+      });
 	</script>
 </body>
 </html>
