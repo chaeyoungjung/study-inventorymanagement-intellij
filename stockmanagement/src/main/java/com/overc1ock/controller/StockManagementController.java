@@ -24,6 +24,7 @@ import com.overc1ock.domain.RequestTransactionStatementDTO;
 import com.overc1ock.domain.TransactionInfoVO;
 import com.overc1ock.domain.TransactionStatementVO;
 import com.overc1ock.service.InboundService;
+import com.overc1ock.service.MailService;
 import com.overc1ock.service.OutBoundService;
 import com.overc1ock.service.StockCalculationService;
 import com.overc1ock.service.TransactionStatementService;
@@ -41,6 +42,7 @@ public class StockManagementController {
 	StockCalculationService scService;
 	TransactionStatementService tsService;
 	InboundService ibService;
+	MailService mailservice;
 	
 	//입고처리(마감)
 	@GetMapping("/inboundmain")
@@ -64,11 +66,17 @@ public class StockManagementController {
 		
 		log.info("post 입고처리(마감) 입고등록 요청 controller");
 		log.info(inBoundVO.getInBoundVOList());
+		int count = 0;
 		for (InBoundVO vo : inBoundVO.getInBoundVOList()) {
 			if (vo.getAmount() != null && vo.getDate() != null) {
 				log.info(vo);
 				ibService.insertInbound(vo);
+				count++;
 			}
+		}
+		log.info("입고등록 작업한 횟수 : "+count);
+		if (count > 0) {
+			mailservice.mailSender(count);
 		}
 		List<InBoundVO> list = inBoundVO.getInBoundVOList();
 		

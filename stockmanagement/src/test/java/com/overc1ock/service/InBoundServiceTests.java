@@ -25,6 +25,7 @@ public class InBoundServiceTests {
 	@Autowired
 	InboundService service;
 	
+	
 	@Test
 	public void testInsertInbound() {
 		InBoundVO vo = new InBoundVO();
@@ -33,6 +34,7 @@ public class InBoundServiceTests {
 		vo.setAmount(2000);
 		vo.setItem_code(4);
 		service.insertInbound(vo);
+		
 	}
 	
 
