@@ -87,12 +87,12 @@ select option[value=""][disabled] {
 			<br />
 		</div>
 	</div>
+			<button type="button" class="btn btn-primary"
+				style="position: relative; left: 1440px;" data-bs-toggle="modal"
+				data-bs-target="#newInvoiceModal" id="modalbtn">기존재고등록</button>
 	<form action="stockcalculation" method="get">
 		<div class="container"
 			style="position: absolute; left: 250px; width: 3000px;">
-			<button type="button" class="btn btn-primary"
-				style="position: relative; left: 1300px;" data-bs-toggle="modal"
-				data-bs-target="#newInvoiceModal" id="modalbtn">기존재고등록</button>
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
@@ -177,9 +177,9 @@ select option[value=""][disabled] {
 								<td style="text-align: center;"><span>${list.standard}</span></td>
 								<td style="text-align: center;"><span>${list.material}</span></td>
 								<td style="text-align: center;"><span>${list.subcontractor_name}</span></td>
-								<td style="text-align: center;"><span>${list.inbound_amount}</span></td>
-								<td style="text-align: center;"><span>${list.outbound_amount}</span></td>
-								<td style="text-align: center;"><span>${list.stock_amount}</span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.inbound_amount}" pattern="#,###"/></span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.outbound_amount}" pattern="#,###"/></span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.stock_amount}" pattern="#,###"/></span></td>
 								<td style="text-align: center;"><span><fmt:formatNumber value="${list.supply_price}" pattern="#,###"/></span></td>
 									</span></td>
 							</tr>

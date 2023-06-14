@@ -85,14 +85,15 @@
 	</div>
 	<div style="position: relative;">
 		<form action="insertinbound" method="post">
-			<div class="container"
-				style="position: absolute; left: 250px; width: 3000px;">
 				<button type="button" class="btn btn-primary"
-					style="position: relative; left: 1300px; background-color: rgb(29, 204, 81); border-color: rgb(29, 204, 81);"
+					style="position: relative; left: 1355px; background-color: rgb(29, 204, 81); border-color: rgb(29, 204, 81);"
 					data-bs-toggle="modal" data-bs-target="#newInvoiceModal"
 					id="modalbtn">조달계획조회</button>
 				<button type="submit" class="btn btn-primary"
-					style="position: relative; left: 1300px;">입고등록</button>
+					style="position: relative; left: 1355px;">입고등록</button>
+			<div class="container"
+				style="position: absolute; left: 250px; width: 3000px;">
+
 				<div class="wrap">
 					<div class="card" style="border-color: #FFFFFF;">
 						<form action="outbound">

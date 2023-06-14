@@ -186,9 +186,9 @@
 									<td style="text-align: center;"><span><fmt:formatDate
 												value="${list.production_date}"
 												pattern="yyyy-MM-dd(E)" /></span></td>
-									<td style="text-align: center;"><span>${list.consumption}</span></td>
-									<td style="text-align: center;"><span id="stockAmount">${list.stock_amount}</span></td>
-									<td style="text-align: center;"><span>${list.total_amount}</span></td>
+									<td style="text-align: center;"><span><fmt:formatNumber value="${list.consumption}" pattern="#,###"/></span></td>
+									<td style="text-align: center;"><span id="stockAmount"><fmt:formatNumber value="${list.stock_amount}" pattern="#,###"/></span></td>
+									<td style="text-align: center;"><span><fmt:formatNumber value="${list.total_amount}" pattern="#,###"/></span></td>
 									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" ></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
 									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="date" name="outBoundVOList[${no-1}].date" id="date" ></c:if></td>
 								</tr>

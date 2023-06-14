@@ -171,7 +171,7 @@ public class StockManagementController {
 	
 	@PostMapping("/stockcalculation")
 	public String inputStock(ExistingStockVO vo, RedirectAttributes rttr) {
-		log.info("get 재고산출 기존재고등록 요청 controller");
+		log.info("post 재고산출 기존재고등록 요청 controller");
 		scService.insertExistingStock(vo);
 		rttr.addFlashAttribute("svo", vo);
 		return "redirect:/stockmanagement/stockcalculation";
