@@ -215,7 +215,7 @@ select option[value=""][disabled] {
 							<tbody>
 								<tr>
 									<td style="text-align: center;"><span> <input
-											type="number" style="width: 90px;" name="item_code" list="itemCode">
+											type="number" style="width: 90px;" name="item_code" list="itemCode" id="item_code">
 										<datalist id="itemCode"
 											style="border: 1px solid #DBE0E4;">
 											<c:forEach var="list" items="${icList}">
@@ -224,10 +224,10 @@ select option[value=""][disabled] {
 											
 										</datalist>
 									</span></td>
-									<td style="text-align: center;"><span></span></td>
-									<td style="text-align: center;"><span><input
+									<td style="text-align: center;"><span id="item_name"></span></td>
+									<td style="text-align: center;"><span id="item_amount"><input
 											type="number" style="width: 90px;" name="amount"></span></td>
-									<td><button type="submit" id="saveModal"
+									<td id="input_btn"><button type="submit" id="saveModal"
 											class="btn btn-primary">등록</button></td>
 								</tr>
 							</tbody>
@@ -260,6 +260,41 @@ select option[value=""][disabled] {
 		$("#close").click(function() {
 			$("#newInvoiceModal").fadeOut(); //닫기를 누르면 모달창 사라짐
 		});
+	</script>
+	<script>
+		$(document).on("keyup",'#item_code',function() {
+			if ($('#item_code').val() != ''){
+				var item_code = $('#item_code').val();
+				console.log("item code 있음 > "+item_code);
+			    $.ajax({
+			        type: 'get',
+			        url: '/stockmanagement/api/stockcalculationgetitemname?item_code='+item_code,
+			        contentType: 'text/plain; charset=utf-8',
+			        success: function(data, status, xhr){
+			            console.log("ajax 작동이 되나? ");
+			            console.log("타입:"+typeof(data));
+			            if (data != '') {
+				            $("#item_name").text(data);
+				            $("#item_amount").html('<input type="number" style="width: 90px;" name="amount">');
+				            $("#input_btn").html('<button type="submit" id="saveModal" class="btn btn-primary">등록</button>');
+				            console.log("item name 태그에 넣어주기 > "+data);
+						}else{
+				            $("#item_name").text("품목없음");
+				            $("#item_amount").text("");
+				            $("#input_btn").text("");
+						}
+			        }
+			        
+			    })
+			}else{
+				console.log("item code 없음");
+				$("#item_name").text("");
+	            $("#item_amount").html('<input type="number" style="width: 90px;" name="amount">');
+	            $("#input_btn").html('<button type="submit" id="saveModal" class="btn btn-primary">등록</button>');
+
+			}
+		});
+	
 	</script>
 	<script>
 	var item_code = "${svo.item_code}";

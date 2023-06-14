@@ -29,6 +29,7 @@ public interface StockManagementMapper {
 	
 	//재고산출
 	List<Integer> getItemCodeList();
+	String getItemName(Integer item_code);
 	List<StockCalculationVO> getStockCalculationList(Criteria cri);
 	Integer insertExistingStock(ExistingStockVO vo);
 	

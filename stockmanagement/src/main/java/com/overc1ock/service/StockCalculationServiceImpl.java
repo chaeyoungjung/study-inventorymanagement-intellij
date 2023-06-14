@@ -40,4 +40,10 @@ public class StockCalculationServiceImpl implements StockCalculationService {
 		return mapper.getItemCodeList();
 	}
 
+	@Override
+	public String getItemName(Integer item_code) {
+		log.info("품목코드에 해당하는 품목명 보여주기 서비스");
+		return mapper.getItemName(item_code);
+	}
+
 }

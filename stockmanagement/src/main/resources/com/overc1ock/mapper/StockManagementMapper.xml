@@ -238,6 +238,10 @@ order by
     	select item_code from item left join existing_stock using(item_code) where es_quantity is null
     </select>
     
+    <select id="getItemName" resultType="String">
+    	select item_name from item where item_code=#{item_code}
+    </select>
+    
     <select id = "getStockCalculationList" resultType="com.overc1ock.domain.StockCalculationVO">
     	<![CDATA[
       select item_code, item_name, standard, material, subcontractor_name, inbound_amount, outbound_amount, stock_amount, supply_price from (select 일자, t1.item_code item_code,item_name,standard,material,subcontractor_name,sum(ifnull(입고량,0)) over(partition by item_code order by 일자) inbound_amount,sum(ifnull(출고량,0)) over(partition by item_code order by 일자) outbound_amount,재고량 stock_amount,supply_price from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량
