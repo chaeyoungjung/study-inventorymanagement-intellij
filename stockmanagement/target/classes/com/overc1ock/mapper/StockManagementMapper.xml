@@ -258,8 +258,7 @@ from (WITH RECURSIVE CTE  AS (
       left join( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
       on t1.일자=t2.일자 and t1.item_code=t2.item_code) t2
       join (select i.item_code,subcontractor_name,supply_price,item_name,standard,material from
-      (select c.item_code, subcontractor_name, c.supply_price
-      from contract c join (select item_code, max(supply_price) supply_price from contract group by item_code) t1 on c.item_code=t1.item_code and c.supply_price=t1.supply_price) t1
+      (select item_code, max(subcontractor_name) subcontractor_name,max(supply_price) supply_price from contract group by item_code) t1
       join item i on t1.item_code=i.item_code) t1
 	  on t2.item_code=t1.item_code) t1
 		]]>
@@ -339,7 +338,7 @@ from (WITH RECURSIVE CTE  AS (
 	    	where subcontractor_name like concat('%',#{word},'%')
 		</if>
 		
-       group by po_code, subcontractor_name,po_date, save
+       group b) po_code, subcontractor_name,po_date, save
 		order by po_date
  	</select>
  	
