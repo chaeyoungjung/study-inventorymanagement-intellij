@@ -175,7 +175,7 @@
 									<td style="text-align: center;"><span>${list.po_code}</span></td>
 									<td style="text-align: center;"><span>${list.supplier}</span></td>
 									<td style="text-align: center;"><span><fmt:formatDate
-												value="${list.po_date}" pattern="yyyy-MM-dd HH:mm:ss(E)" /></span></td>
+												value="${list.po_date}" pattern="yyyy-MM-dd (E)" /></span></td>
 									<td style="text-align: center;"><span> <c:if
 												test="${list.save == 0}">미완료</c:if> <c:if
 												test="${list.save == 1}">모두 완료</c:if></span></td>
