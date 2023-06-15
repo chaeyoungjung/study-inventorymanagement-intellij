@@ -314,11 +314,11 @@ from (WITH RECURSIVE CTE  AS (
     </select>
     
     <select id="getOrderItemList" resultType="com.overc1ock.domain.ProcurementPlanVO">
-		select item_code, item_name, consumption amount,pp_status,procurement_date,subcontractor_name 
-		supplier from (select item_code, `process`, production_date, consumption,procurement_date,pp_status,contract_has_purchase_order.po_code, 
-		subcontractor_name from purchase_order join contract_has_purchase_order using(po_code) join contract using(contract_code) join (select * from procurement_plan 
-		join item_use_plan using(iup_code) join products_production_plan using(ppp_code)) t1 using(item_code)) 
-		t1 join item using(item_code) where po_code = #{po_code} order by item_code
+		select t1.item_code, item_name, consumption amount,pp_status,procurement_date,subcontractor_name 
+		supplier from contract_has_purchase_order join contract using(contract_code) join subcontractor using(subcontractor_name)
+         join (select * from item_use_plan join item using(item_code) join products_production_plan using(ppp_code) join procurement_plan using(iup_code)) t1 on t1.po_code=contract_has_purchase_order.po_code and t1.item_code=contract.item_code
+         where t1.po_code=#{po_code}
+         order by item_code
     </select>
     
     <insert id="insertInbound" parameterType="com.overc1ock.domain.InBoundVO">
