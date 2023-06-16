@@ -52,7 +52,7 @@ select option[value=""][disabled] {
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inboundmain" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="transactionstatementmain"
 							id="transactionStatement">거래명세서 발행</a></li>
@@ -89,9 +89,7 @@ select option[value=""][disabled] {
 			<br />
 		</div>
 	</div>
-			<button type="button" class="btn btn-primary"
-				style="position: relative; left: 1440px;" data-bs-toggle="modal"
-				data-bs-target="#newInvoiceModal" id="modalbtn">기존재고등록</button>
+
 	<form action="stockcalculation" method="get">
 		<div class="container"
 			style="position: absolute; left: 250px; width: 3000px;">
@@ -192,54 +190,7 @@ select option[value=""][disabled] {
 			</div>
 		</div>
 	</form>
-		<div id="newInvoiceModal" class="modal fade" tabindex="-1"
-			aria-labelledby="newInvoiceModal" aria-hidden="true">
 
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">기존재고등록</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close" id="close"></button>
-					</div>
-					<div id="invoiceModalBody" class="modal-body">
-						<table id='myModalTable'
-							class="table table-bordered table-striped table-hover caption-top">
-							<thead class="table-dark">
-								<tr>
-									<th scope="col" style="text-align: center;">품목코드</th>
-									<th scope="col" style="text-align: center;">품목명</th>
-									<th scope="col" style="text-align: center;">기존재고수량</th>
-									<th scope="col" style="text-align: center;"></th>
-								</tr>
-							</thead>
-							<form method = "post" action="">
-							<tbody>
-								<tr>
-									<td style="text-align: center;"><span> <input
-											type="number" style="width: 90px;" name="item_code" list="itemCode" id="item_code">
-										<datalist id="itemCode"
-											style="border: 1px solid #DBE0E4;">
-											<c:forEach var="list" items="${icList}">
-												<option value="${list}"></option>
-											</c:forEach>
-											
-										</datalist>
-									</span></td>
-									<td style="text-align: center;"><span id="item_name"></span></td>
-									<td style="text-align: center;"><span id="item_amount"><input
-											type="number" style="width: 90px;" name="amount"></span></td>
-									<td ><button type="submit" id="saveModal"
-											class="btn btn-primary">등록</button></td>
-								</tr>
-							</tbody>
-							</form>
-						</table>
-					</div>
-					<div class="modal-footer"></div>
-				</div>
-			</div>
-		</div>
 	<input type="hidden" value="3" id="flag">
 	<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
 	<script src="/resources/js/core/bootstrap-5.min.js"
@@ -255,59 +206,7 @@ select option[value=""][disabled] {
 
 		}
 	</script>
-	<script>
-		$("#modalbtn").click(function() {
-			$("#newInvoiceModal").fadeIn();
-		}); //로그인버튼을 누르면 모달창 생성 
-		$("#close").click(function() {
-			$("#newInvoiceModal").fadeOut(); //닫기를 누르면 모달창 사라짐
-		});
-	</script>
-	<script>
-		$(document).on("keyup",'#item_code',function() {
-			if ($('#item_code').val() != ''){
-				var item_code = $('#item_code').val();
-				console.log("item code 있음 > "+item_code);
-			    $.ajax({
-			        type: 'get',
-			        url: '/stockmanagement/api/stockcalculationgetitemname?item_code='+item_code,
-			        contentType: 'text/plain; charset=utf-8',
-			        success: function(data, status, xhr){
-			            console.log("ajax 작동이 되나? ");
-			            console.log("타입:"+typeof(data));
-			            if (data != '') {
-				            $("#item_name").text(data);
-				            $("#item_amount").css('display','block');
-				            $("#saveModal").css('display','block');
-				            console.log("item name 태그에 넣어주기 > "+data);
-						}else{
-				            $("#item_name").text("품목없음");
-				            $("#item_amount").css('display','none');
-				            $("#saveModal").css('display','none');
-						}
-			        }
-			        
-			    })
-			}else{
-				console.log("item code 없음");
-				$("#item_name").text("");
-	            $("#item_amount").css('display','block');
-	            $("#saveModal").css('display','block');
 
-			}
-		});
-	
-	</script>
-	<script>
-	var item_code = "${svo.item_code}";
-	var amount = "${svo.amount}";
-	console.log("컨트롤러에서 전달한 기존재고 정보 >> 품목코드: "+item_code+"기존재고 등록량: "+amount);
-	if(item_code != null && amount != null  && item_code != "" && amount != ""){
-		alert("품목코드 : "+item_code+"\n"+amount+"개의 기존재고 등록이 완료되었습니다.");
-		item_code = 0;
-		amount = 0;
-	}
-	</script>
 	<script>
     $(document).ready(function() {
         $('#myTable').tablesorter();

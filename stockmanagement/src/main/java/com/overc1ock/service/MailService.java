@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface MailService {
 	
-	public void mailSender(int count);
+	public void mailSender(List<Integer> pocodeList);
 
 }

@@ -1,5 +1,6 @@
 package com.overc1ock.service;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -18,7 +19,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MailServiceImpl implements MailService {
 
-	public void mailSender(int count) {
+	public void mailSender(List<Integer> pocodeList) {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.port", "587");
@@ -33,9 +34,13 @@ public class MailServiceImpl implements MailService {
 			}
 		});
 
+		String pocode = "";
+		for (Integer integer : pocodeList) {
+			pocode=pocode+integer+"번,";
+		}
 		String receiver = "mittest1231@gmail.com"; // 메일 받을 주소
 		String title = "입고처리(마감)완료의 건";
-		String content = "안녕하세요, 담당자님.<br/><br/>총 "+count+"건의 입고처리(마감) 업무가 완료되었습니다.<br/>구매발주서 마감을 위해 완료된 조달계획의 내역을 확인하시길 바랍니다.<br/><br/>감사합니다.";
+		String content = "안녕하세요, 담당자님.<br/><br/>현재 발주서 코드 "+pocode.substring(0, pocode.length()-1)+" 총 "+pocodeList.size()+"건에 대한 입고처리가 완료되었습니다.<br/>구매발주서 마감을 요청드립니다.<br/><br/>감사합니다.";
 		Message message = new MimeMessage(session);
 		try {
 			message.setFrom(new InternetAddress("mittest1231@gmail.com", "관리자", "utf-8"));

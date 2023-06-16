@@ -33,24 +33,12 @@ public class APIController {
 		return rService.chartDate(cri);
 	}
 	
-	@GetMapping("/chartitemcode")
-	public ChartReportVO getchartItemCode(Criteria cri) {
-		log.info("품목별 재고금액리포트 >>품목코드 restcontroller");
-
-		return rService.chartItemCode(cri);
-	}
 	
 	@GetMapping("/chartitemcategory")
 	public ChartReportVO getchartItemCategory(Criteria cri) {
 		log.info("품목별 재고금액리포트 >>품목군 restcontroller");
 		
 		return rService.chartItemCategory(cri);
-	}
-	
-	@GetMapping(value="/stockcalculationgetitemname", produces = "text/plain; charset=utf-8")
-	public String getItemName(Integer item_code) {
-		log.info("재고산출 >> 기존재고등록 시 품목명 조회 restcontroller");
-		return scService.getItemName(item_code);
 	}
 	
 

@@ -3,6 +3,7 @@ package com.overc1ock.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.overc1ock.domain.Criteria;
-import com.overc1ock.domain.ExistingStockVO;
 import com.overc1ock.domain.InBoundVO;
 import com.overc1ock.domain.OutBoundVO;
 import com.overc1ock.domain.ProcurementPlanVO;
@@ -45,20 +45,11 @@ public class StockManagementController {
 	MailService mailservice;
 	
 	//입고처리(마감)
-	@GetMapping("/inboundmain")
+	@GetMapping("/inbound")
 	public void inboundmain(Model model,Criteria cri) {
 		log.info("get 입고처리(마감) 메인페이지 controller");
-		model.addAttribute("poList", ibService.getPurchaseOrderListAtInbound(cri));
-	}
-	
-	@GetMapping("/inboundwork")
-	public void inboundwork(Model model, Integer po_code) {
-		log.info("get 입고처리(마감) 입고처리페이지 controller");
-		List<ProcurementPlanVO> list=ibService.getOrderItemList(po_code);
-		model.addAttribute("supplier", list.get(0).getSupplier());
-		model.addAttribute("oiList", list);
-		model.addAttribute("ppList", ibService.getProcurementPlanList(po_code));
-		model.addAttribute("po_code", po_code);
+		model.addAttribute("poList", ibService.getOrderItemList(cri));
+		model.addAttribute("cri",cri);
 	}
 	
 	@PostMapping("/insertinbound")
@@ -66,23 +57,24 @@ public class StockManagementController {
 		
 		log.info("post 입고처리(마감) 입고등록 요청 controller");
 		log.info(inBoundVO.getInBoundVOList());
-		int count = 0;
+		List<Integer> pocodeList = new ArrayList<Integer>();
 		for (InBoundVO vo : inBoundVO.getInBoundVOList()) {
 			if (vo.getAmount() != null && vo.getDate() != null) {
 				log.info(vo);
 				ibService.insertInbound(vo);
-				count++;
+				if (ibService.checkOrderList().contains(vo.getPo_code())) {
+					pocodeList.add(vo.getPo_code());
+				};
 			}
 		}
-		log.info("입고등록 작업한 횟수 : "+count);
-		if (count > 0) {
-			mailservice.mailSender(count);
+		Collections.sort(pocodeList);
+		log.info("모든 조달계획 완료된 구매발주서 : "+pocodeList);
+		if (pocodeList.size() > 0) {
+			mailservice.mailSender(pocodeList);
 		}
 		List<InBoundVO> list = inBoundVO.getInBoundVOList();
 		
-		return "redirect:/stockmanagement/inboundwork?po_code="+list.get(0).getPo_code();
-		
-		
+		return "redirect:/stockmanagement/inbound";
 	}
 	
 	//거래명세서 발행
@@ -166,16 +158,8 @@ public class StockManagementController {
 			cri.setStartDate(format.format(new Date())+"");
 		}
 		model.addAttribute("scList", scService.getStockCalculationList(cri));
-		model.addAttribute("icList", scService.getItemCodeList());
 	}
 	
-	@PostMapping("/stockcalculation")
-	public String inputStock(ExistingStockVO vo, RedirectAttributes rttr) {
-		log.info("post 재고산출 기존재고등록 요청 controller");
-		scService.insertExistingStock(vo);
-		rttr.addFlashAttribute("svo", vo);
-		return "redirect:/stockmanagement/stockcalculation";
-	}
 	
 	//재고금액현황관리리포트
 	@GetMapping("/report")

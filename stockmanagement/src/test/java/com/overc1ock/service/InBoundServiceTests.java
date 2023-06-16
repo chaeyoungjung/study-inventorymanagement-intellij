@@ -32,7 +32,7 @@ public class InBoundServiceTests {
 		vo.setDate(new Date());
 		vo.setPo_code(3);
 		vo.setAmount(2000);
-		vo.setItem_code(4);
+		vo.setItem_code("3");
 		service.insertInbound(vo);
 		
 	}

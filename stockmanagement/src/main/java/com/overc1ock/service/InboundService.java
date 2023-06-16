@@ -9,9 +9,8 @@ import com.overc1ock.domain.PurchaseOrderVO;
 
 public interface InboundService {
 	
-	List<PurchaseOrderVO> getPurchaseOrderListAtInbound(Criteria cri);
-	List<ProcurementPlanVO> getProcurementPlanList(Integer po_code);
-	List<ProcurementPlanVO> getOrderItemList(Integer po_code);
+	List<Integer> checkOrderList();
+	List<ProcurementPlanVO> getOrderItemList(Criteria cri);
 	Integer insertInbound(InBoundVO vo);
 
 }

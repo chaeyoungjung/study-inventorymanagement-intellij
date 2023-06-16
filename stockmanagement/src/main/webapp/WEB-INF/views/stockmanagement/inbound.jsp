@@ -48,7 +48,7 @@
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inboundmain" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="transactionstatementmain" id="transactionStatement">거래명세서 발행</a>
 						</li>
@@ -91,16 +91,16 @@
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
-						<b>구매발주서 조회</b>
+						<b>입고처리목록 조회</b>
 					</div>
-					<form action="inboundmain">
+					<form action="inbound">
 						<div class="card-body">
 							<div class="row g-3">
 								<div class="col-md-3">
 									<div class="input-group mb-3">
 										<span class="input-group-text">생산일 (From)</span> <input
 											type="date" id="startDate" class="form-control datepicker"
-											name="startDate" aria-label="Reported Date (From)"> <span
+											name="startDate" aria-label="Reported Date (From)" value="${cri.startDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span> <b
@@ -111,7 +111,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">생산일 (To)</span> <input
 											type="date" id="endDate" class="form-control datepicker"
-											name="endDate" aria-label="Reported Date (To)"> <span
+											name="endDate" aria-label="Reported Date (To)" value="${cri.endDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span>
@@ -121,7 +121,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">협력업체</span> <input type="text"
 											name="word" list="productName"
-											style="border: 1px solid #ced4da;">
+											style="border: 1px solid #ced4da; value="${cri.word}">
 									</div>
 								</div>
 								<div class="col-md-3">
@@ -150,39 +150,57 @@
 						d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
 		                </symbol>
 		            </svg>
-				<form action="inboundwork">
+				<form action="insertinbound" method="post">
 					<table id='myTable'
 						class="table table-bordered table-striped table-hover caption-top">
 						<caption style="color: black;">
-							<b>구매발주서 목록</b>
+							<b>입고처리 목록</b>
 						</caption>
 						<button type="submit" class="btn btn-primary"
 							style="position: absolute; left: 1220px;">입고처리</button>
 						<thead class="table-dark">
 							<tr>
-								<th scope="col" style="text-align: center;">선택</th>
-								<th scope="col" style="text-align: center;">문서번호</th>
+								<th scope="col" style="text-align: center;">순번</th>
+								<th scope="col" style="text-align: center;">품목코드</th>
+								<th scope="col" style="text-align: center;">품목명</th>
 								<th scope="col" style="text-align: center;">협력업체</th>
-								<th scope="col" style="text-align: center;">등록일</th>
-								<th scope="col" style="text-align: center;">전체 조달계획 완료여부</th>
-								
+								<th scope="col" style="text-align: center;">입고 예정 수량</th>
+								<th scope="col" style="text-align: center;">입고 예정일</th>
+								<th scope="col" style="text-align: center;">입고수량</th>
+								<th scope="col" style="text-align: center;">입고일</th>								
+								<th scope="col" style="text-align: center;">조달계획 완료여부</th>
 							</tr>
 						</thead>
 						<tbody>
+								<c:set var="no" value="0" />
 								<c:forEach var ="list" items="${poList}">
 								<tr>
-									<td style="text-align: center;"><input type="radio" name="po_code" value="${list.po_code}"></td>
-									<td style="text-align: center;"><span>${list.po_code}</span></td>
+									<td style="text-align: center;">${no=no+1 }</td>
+									<td style="text-align: center;"><span>${list.item_code }</span></td>
+									<td style="text-align: center;"><span>${list.item_name }</span></td>
 									<td style="text-align: center;"><span>${list.supplier}</span></td>
+									<td style="text-align: center;"><span> <fmt:formatNumber
+												value="${list.amount }" pattern="#,###" />
+									</span></td>
 									<td style="text-align: center;"><span><fmt:formatDate
-												value="${list.po_date}" pattern="yyyy-MM-dd (E)" /></span></td>
-									<td style="text-align: center;"><span> <c:if
-												test="${list.save == 0}">미완료</c:if> <c:if
-												test="${list.save == 1}">모두 완료</c:if></span></td>
+												value="${list.procurement_date}" pattern="yyyy-MM-dd (E)" /></span></td>
+									<c:if test="${list.pp_status == 0 }">
+										<td style="text-align: center;"><input type="number"
+											name="inBoundVOList[${no-1}].amount" id="amount"></td>
+										<td style="text-align: center;"><input type="date"
+											name="inBoundVOList[${no-1}].date" id="date"></td>
+										<td style="text-align: center;"><span>미완료</span></td>
+									</c:if>
+									<c:if test="${list.pp_status == 1 }">
+										<td style="text-align: center;" colspan="2"><span>입고완료</span></td>
+										<td style="text-align: center;"><span>완료</span></td>
+									</c:if>
+									<input type="hidden" value="${list.item_code }"
+										name="inBoundVOList[${no-1}].item_code">
+									<input type="hidden" value="${list.po_code}"
+										name="inBoundVOList[${no-1}].po_code">
 								</tr>
-								</c:forEach>
-					
-							
+								</c:forEach>							
 						</tbody>
 					</table>
 				</form>
@@ -255,6 +273,7 @@
 	        $('#myTable').tablesorter();
 	      });
 	</script>
+	
 
 </body>
 </html>

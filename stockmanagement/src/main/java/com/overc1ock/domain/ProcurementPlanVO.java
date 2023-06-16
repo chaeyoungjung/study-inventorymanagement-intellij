@@ -8,8 +8,8 @@ import lombok.Data;
 
 @Component
 @Data
-public class ProcurementPlanVO {
-	private Integer item_code;
+public class ProcurementPlanVO extends PurchaseOrderVO {
+	private String item_code;
 	private String item_name;
 	private String process;
 	private Date production_date;

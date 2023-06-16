@@ -5,6 +5,5 @@ import com.overc1ock.domain.Criteria;
 
 public interface ReportService {
 	ChartReportVO chartDate(Criteria cri);
-	ChartReportVO chartItemCode(Criteria cri);
 	ChartReportVO chartItemCategory(Criteria cri);
 }

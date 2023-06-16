@@ -11,7 +11,6 @@ import com.overc1ock.domain.ProductionPlanVO;
 
 public interface OutBoundService {
 	
-	List<ProductionPlanVO> getOutboundList();
 	List<ProductionPlanVO> getOutboundListWithCriteria(Criteria cri);
 	List<ProductionPlanVO> getProductNameList();
 	Integer insertOutbound(List<OutBoundVO> list);
