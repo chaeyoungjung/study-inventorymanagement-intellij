@@ -11,7 +11,6 @@ public interface TransactionStatementService {
 	
 	List<PurchaseOrderVO> getPurchaseOrderListAtTransactionStatement(Criteria cri);
 	List<TransactionStatementVO> getTransactionStatement(Integer po_code);
-	Integer insertTransactionStatement(RequestTransactionStatementDTO dto);
-	Integer deleteTransactionStatement(Integer po_code);
+	Integer insertTransactionStatement(Integer po_code);
 
 }

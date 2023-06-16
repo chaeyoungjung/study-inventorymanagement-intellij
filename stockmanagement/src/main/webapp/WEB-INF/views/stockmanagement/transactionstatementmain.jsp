@@ -90,7 +90,7 @@
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
-						<b>구매발주서 조회</b>
+						<b>입고완료목록 조회</b>
 					</div>
 					<form action="transactionstatementmain">
 						<div class="card-body">
@@ -99,7 +99,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">등록일 (From)</span> <input
 											type="date" id="startDate" class="form-control datepicker"
-											name="startDate" aria-label="Reported Date (From)"> <span
+											name="startDate" aria-label="Reported Date (From)"  value="${cri.startDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span> <b
@@ -110,7 +110,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">등록일 (To)</span> <input
 											type="date" id="endDate" class="form-control datepicker"
-											name="endDate" aria-label="Reported Date (To)"> <span
+											name="endDate" aria-label="Reported Date (To)"  value="${cri.endDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span>
@@ -120,7 +120,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">협력업체</span> <input type="text"
 											name="word" list="productName"
-											style="border: 1px solid #ced4da;">
+											style="border: 1px solid #ced4da;"  value="${cri.word}">
 									</div>
 								</div>
 								<div class="col-md-3">
@@ -149,24 +149,20 @@
 		                </symbol>
 		            </svg>
 		            
-				<form method="post" action="deletetransactionstatement" >
 					<table id='myTable'
 						class="table table-bordered table-striped table-hover caption-top">
 						<caption style="color: black;">
-							<b>구매발주서 목록</b>
+							<b>입고완료 목록</b>
 						</caption>
 						<button type="button" class="btn btn-primary"
-							style="position: absolute; left: 1020px;" onclick=transactionstatement()>거래명세서 발행</button>
-						<button type="submit" class="btn btn-primary"
-							style="position: absolute; left: 1170px; background-color: red; border-color: red;">거래명세서
-							삭제</button>
+							style="position: absolute; left: 1170px;" onclick=transactionstatement()>거래명세서 발행</button>
 						<thead class="table-dark">
 							<tr>
 								<th scope="col" style="text-align: center;">선택</th>
-								<th scope="col" style="text-align: center;">문서번호</th>
+								<th scope="col" style="text-align: center;">발주서 번호</th>
 								<th scope="col" style="text-align: center;">협력업체</th>
-								<th scope="col" style="text-align: center;">등록일</th>
-								<th scope="col" style="text-align: center;">거래명세서 저장여부</th>
+								<th scope="col" style="text-align: center;">발주일</th>
+								<th scope="col" style="text-align: center;">거래명세서 발행여부</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -180,15 +176,14 @@
 									<td style="text-align: center;"><span><fmt:formatDate
 												value="${list.po_date}" pattern="yyyy-MM-dd (E)" /></span></td>
 									<td style="text-align: center;"><span> <c:if
-												test="${list.save == -1}">미저장</c:if> <c:if
-												test="${list.save != -1}">저장완료</c:if></span></td>
+												test="${list.save == -1}">미발행</c:if> <c:if
+												test="${list.save != -1}">발행완료</c:if></span></td>
 								</tr>
 							</c:forEach>
 
 
 						</tbody>
 					</table>
-				</form>
 			</div>
 		</div>
 	</div>

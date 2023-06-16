@@ -15,18 +15,6 @@ import com.overc1ock.domain.InBoundVO;
 
 public interface StockManagementMapper {
 	
-	//출고처리
-	List<ProductionPlanVO>getOutboundListWithCriteria(Criteria cri);
-	List<ProductionPlanVO>getProductNameList();
-	Integer insertOutbound(List<OutBoundVO> list);
-	
-	//재고금액현황관리리포트
-	List<ReportVO> chartItemCategory(Criteria cri);
-	List<ReportVO> chartDate(Criteria cri);
-	
-	//재고산출
-	List<StockCalculationVO> getStockCalculationList(Criteria cri);
-	
 	//입고처리(마감)
 	List<ProcurementPlanVO> getOrderItemList(Criteria cri);
 	List<Integer> checkOrderList();
@@ -37,9 +25,23 @@ public interface StockManagementMapper {
 	//거래명세서 발행
 	List<PurchaseOrderVO> getPurchaseOrderListAtTransactionStatement(Criteria cri);
 	List<TransactionStatementVO> getTransactionStatement(Integer po_code);
-	Integer insertTransactionStatement(RequestTransactionStatementDTO dto);
-	Integer deleteTransactionStatement(Integer po_code);
+	Integer insertTransactionStatement(Integer po_code);
 	
+	//출고처리
+	List<ProductionPlanVO>getOutboundListWithCriteria(Criteria cri);
+	List<ProductionPlanVO>getProductNameList();
+	Integer insertOutbound(List<OutBoundVO> list);
+	
+	//재고산출
+	List<StockCalculationVO> getStockCalculationList(Criteria cri);
+	
+	//재고금액현황관리리포트
+	List<ReportVO> chartItemCategory(Criteria cri);
+	List<ReportVO> chartDate(Criteria cri);
+	
+
+	
+
 	
 	
 	

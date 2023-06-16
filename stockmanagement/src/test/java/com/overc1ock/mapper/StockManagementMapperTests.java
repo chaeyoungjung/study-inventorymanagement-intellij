@@ -142,15 +142,7 @@ public class StockManagementMapperTests {
 	
 	@Test
 	public void testInsertTransactionStatement() {
-		RequestTransactionStatementDTO dto = new RequestTransactionStatementDTO();
-		dto.setPerson("인수한 사람");
-		dto.setDate(new Date());
-		dto.setPo_code(3);
-		log.info(mapper.insertTransactionStatement(dto));
+		log.info(mapper.insertTransactionStatement(3));
 	}
 	
-	@Test
-	public void testDeleteTransactionStatement() {
-		log.info(mapper.deleteTransactionStatement(3));
-	}
 }

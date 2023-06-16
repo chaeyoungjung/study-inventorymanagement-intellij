@@ -89,7 +89,7 @@
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
-						<b>생산계획 조회</b>
+						<b>출고요청목록</b>
 					</div>
 					<form action="outbound">
 						<div class="card-body">
@@ -158,7 +158,7 @@
 					<table id='myTable'
 						class="table table-bordered table-striped table-hover caption-top">
 						<caption style="color: black;">
-							<b>생산계획 및 출고처리</b>
+							<b>출고요청목록 조회</b>
 						</caption>
 						<button type="submit" class="btn btn-primary"
 							style="position: absolute; left: 1220px;">출고등록</button>
@@ -169,7 +169,7 @@
 								<th scope="col" style="text-align: center;">품목코드</th>
 								<th scope="col" style="text-align: center;">품목명</th>
 								<th scope="col" style="text-align: center;">생산일</th>
-								<th scope="col" style="text-align: center;">소요량</th>
+								<th scope="col" style="text-align: center;">출고요청수량</th>
 								<th scope="col" style="text-align: center;">재고수량</th>
 								<th scope="col" style="text-align: center;">총 출고량</th>
 								<th scope="col" style="text-align: center;">출고수량</th>

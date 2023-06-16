@@ -33,15 +33,9 @@ public class TransactionStatementServiceImpl implements TransactionStatementServ
 	}
 
 	@Override
-	public Integer insertTransactionStatement(RequestTransactionStatementDTO dto) {
+	public Integer insertTransactionStatement(Integer po_code) {
 		log.info("거래명세서 등록 서비스");
-		return mapper.insertTransactionStatement(dto);
-	}
-
-	@Override
-	public Integer deleteTransactionStatement(Integer po_code) {
-		log.info("거래명세서 삭제 서비스");
-		return mapper.deleteTransactionStatement(po_code);
+		return mapper.insertTransactionStatement(po_code);
 	}
 
 }

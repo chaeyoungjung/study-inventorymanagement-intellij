@@ -15,6 +15,9 @@
 <link rel="stylesheet" href="/resources/css/web-base.css">
 <link rel="stylesheet" href="/resources/css/invoice.css">
 <script type="text/javascript" src="/resources/js/scripts.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.js"
+	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+	crossorigin="anonymous"></script>
 <style>
 .main_title {
 	text-align: center !important;
@@ -37,7 +40,6 @@
 </head>
 <body>
 
-	<form action="inputtransactionstatement" method="post">
 		<div class="web-container">
 
 			<div class="page-container">
@@ -75,11 +77,9 @@
 					<td class="my_content">${tsVO.subcontractor_tel}</td>
 				</tr>
 				<tr>
-					<td class="sub_title_left"><strong>인수자 : </strong></td>
-					<td class="my_content"><c:if test="${tsVO.acceptor != null}">${tsVO.acceptor}</c:if>
-						<c:if test="${tsVO.acceptor == null}">
-							<input type="text" name="person" required>
-						</c:if></td>
+					<td class="sub_title_left"><strong>대표자 : </strong></td>
+					<td class="my_content">
+							김대표</td>
 					<td class="sub_title_right"><strong>담당자 성명 : </strong></td>
 					<td class="my_content">${tsVO.subcontractor_person}</td>
 				</tr>
@@ -134,13 +134,7 @@
 					<tr>
 						<td class="payment-info" style="font-size: medium;">
 							<div>
-								<c:if test="${tsVO.deal_date != null}">
-									<fmt:formatDate value="${tsVO.deal_date}"
-										pattern="yyyy-MM-dd (E)" />
-								</c:if>
-								<c:if test="${tsVO.deal_date == null}">
-									<input type="date" name="date" id="date" required>
-								</c:if>
+								<input type="date" name="date" id="date" readonly>
 							</div>
 						</td>
 						<td class="payment-info" style="font-size: medium;">
@@ -164,12 +158,9 @@
 
 			<div class="footer">
 				<div class="footer-info">
-					<c:if test="${tsVO.acceptor != null}">
 
-				      <button type="button" onclick="return window.print()">출력</button> |
-				     </c:if>
-					<c:if test="${tsVO.acceptor == null}">
-						<button type="submit">저장</button> |</c:if>
+				      <button type="button" onclick="printandsend()">출력 및 통보</button> |
+
 					<button type="button" onclick="location.href='/stockmanagement/transactionstatementmain'">돌아가기</button>
 				</div>
 				<div class="footer-thanks">
@@ -177,13 +168,27 @@
 						src="https://github.com/anvilco/html-pdf-invoice-template/raw/main/img/heart.png"
 						alt="heart"> <span>Thank you!</span>
 				</div>
-				<input type="hidden" name="po_code" value="${po_code}">
 			</div>
 		</div>
-	</form>
 
 <script>
 	document.getElementById('date').valueAsDate = new Date();
+</script>
+<script>
+	function printandsend(){
+		console.log("출력 및 통보 버튼 누름")
+		window.print();
+		
+		if ("${tsVO.acceptor}" == "" && "${tsVO.deal_date}" == "") {
+			var newForm=$('<form></form>')
+			newForm.attr("action","inputtransactionstatement","method","post");
+			newForm.attr("method","post");
+			newForm.append($('<input/>',{type:'hidden', name:'po_code', value:'${po_code}'}))
+			newForm.appendTo('body')
+			
+			newForm.submit();
+		}
+	}
 </script>
 
 

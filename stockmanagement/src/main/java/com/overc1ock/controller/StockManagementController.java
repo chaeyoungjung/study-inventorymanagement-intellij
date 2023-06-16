@@ -82,6 +82,7 @@ public class StockManagementController {
 	public void transactionstatementmain(Model model, Criteria cri) {
 		log.info("get 거래명세서 메인페이지 요청 controller");
 		model.addAttribute("poList", tsService.getPurchaseOrderListAtTransactionStatement(cri));
+		model.addAttribute("cri", cri);
 	}
 	
 	@GetMapping("/transactionstatement")
@@ -106,18 +107,11 @@ public class StockManagementController {
 	}
 	
 	@PostMapping("/inputtransactionstatement")
-	public String inputtransactionstatement(RequestTransactionStatementDTO dto) {
-		log.info("post 거래명세서 등록요청 controller");
-		log.info(dto);
-		tsService.insertTransactionStatement(dto);
-		return "redirect:/stockmanagement/transactionstatement?po_code="+dto.getPo_code();
-	}
-	
-	@PostMapping("/deletetransactionstatement")
-	public String transactionstatement(Integer po_code) {
-		log.info("post 거래명세서 삭제요청 controller");
-		tsService.deleteTransactionStatement(po_code);
-		return "redirect:/stockmanagement/transactionstatementmain";
+	public String inputtransactionstatement(Integer po_code) {
+		log.info("post 거래명세서 발행요청 controller");
+		log.info(po_code);
+		tsService.insertTransactionStatement(po_code);
+		return "redirect:/stockmanagement/transactionstatement?po_code="+po_code;
 	}
 	
 	//출고처리
