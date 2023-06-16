@@ -148,6 +148,7 @@ public class StockManagementController {
 			cri.setStartDate(format.format(new Date())+"");
 		}
 		model.addAttribute("scList", scService.getStockCalculationList(cri));
+		model.addAttribute("cri",cri);
 	}
 	
 	

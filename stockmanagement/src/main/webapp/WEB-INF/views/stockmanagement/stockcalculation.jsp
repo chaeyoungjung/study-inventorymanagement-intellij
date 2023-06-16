@@ -104,7 +104,7 @@ select option[value=""][disabled] {
 								<div class="input-group mb-3">
 									<span class="input-group-text">날짜</span> <input type="date"
 										id="txnReportStartDate" class="form-control datepicker"
-										name="startDate" aria-label="Reported Date (From)"> <span
+										name="startDate" aria-label="Reported Date (From)" value="${cri.startDate}"> <span
 										class="input-group-text"><img
 										src="/resources/img/calendar3.svg" alt="" width="16"
 										height="16" title="calendar" /></span>
@@ -122,7 +122,7 @@ select option[value=""][disabled] {
 										<option value="mat">재질
 										<option value="sub">협력회사
 									</select> <input type="text" class="form-control" id="customerName"
-										name="word" value="" style="width: 150px";>
+										name="word" value="${cri.word}" style="width: 150px";>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -166,7 +166,7 @@ select option[value=""][disabled] {
 							<th scope="col" style="text-align: center;">입고수량</th>
 							<th scope="col" style="text-align: center;">출고수량</th>
 							<th scope="col" style="text-align: center;">재고수량</th>
-							<th scope="col" style="text-align: center;">공급가격</th>
+							<th scope="col" style="text-align: center;">재고단가</th>
 						</tr>
 					</thead>
 					<tbody>
