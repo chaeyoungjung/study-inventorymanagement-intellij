@@ -15,7 +15,6 @@ import com.overc1ock.domain.ProcurementPlanVO;
 import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.domain.PurchaseOrderVO;
 import com.overc1ock.domain.ReportVO;
-import com.overc1ock.domain.RequestTransactionStatementDTO;
 import com.overc1ock.domain.StockCalculationVO;
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.InBoundVO;

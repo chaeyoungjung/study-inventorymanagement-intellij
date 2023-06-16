@@ -98,7 +98,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">생산일 (From)</span> <input
 											type="date" id="startDate" class="form-control datepicker"
-											name="startDate" aria-label="Reported Date (From)"> <span
+											name="startDate" aria-label="Reported Date (From)" value="${cri.startDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span> <b
@@ -109,7 +109,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">생산일 (To)</span> <input
 											type="date" id="endDate" class="form-control datepicker"
-											name="endDate" aria-label="Reported Date (To)"> <span
+											name="endDate" aria-label="Reported Date (To)" value="${cri.endDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span>
@@ -119,7 +119,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">제품명</span> <input type="text"
 											name="word" list="productName"
-											style="border: 1px solid #ced4da;">
+											style="border: 1px solid #ced4da;" value="${cri.word}">
 										<datalist id="productName"
 											style="border: 1px solid #DBE0E4;">
 											<c:forEach var="list" items="${pnList }">

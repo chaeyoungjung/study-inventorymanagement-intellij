@@ -19,7 +19,7 @@
 		<if test="word != null and word != ''">
 	    	AND subcontractor_name like concat('%',#{word},'%')
 		</if>
-		 order by pp_status, procurement_date
+		 order by pp_status, procurement_date, item_code
     </select>
     
     <select id="checkOrderList" resultType="Integer">

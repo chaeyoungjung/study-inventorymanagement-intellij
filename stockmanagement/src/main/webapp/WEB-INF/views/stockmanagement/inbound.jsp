@@ -161,6 +161,7 @@
 						<thead class="table-dark">
 							<tr>
 								<th scope="col" style="text-align: center;">순번</th>
+								<th scope="col" style="text-align: center;">발주서 번호</th>
 								<th scope="col" style="text-align: center;">품목코드</th>
 								<th scope="col" style="text-align: center;">품목명</th>
 								<th scope="col" style="text-align: center;">협력업체</th>
@@ -176,6 +177,7 @@
 								<c:forEach var ="list" items="${poList}">
 								<tr>
 									<td style="text-align: center;">${no=no+1 }</td>
+									<td style="text-align: center;"><span>${list.po_code }</span></td>
 									<td style="text-align: center;"><span>${list.item_code }</span></td>
 									<td style="text-align: center;"><span>${list.item_name }</span></td>
 									<td style="text-align: center;"><span>${list.supplier}</span></td>

@@ -7,20 +7,15 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.InBoundVO;
 import com.overc1ock.domain.OutBoundVO;
-import com.overc1ock.domain.ProcurementPlanVO;
-import com.overc1ock.domain.ProductionPlanVO;
-import com.overc1ock.domain.RequestTransactionStatementDTO;
 import com.overc1ock.domain.TransactionInfoVO;
 import com.overc1ock.domain.TransactionStatementVO;
 import com.overc1ock.service.InboundService;
@@ -122,6 +117,7 @@ public class StockManagementController {
 		log.info(cri);
 		model.addAttribute("obList", obService.getOutboundListWithCriteria(cri));
 		model.addAttribute("pnList", obService.getProductNameList());
+		model.addAttribute("cri",cri);
 	}
 	
 	@PostMapping("/outbound")

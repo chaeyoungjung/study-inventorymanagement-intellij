@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.PurchaseOrderVO;
-import com.overc1ock.domain.RequestTransactionStatementDTO;
 import com.overc1ock.domain.TransactionStatementVO;
 
 public interface TransactionStatementService {
