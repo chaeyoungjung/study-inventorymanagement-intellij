@@ -246,24 +246,26 @@
 				}
 			});
 			
-			$(document).on("change",'#amount',function() {
-				if ($('#amount').val() != ''){
+			$(document).on("keyup",'#amount',function() {
+				if ($(this).val() != ''){
 					$('#date').attr('required', true);
-					console.log("출고량 값 있음");
+					$(this).parent().parent().children().eq(8).children().val(new Date().toISOString().slice(0,10));
+					console.log("입고량 값 있음");
 				}
 				else{
 					$('#date').attr('required', false);
-					console.log("출고량 값 없음");
+					$(this).parent().parent().children().eq(8).children().val(null);
+					console.log("입고량 값 없음");
 				}
 			});
 			$(document).on("change",'#date',function() {
-				if ($('#date').val() != ''){
+				if ($(this).val() != ''){
 					$('#amount').attr('required', true);
-					console.log("출고일 값 있음");
+					console.log("입고일 값 있음");
 				}
 				else{
 					$('#amount').attr('required', false);
-					console.log("출고일 값 없음");
+					console.log("입고일 값 없음");
 				}
 			});
 

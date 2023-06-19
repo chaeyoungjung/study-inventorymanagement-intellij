@@ -249,13 +249,15 @@
 				}
 			});
 			
-			$(document).on("change",'#amount',function() {
+			$(document).on("keyup",'#amount',function() {
 				if ($('#amount').val() != ''){
 					$('#date').attr('required', true);
+					$(this).parent().parent().children().eq(9).children().val(new Date().toISOString().slice(0,10));
 					console.log("출고량 값 있음");
 				}
 				else{
 					$('#date').attr('required', false);
+					$(this).parent().parent().children().eq(9).children().val(null);
 					console.log("출고량 값 없음");
 				}
 			});

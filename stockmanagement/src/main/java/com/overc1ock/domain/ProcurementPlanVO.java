@@ -16,6 +16,5 @@ public class ProcurementPlanVO extends PurchaseOrderVO {
 	private Integer amount;
 	private Date procurement_date;
 	private Integer pp_status; //완료여부, 미완료 0, 완료 1
-	private String supplier;
 
 }

@@ -20,6 +20,7 @@ public interface StockManagementMapper {
 	List<ProcurementPlanVO> getProcurementPlanList(Integer po_code);
 	Integer insertInbound(InBoundVO vo);
 	Integer updateProcurementPlanStatus(InBoundVO vo);
+	List<ProcurementPlanVO> getPurchaseOrderAtInbound(Integer po_code);
 	
 	//거래명세서 발행
 	List<PurchaseOrderVO> getPurchaseOrderListAtTransactionStatement(Criteria cri);
