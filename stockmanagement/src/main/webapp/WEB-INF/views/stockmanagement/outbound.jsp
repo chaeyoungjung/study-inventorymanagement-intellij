@@ -195,7 +195,7 @@
 									<td style="text-align: center;"><span><fmt:formatNumber value="${list.consumption}" pattern="#,###"/></span></td>
 									<td style="text-align: center;"><span id="stockAmount"><fmt:formatNumber value="${list.stock_amount}" pattern="#,###"/></span></td>
 									<td style="text-align: center;"><span><fmt:formatNumber value="${list.total_amount}" pattern="#,###"/></span></td>
-									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" <c:if test="${list.consumption >= list.stock_amount}">max="${list.stock_amount-list.total_amount }"</c:if> <c:if test="${list.consumption < list.stock_amount}">max="${list.consumption-list.total_amount }"</c:if>></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
+									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" <c:if test="${list.consumption >= list.stock_amount}">max="${list.stock_amount}"</c:if> <c:if test="${list.consumption < list.stock_amount}">max="${list.consumption-list.total_amount }"</c:if>></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
 									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="date" name="outBoundVOList[${no-1}].date" id="date" ></c:if></td>
 								<input type="hidden" value="${list.iup_code}" name="outBoundVOList[${no-1}].iup_code">
 								<input type="hidden" value="${list.item_code}" name="outBoundVOList[${no-1}].item_code">

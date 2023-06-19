@@ -114,7 +114,7 @@
 	
 	
 	<select id="getProductNameList" resultType="com.overc1ock.domain.ProductionPlanVO">
-		SELECT product_name FROM products_production_plan order by product_name
+		SELECT product_name FROM products_production_plan group by product_name order by product_name
     </select>
     
     
