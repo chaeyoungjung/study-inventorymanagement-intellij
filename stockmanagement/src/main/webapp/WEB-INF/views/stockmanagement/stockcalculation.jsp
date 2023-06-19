@@ -118,9 +118,10 @@ select option[value=""][disabled] {
 										style="width: 90px;">
 										<option value="" disabled selected>선택</option>
 										<option value="name">품목명</option>
+										<option value="mc">대분류
+										<option value="sc">중분류
 										<option value="std">규격
 										<option value="mat">재질
-										<option value="sub">협력회사
 									</select> <input type="text" class="form-control" id="customerName"
 										name="word" value="${cri.word}" style="width: 150px";>
 								</div>
@@ -160,9 +161,10 @@ select option[value=""][disabled] {
 						<tr>
 							<th scope="col" style="text-align: center;">품목코드</th>
 							<th scope="col" style="text-align: center;">품목명</th>
+							<th scope="col" style="text-align: center;">대분류</th>
+							<th scope="col" style="text-align: center;">중분류</th>
 							<th scope="col" style="text-align: center;">규격</th>
 							<th scope="col" style="text-align: center;">재질</th>
-							<th scope="col" style="text-align: center;">협력업체</th>
 							<th scope="col" style="text-align: center;">입고수량</th>
 							<th scope="col" style="text-align: center;">출고수량</th>
 							<th scope="col" style="text-align: center;">재고수량</th>
@@ -174,13 +176,14 @@ select option[value=""][disabled] {
 							<tr>
 								<td style="text-align: center;"><span>${list.item_code}</span></td>
 								<td style="text-align: center;"><span>${list.item_name}</span></td>
+								<td style="text-align: center;"><span>${list.mc_name}</span></td>
+								<td style="text-align: center;"><span>${list.sc_name}</span></td>
 								<td style="text-align: center;"><span>${list.standard}</span></td>
 								<td style="text-align: center;"><span>${list.material}</span></td>
-								<td style="text-align: center;"><span>${list.subcontractor_name}</span></td>
 								<td style="text-align: center;"><span><fmt:formatNumber value="${list.inbound_amount}" pattern="#,###"/></span></td>
 								<td style="text-align: center;"><span><fmt:formatNumber value="${list.outbound_amount}" pattern="#,###"/></span></td>
 								<td style="text-align: center;"><span><fmt:formatNumber value="${list.stock_amount}" pattern="#,###"/></span></td>
-								<td style="text-align: center;"><span><fmt:formatNumber value="${list.supply_price}" pattern="#,###"/></span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.stock_price}" pattern="#,###"/></span></td>
 									</span></td>
 							</tr>
 						</c:forEach>

@@ -124,7 +124,7 @@
     
     <select id = "getStockCalculationList" resultType="com.overc1ock.domain.StockCalculationVO">
     	<![CDATA[
-select 일자, item_code,item_name,standard,material,mc_name,sc_name, inbound_amount, outbound_amount,stock_amount,ifnull(입고총액,0),ifnull(출고총액,0), ifnull((입고총액-출고총액),0) 재고총액, ifnull((입고총액-출고총액)/stock_amount,0) 재고단가
+select 일자, item_code,item_name,standard,material,mc_name,sc_name, inbound_amount, outbound_amount,stock_amount,ifnull((입고총액-출고총액)/stock_amount,0) stock_price
 from (select 일자, t1.item_code item_code,item_name,standard,material,mc_name,sc_name, sum(ifnull(입고량,0)) over(partition by item_code order by 일자) inbound_amount,sum(ifnull(출고량,0)) over(partition by item_code order by 일자) outbound_amount,재고량 stock_amount,sum(ifnull(입고단가,0)*입고량) over(partition by item_code order by 일자) 입고총액, sum(ifnull(출고단가,0)*출고량) over(partition by item_code order by 일자) 출고총액
 from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고단가, sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량 from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량, 입고단가 from (select *
 	from (WITH RECURSIVE CTE  AS (
@@ -139,6 +139,7 @@ from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고�
 		group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d'),출고단가) t2 
       on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1
       join (select * from item join sub_category using(sc_code) join major_category using(mc_code)) t2 using(item_code)) t1
+
 		]]>
 			      where 일자 = DATE_FORMAT(#{startDate}, '%Y-%m-%d')
 			      
@@ -147,19 +148,22 @@ from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고�
 	    				<when test = 'category == "name"'>
 	    					and (item_name like concat('%',#{word},'%'))
 	    				</when>
+	    				<when test = 'category == "mc"'>
+	    					and (mc_name like concat('%',#{word},'%'))
+	    				</when>
+	    				<when test = 'category == "sc"'>
+	    					and (sc_name like concat('%',#{word},'%'))
+	    				</when>
 	    				<when test = 'category == "std"'>
 	    					and (standard like concat('%',#{word},'%'))
 	    				</when>
 	    				<when test = 'category == "mat"'>
 	    					and (material like concat('%',#{word},'%'))
 	    				</when>
-	    				<when test = 'category == "sub"'>
-	    					and (subcontractor_name like concat('%',#{word},'%'))
-	    				</when>
 	    			 </choose>
 	    			</if>
 			      
-    
+     group by 일자, item_code, item_name, standard, material, mc_name,sc_name,inbound_amount,outbound_amount,stock_amount,stock_price
     </select>
     
     
