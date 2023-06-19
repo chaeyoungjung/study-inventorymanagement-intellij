@@ -154,7 +154,7 @@ select option[value=""][disabled] {
 				<table id='myTable'
 					class="table table-bordered table-striped table-hover caption-top">
 					<caption style="color: black;">
-						<b>재고산출목록</b>
+						<b>재고산출 목록</b>
 					</caption>
 
 					<thead class="table-dark">

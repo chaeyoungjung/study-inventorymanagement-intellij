@@ -97,7 +97,7 @@
 							<div class="row g-3">
 								<div class="col-md-3">
 									<div class="input-group mb-3">
-										<span class="input-group-text">등록일 (From)</span> <input
+										<span class="input-group-text">발주일 (From)</span> <input
 											type="date" id="startDate" class="form-control datepicker"
 											name="startDate" aria-label="Reported Date (From)"  value="${cri.startDate}"> <span
 											class="input-group-text"><img
@@ -108,7 +108,7 @@
 								</div>
 								<div class="col-md-3">
 									<div class="input-group mb-3">
-										<span class="input-group-text">등록일 (To)</span> <input
+										<span class="input-group-text">발주일 (To)</span> <input
 											type="date" id="endDate" class="form-control datepicker"
 											name="endDate" aria-label="Reported Date (To)"  value="${cri.endDate}"> <span
 											class="input-group-text"><img

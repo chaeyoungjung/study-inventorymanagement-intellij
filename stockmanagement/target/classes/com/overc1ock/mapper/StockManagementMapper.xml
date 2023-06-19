@@ -39,9 +39,9 @@
 		update procurement_plan set pp_status = 1 where po_code = (select t1.po_code from (select 
 		* from procurement_plan join item_use_plan using(iup_code) join purchase_order using(po_code)) 
 		t1 left join inbound t2 on t1.po_code=t2.po_code and t1.item_code=t2.item_code where consumption 
-		= inbound_quantity and t1.item_code = #{item_code}) and iup_code=(select iup_code from (select * from procurement_plan join item_use_plan using(iup_code) join purchase_order using(po_code)) t1
+		= inbound_quantity and t1.item_code = #{item_code} and pp_status = 0) and iup_code=(select iup_code from (select * from procurement_plan join item_use_plan using(iup_code) join purchase_order using(po_code)) t1
 				join inbound t2 on t1.po_code=t2.po_code and t1.item_code=t2.item_code
-				where consumption = inbound_quantity and t1.item_code=#{item_code})
+				where consumption = inbound_quantity and t1.item_code=#{item_code} and pp_status = 0)
     </update>
     
     
@@ -125,7 +125,7 @@
     <select id = "getStockCalculationList" resultType="com.overc1ock.domain.StockCalculationVO">
     	<![CDATA[
 select 일자, item_code,item_name,standard,material,mc_name,sc_name, inbound_amount, outbound_amount,stock_amount,ifnull((입고총액-출고총액)/stock_amount,0) stock_price
-from (select 일자, t1.item_code item_code,item_name,standard,material,mc_name,sc_name, sum(ifnull(입고량,0)) over(partition by item_code order by 일자) inbound_amount,sum(ifnull(출고량,0)) over(partition by item_code order by 일자) outbound_amount,재고량 stock_amount,sum(ifnull(입고단가,0)*입고량) over(partition by item_code order by 일자) 입고총액, sum(ifnull(출고단가,0)*출고량) over(partition by item_code order by 일자) 출고총액
+from (select 일자, t1.item_code item_code,item_name,standard,material,mc_name,sc_name, sum(ifnull(입고량,0)) over(partition by item_code order by 일자) inbound_amount,sum(ifnull(출고량,0)) over(partition by item_code order by 일자) outbound_amount,재고량 stock_amount,sum(ifnull(입고단가*입고량,0)) over(partition by item_code order by 일자) 입고총액, sum(ifnull(출고단가*출고량,0)) over(partition by item_code order by 일자) 출고총액
 from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고단가, sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량 from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량, 입고단가 from (select *
 	from (WITH RECURSIVE CTE  AS (
       SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
@@ -185,53 +185,32 @@ from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고�
 	 mylabel, 
 	    	<![CDATA[
 	sum(ifnull(재고금액,0)) myvalue from
-	(select 일자, t1.item_code, item_name, 재고금액, mc_code, mc_name, sc_code, sc_name
-	from (select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량, (c.supply_price*sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자)) 재고금액
-		from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량
-				from (select *
-						from (WITH RECURSIVE CTE  AS (
-														  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
-														  UNION ALL
-														  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
-														  WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1, -- 기간내의 날짜 모두 출력
-							(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 -- 모든 날짜(t1)와 재고가 있는 아이템 코드(t2)의 조인 >> from절에 ,로 두개 테이블을 적으면 크로스 조인(모든 경우의 수 row를 가진 테이블 출력, 날짜별 모든 품목코드를 가짐)
-			 left join 
-				 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, sum(es_quantity) 입고량 from existing_stock group by item_code,DATE_FORMAT(es_date, '%Y-%m-%d')
-				  union all
-				  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
-				  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
-			  on t1.일자=t2.일자 and t1.item_code=t2.item_code
-			  group by 일자, item_code) t1 
-			  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound -- 기존재고량, 입고량, 출고량 조인
-							group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
-			  on t1.일자=t2.일자 and t1.item_code=t2.item_code
-			  left join (select item_code, item_name, max(supply_price) supply_price from contract join item using(item_code) group by item_code, item_name) c on t1.item_code=c.item_code) t1
-	          left join (select * from item join sub_category using(sc_code) join major_category using(mc_code)) t2 on t1.item_code=t2.item_code) t1
-	                    join (select item_code, max(일자) 일자 from (
-		select t1.일자, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량
-		from (select t1.일자 as 일자, t1.item_code as item_code, 입고량
-		from (select *
+	(select t1.일자, t1.item_code, item_name, 재고금액, mc_code, mc_name, sc_code, sc_name from (select * from (select 일자, t1.item_code, item_name,입고총액-출고총액 재고금액, mc_code, mc_name, sc_code, sc_name from (select * from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고단가, sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량, sum(ifnull(입고단가*입고량,0)) over(partition by item_code order by 일자) 입고총액, sum(ifnull(출고단가*출고량,0)) over(partition by item_code order by 일자) 출고총액
+from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량, 입고단가 from (select *
+	from (WITH RECURSIVE CTE  AS (
+      SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
+      UNION ALL
+      SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
+      WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
+      (select distinct(item_code) from inbound) t2) t1
+      left join (select inbound.item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자, sum(inbound_quantity) 입고량, supply_price 입고단가 from inbound join contract_has_purchase_order using(po_code) join contract on contract_has_purchase_order.contract_code=contract.contract_code and contract.item_code=inbound.item_code
+		group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d'),입고단가) t2 on t1.일자=t2.일자 and t1.item_code=t2.item_code group by item_code,일자,입고단가) t1
+      left join (select outbound.item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자, sum(outbound_quantity) 출고량, supply_price 출고단가 from outbound join procurement_plan using(iup_code) join contract_has_purchase_order using(po_code) join contract on contract_has_purchase_order.contract_code=contract.contract_code and contract.item_code=outbound.item_code
+		group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d'),출고단가) t2 
+      on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1
+where 일자 >= date('2023-06-01')) t1
+join item using(item_code) join sub_category using(sc_code) join major_category using(mc_code)) t1) t1
+join (select item_code, max(일자) 일자
 		from (WITH RECURSIVE CTE  AS (
 			  SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
 			  UNION ALL
 			  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
 			  WHERE DT < DATE_FORMAT(#{startDate}, '%Y-%m-%d')) SELECT DT AS 일자 FROM CTE) t1,
-			  (select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1
-			 left join 
-			 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, es_quantity 입고량 from existing_stock 
-			  union all
-			  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
-			  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
-			  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1 
-			  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
-			  on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1
-	group by item_code) t2 on t1.item_code=t2.item_code and t1.일자 = t2.일자
+			  (select distinct(item_code) from inbound union select distinct(item_code) from outbound) t2
+group by item_code) t2
+on t1.item_code=t2.item_code and t1.일자 = t2.일자) t1
 			]]>
-			<if test="num != null and num != ''">
-			  <![CDATA[
-		    	where 재고금액 >= #{num}
-		    	]]>
-			</if>
+			
 	group by 
 		    			<choose>
 		    				<when test = 'category == "L"'>
@@ -244,6 +223,13 @@ from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고�
 		    					item_name
 		    				</when>
 		    			</choose>
+		    			
+			<if test="num != null and num != ''">
+			  <![CDATA[
+		    	having sum(ifnull(재고금액,0))>= #{num}
+		    	]]>
+			</if>
+			
 	order by 
 		    			<choose>
 		    				<when test = 'category == "L"'>
@@ -261,30 +247,23 @@ from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고�
 	    
 	    <select id="chartDate" resultType="com.overc1ock.domain.ReportVO">
 	        	<![CDATA[
-				    select  mylabel, sum(myvalue) myvalue
-					from (select t1.일자 mylabel, t1.item_code,입고량, 출고량,sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by t1.일자) as 재고량, (ifnull(c.supply_price,0)*(sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by t1.일자)))  myvalue
-					from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량
-							from (select *
-								from (WITH RECURSIVE CTE  AS (
-																  SELECT DATE_FORMAT("2023-05-01", '%Y-%m-%d') AS DT FROM DUAL
-																  UNION ALL
-																  SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
-																  WHERE DT < last_day(date(#{startDate}))) SELECT DT AS 일자 FROM CTE) t1,
-										(select distinct(item_code) from inbound union select distinct(item_code) from existing_stock) t2) t1 
-						 left join 
-							 (select item_code,DATE_FORMAT(es_date, '%Y-%m-%d') 일자, sum(es_quantity) 입고량 from existing_stock group by item_code ,DATE_FORMAT(es_date, '%Y-%m-%d')
-							  union all
-							  select item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자,  sum(inbound_quantity) 입고량 from inbound
-							  group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d')) t2
-						  on t1.일자=t2.일자 and t1.item_code=t2.item_code
-	                      group by  일자, item_code) t1 
-						  left join ( select item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자,  sum(outbound_quantity) 출고량 from outbound
-										group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d')) t2 
-						  on t1.일자=t2.일자 and t1.item_code=t2.item_code
-						  left join (select item_code, max(supply_price) supply_price from contract group by item_code) c on t1.item_code=c.item_code) t1
-				          where mylabel >= date(#{startDate})
-				          group by mylabel
-				          order by mylabel
+select 일자 mylabel, sum(ifnull(입고총액-출고총액,0)) myvalue
+					from (select t1.일자, t1.item_code,입고량, 입고단가, 출고량,출고단가, sum(ifnull(입고량,0)-ifnull(출고량,0)) over (partition by item_code order by 일자) as 재고량, sum(ifnull(입고단가*입고량,0)) over(partition by item_code order by 일자) 입고총액, sum(ifnull(출고단가*출고량,0)) over(partition by item_code order by 일자) 출고총액
+from (select t1.일자 as 일자, t1.item_code as item_code, sum(입고량) 입고량, 입고단가 from (select *
+	from (WITH RECURSIVE CTE  AS (
+      SELECT DATE_FORMAT('20230101', '%Y-%m-%d') AS DT FROM DUAL
+      UNION ALL
+      SELECT DATE_ADD(DT, INTERVAL 1 DAY) FROM CTE
+      WHERE DT < last_day(date(#{startDate}))) SELECT DT AS 일자 FROM CTE) t1,
+      (select distinct(item_code) from inbound) t2) t1
+      left join (select inbound.item_code, DATE_FORMAT(arrival_date, '%Y-%m-%d') 일자, sum(inbound_quantity) 입고량, supply_price 입고단가 from inbound join contract_has_purchase_order using(po_code) join contract on contract_has_purchase_order.contract_code=contract.contract_code and contract.item_code=inbound.item_code
+		group by item_code ,DATE_FORMAT(arrival_date, '%Y-%m-%d'),입고단가) t2 on t1.일자=t2.일자 and t1.item_code=t2.item_code group by item_code,일자,입고단가) t1
+      left join (select outbound.item_code, DATE_FORMAT(shipping_date, '%Y-%m-%d') 일자, sum(outbound_quantity) 출고량, supply_price 출고단가 from outbound join procurement_plan using(iup_code) join contract_has_purchase_order using(po_code) join contract on contract_has_purchase_order.contract_code=contract.contract_code and contract.item_code=outbound.item_code
+		group by item_code ,DATE_FORMAT(shipping_date, '%Y-%m-%d'),출고단가) t2 
+      on t1.일자=t2.일자 and t1.item_code=t2.item_code) t1
+				          where 일자 >= date(#{startDate})
+				          group by 일자
+				          order by 일자
 	          		]]>
 	    </select>
 

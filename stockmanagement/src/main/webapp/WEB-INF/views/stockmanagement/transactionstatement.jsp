@@ -108,7 +108,8 @@
 					<c:forEach var="list" items="${tsList}">
 						<tr>
 							<td>${list.item_name }</td>
-							<td style="text-align: center;">${list.amount }</td>
+							<td style="text-align: center;"><fmt:formatNumber
+									value="${list.amount }" pattern="#,###" /></td>
 							<td class="right" style="text-align: center;"><fmt:formatNumber
 									value="${list.price }" pattern="#,###" /></td>
 							<td class="bold" style="text-align: center;"><fmt:formatNumber
