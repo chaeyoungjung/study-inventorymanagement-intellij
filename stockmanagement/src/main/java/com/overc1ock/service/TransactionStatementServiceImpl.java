@@ -24,6 +24,12 @@ public class TransactionStatementServiceImpl implements TransactionStatementServ
 		log.info("거래명세서 발행화면 구매발주서 목록 보여주기 서비스");
 		return mapper.getPurchaseOrderListAtTransactionStatement(cri);
 	}
+	
+	@Override
+	public List<PurchaseOrderVO> newGetPurchaseOrderListAtTransactionStatement(Criteria cri) {
+		log.info("새로운 거래명세서 발행화면 구매발주서 목록 보여주기 서비스");
+		return mapper.newGetPurchaseOrderListAtTransactionStatement(cri);
+	}
 
 	@Override
 	public List<TransactionStatementVO> getTransactionStatement(Integer po_code) {

@@ -160,21 +160,18 @@
 							<tr>
 								<th scope="col" style="text-align: center;">선택</th>
 								<th scope="col" style="text-align: center;">발주서 번호</th>
-								<th scope="col" style="text-align: center;">품목코드</th>
-								<th scope="col" style="text-align: center;">품목이름</th>
 								<th scope="col" style="text-align: center;">협력업체</th>
 								<th scope="col" style="text-align: center;">발주일</th>
 								<th scope="col" style="text-align: center;">거래명세서 발행여부</th>
 							</tr>
 						</thead>
 						<tbody>
+
 							<c:forEach var="list" items="${poList}">
-								<tr class="myList">
+								<tr>
 									<td style="text-align: center;"><input type="radio"
 										name="po_code" value=${list.po_code}></td>
 									<td style="text-align: center;"><span>${list.po_code}</span></td>
-									<td style="text-align: center;"><span>${list.item_code}</span></td>
-									<td style="text-align: center;"><span>${list.item_name}</span></td>
 									<td style="text-align: center;"><span>${list.supplier}</span></td>
 									<td style="text-align: center;"><span><fmt:formatDate
 												value="${list.po_date}" pattern="yyyy-MM-dd (E)" /></span></td>
@@ -267,22 +264,6 @@
 	    $(document).ready(function() {
 	        $('#myTable').tablesorter();
 	      });
-	</script>
-	<script>
-			var i = 0;
-			var arr = [];
-		<c:forEach var="list" items="${poList}">
-			arr[i] = '${list.po_code}';
-			i++;
-		</c:forEach>
-		console.log("발주서코드 배열"+arr);
-			var occurrences = {};
-			for (var v of arr) {
-			  occurrences[v] = occurrences[v] ? occurrences[v] + 1 : 1;
-			}
-			console.log(occurrences); // {b: 4, x: 1, o: 2}
-		console.log("테이블 값"+$(".myList").children().eq(1).text());
-	
 	</script>
 
 </body>

@@ -24,6 +24,7 @@ public interface StockManagementMapper {
 	
 	//거래명세서 발행
 	List<PurchaseOrderVO> getPurchaseOrderListAtTransactionStatement(Criteria cri);
+	List<PurchaseOrderVO> newGetPurchaseOrderListAtTransactionStatement(Criteria cri);
 	List<TransactionStatementVO> getTransactionStatement(Integer po_code);
 	Integer insertTransactionStatement(Integer po_code);
 	

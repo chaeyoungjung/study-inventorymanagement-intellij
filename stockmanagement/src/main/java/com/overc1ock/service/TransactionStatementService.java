@@ -9,6 +9,7 @@ import com.overc1ock.domain.TransactionStatementVO;
 public interface TransactionStatementService {
 	
 	List<PurchaseOrderVO> getPurchaseOrderListAtTransactionStatement(Criteria cri);
+	List<PurchaseOrderVO> newGetPurchaseOrderListAtTransactionStatement(Criteria cri);
 	List<TransactionStatementVO> getTransactionStatement(Integer po_code);
 	Integer insertTransactionStatement(Integer po_code);
 

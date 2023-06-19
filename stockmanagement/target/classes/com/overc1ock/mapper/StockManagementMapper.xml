@@ -74,6 +74,26 @@
 		order by save, po_date
  	</select>
  	
+ 	<select id="newGetPurchaseOrderListAtTransactionStatement" resultType="com.overc1ock.domain.PurchaseOrderVO">
+       select t1.po_code,t1.item_code,item_name,subcontractor_name supplier,po_date,ifnull(ts_save,-1) save from purchase_order
+       left join transaction_statement using(po_code) join contract_has_purchase_order using(po_code) join contract using(contract_code)
+       join (select * from procurement_plan join item_use_plan using(iup_code) join item using(item_code)) t1 on purchase_order.po_code=t1.po_code and contract.item_code=t1.item_code
+		where purchase_order.po_code in (select po_code from purchase_order join contract_has_purchase_order using(po_code) join contract using(contract_code)
+		join (select po_code,if(c1=c2,1,0) save from (select po_code, count(*) c1 from procurement_plan group by po_code) t1
+		left join (select po_code, count(pp_status) c2 from procurement_plan where pp_status =1 group by po_code) t2 using(po_code)) t1 using(po_code)
+		where close_status=0 and save = 1
+		group by po_code order by save, po_date)
+		
+       	<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+			AND po_date between DATE(#{startDate}) and DATE(#{endDate})+1 
+		</if>
+		<if test="(word != null and word != '')">
+	    	AND subcontractor_name like concat('%',#{word},'%')
+		</if>
+		
+		order by save, po_date
+ 	</select>
+ 	
  	<select id="getTransactionStatement" resultType="com.overc1ock.domain.TransactionStatementVO">
        select item_name,consumption amount,supply_price price,subcontractor_name,subcontractor_address,subcontractor_tel,subcontractor_person,subcontractor_email,acceptor,deal_date from (select * from (select item_code, subcontractor_name,supply_price,po_code from purchase_order 
        join contract_has_purchase_order using(po_code) join contract using(contract_code) where po_code=#{po_code})t1

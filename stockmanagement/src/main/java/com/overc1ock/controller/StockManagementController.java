@@ -76,7 +76,7 @@ public class StockManagementController {
 	@GetMapping("/transactionstatementmain")
 	public void transactionstatementmain(Model model, Criteria cri) {
 		log.info("get 거래명세서 메인페이지 요청 controller");
-		model.addAttribute("poList", tsService.getPurchaseOrderListAtTransactionStatement(cri));
+		model.addAttribute("poList", tsService.newGetPurchaseOrderListAtTransactionStatement(cri));
 		model.addAttribute("cri", cri);
 	}
 	
