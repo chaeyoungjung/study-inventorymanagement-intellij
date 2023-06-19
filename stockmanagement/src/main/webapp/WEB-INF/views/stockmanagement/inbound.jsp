@@ -188,20 +188,13 @@
 												value="${list.amount }" pattern="#,###" />
 									</span></td>
 									<td style="text-align: center;"><span>
-										<c:if test="${procurement_date < nowdate}">
-											<span style="color:red;"><fmt:formatDate
+											<span <c:if test="${procurement_date < nowdate}">style="color:red;"</c:if>><fmt:formatDate
 													value="${list.procurement_date}"
 													pattern="yyyy-MM-dd (E)" /></span>
-										</c:if>
-										<c:if test="${procurement_date >= nowdate}">
-											<span><fmt:formatDate
-													value="${list.procurement_date}"
-													pattern="yyyy-MM-dd (E)" /></span>
-										</c:if>
 									</td>
 									<c:if test="${list.pp_status == 0 }">
 										<td style="text-align: center;"><input type="number"
-											name="inBoundVOList[${no-1}].amount" id="amount"></td>
+											name="inBoundVOList[${no-1}].amount" id="amount" max="${list.amount }"></td>
 										<td style="text-align: center;"><input type="date"
 											name="inBoundVOList[${no-1}].date" id="date"></td>
 										<td style="text-align: center;"><span>미완료</span></td>
@@ -261,23 +254,23 @@
 			
 			$(document).on("keyup",'#amount',function() {
 				if ($(this).val() != ''){
-					$('#date').attr('required', true);
+					$(this).parent().parent().children().eq(8).children().attr('required', true);
 					$(this).parent().parent().children().eq(8).children().val(new Date().toISOString().slice(0,10));
 					console.log("입고량 값 있음");
 				}
 				else{
-					$('#date').attr('required', false);
+					$(this).parent().parent().children().eq(8).children().attr('required', false);
 					$(this).parent().parent().children().eq(8).children().val(null);
 					console.log("입고량 값 없음");
 				}
 			});
 			$(document).on("change",'#date',function() {
 				if ($(this).val() != ''){
-					$('#amount').attr('required', true);
+					$(this).parent().parent().children().eq(7).children().attr('required', true);
 					console.log("입고일 값 있음");
 				}
 				else{
-					$('#amount').attr('required', false);
+					(this).parent().parent().children().eq(7).children().attr('required', false);
 					console.log("입고일 값 없음");
 				}
 			});

@@ -188,21 +188,14 @@
 									<td style="text-align: center;"><span>${list.item_code}</span></td>
 									<td style="text-align: center;"><span>${list.item_name}</span></td>
 									<td style="text-align: center;">
-										<c:if test="${production_date < nowdate}">
-											<span style="color:red;"><fmt:formatDate
+											<span <c:if test="${production_date < nowdate}">style="color:red;" </c:if>><fmt:formatDate
 														value="${list.production_date}"
 														pattern="yyyy-MM-dd (E)" /></span>
-										</c:if>
-										<c:if test="${production_date >= nowdate}">
-											<span><fmt:formatDate
-														value="${list.production_date}"
-														pattern="yyyy-MM-dd (E)" /></span>
-										</c:if>
 									</td>
 									<td style="text-align: center;"><span><fmt:formatNumber value="${list.consumption}" pattern="#,###"/></span></td>
 									<td style="text-align: center;"><span id="stockAmount"><fmt:formatNumber value="${list.stock_amount}" pattern="#,###"/></span></td>
 									<td style="text-align: center;"><span><fmt:formatNumber value="${list.total_amount}" pattern="#,###"/></span></td>
-									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" ></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
+									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" <c:if test="${list.consumption >= list.stock_amount}">max="${list.stock_amount-list.total_amount }"</c:if> <c:if test="${list.consumption < list.stock_amount}">max="${list.consumption-list.total_amount }"</c:if>></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
 									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="date" name="outBoundVOList[${no-1}].date" id="date" ></c:if></td>
 								<input type="hidden" value="${list.iup_code}" name="outBoundVOList[${no-1}].iup_code">
 								<input type="hidden" value="${list.item_code}" name="outBoundVOList[${no-1}].item_code">
@@ -252,24 +245,24 @@
 			});
 			
 			$(document).on("keyup",'#amount',function() {
-				if ($('#amount').val() != ''){
-					$('#date').attr('required', true);
+				if ($(this).val() != ''){
+					$(this).parent().parent().children().eq(9).children().attr('required', true);
 					$(this).parent().parent().children().eq(9).children().val(new Date().toISOString().slice(0,10));
 					console.log("출고량 값 있음");
 				}
 				else{
-					$('#date').attr('required', false);
+					$(this).parent().parent().children().eq(9).children().attr('required', false);
 					$(this).parent().parent().children().eq(9).children().val(null);
 					console.log("출고량 값 없음");
 				}
 			});
 			$(document).on("change",'#date',function() {
-				if ($('#date').val() != ''){
-					$('#amount').attr('required', true);
+				if ($(this).val() != ''){
+					$(this).parent().parent().children().eq(8).children().attr('required', true);
 					console.log("출고일 값 있음");
 				}
 				else{
-					$('#amount').attr('required', false);
+					$(this).parent().parent().children().eq(8).children().attr('required', false);
 					console.log("출고일 값 없음");
 				}
 			});
