@@ -174,7 +174,10 @@
 						</thead>
 						<tbody>
 								<c:set var="no" value="0" />
+								<c:set var="now" value="<%=new java.util.Date()%>" />
+								<fmt:formatDate var="nowdate" type="date" value="${now}" pattern="yyyy-MM-dd"/>
 								<c:forEach var ="list" items="${poList}">
+								<fmt:formatDate var="procurement_date" type="date" value="${list.procurement_date}" pattern="yyyy-MM-dd"/>
 								<tr>
 									<td style="text-align: center;">${no=no+1 }</td>
 									<td style="text-align: center;"><span>${list.po_code }</span></td>
@@ -184,8 +187,18 @@
 									<td style="text-align: center;"><span> <fmt:formatNumber
 												value="${list.amount }" pattern="#,###" />
 									</span></td>
-									<td style="text-align: center;"><span><fmt:formatDate
-												value="${list.procurement_date}" pattern="yyyy-MM-dd (E)" /></span></td>
+									<td style="text-align: center;"><span>
+										<c:if test="${procurement_date < nowdate}">
+											<span style="color:red;"><fmt:formatDate
+													value="${list.procurement_date}"
+													pattern="yyyy-MM-dd (E)" /></span>
+										</c:if>
+										<c:if test="${procurement_date >= nowdate}">
+											<span><fmt:formatDate
+													value="${list.procurement_date}"
+													pattern="yyyy-MM-dd (E)" /></span>
+										</c:if>
+									</td>
 									<c:if test="${list.pp_status == 0 }">
 										<td style="text-align: center;"><input type="number"
 											name="inBoundVOList[${no-1}].amount" id="amount"></td>

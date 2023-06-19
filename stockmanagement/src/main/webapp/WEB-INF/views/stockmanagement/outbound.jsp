@@ -179,24 +179,26 @@
 						<tbody>
 							<c:set value="0" var="no" />
 							<c:set var="now" value="<%=new java.util.Date()%>" />
+							<fmt:formatDate var="nowdate" type="date" value="${now}" pattern="yyyy-MM-dd"/>
 							<c:forEach var="list" items="${obList}">
+							<fmt:formatDate var="production_date" type="date" value="${list.production_date}" pattern="yyyy-MM-dd"/>
 								<tr>
 									<td style="text-align: center;">${no = no+1}</td>
 									<td style="text-align: center;"><span>${list.product_name}</span></td>
 									<td style="text-align: center;"><span>${list.item_code}</span></td>
 									<td style="text-align: center;"><span>${list.item_name}</span></td>
 									<td style="text-align: center;">
-									<c:if test="${list.production_date < now}">
-									<span style="color:red;"><fmt:formatDate
-												value="${list.production_date}"
-												pattern="yyyy-MM-dd (E)" /></span>
-									</c:if>
-									<c:if test="${list.production_date >= now}">
-									<span><fmt:formatDate
-												value="${list.production_date}"
-												pattern="yyyy-MM-dd (E)" /></span>
-									</c:if>
-												</td>
+										<c:if test="${production_date < nowdate}">
+											<span style="color:red;"><fmt:formatDate
+														value="${list.production_date}"
+														pattern="yyyy-MM-dd (E)" /></span>
+										</c:if>
+										<c:if test="${production_date >= nowdate}">
+											<span><fmt:formatDate
+														value="${list.production_date}"
+														pattern="yyyy-MM-dd (E)" /></span>
+										</c:if>
+									</td>
 									<td style="text-align: center;"><span><fmt:formatNumber value="${list.consumption}" pattern="#,###"/></span></td>
 									<td style="text-align: center;"><span id="stockAmount"><fmt:formatNumber value="${list.stock_amount}" pattern="#,###"/></span></td>
 									<td style="text-align: center;"><span><fmt:formatNumber value="${list.total_amount}" pattern="#,###"/></span></td>
