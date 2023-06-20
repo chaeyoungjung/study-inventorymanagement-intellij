@@ -269,20 +269,30 @@
 	      });
 	</script>
 	<script>
-	var count = 0;
+		
 		function addWrapperDivs() {
-			  $('.A:even').each(function () {
+			  var j = 0;
+			  var count = 0;
+			  
+			  $('.A').each(function () {
 			    var rowspan = (Object.is(parseInt($(this).attr('rowspan')),NaN)? 1:parseInt($(this).attr('rowspan')));
+			    
 		        console.log("전 "+$(this).parent().html());
-		        console.log(rowspan);
-			    $(this).parent().css('background-color','#ECECEC');
-			    for (var i = 1; i < rowspan; i++) {
-			      var nextRowCell = $(this).parent().siblings(':eq('+(count+i-1)+')');
-			      console.log("다음에 들어갈 것 "+nextRowCell.html());
-			      nextRowCell.css('background-color','#ECECEC');
-			    }
+		        console.log("rowspan "+rowspan);
+		        console.log("j값 "+j);
+		        console.log("얘가 포함된 tr의 인덱스 "+$(this).parent().index());
+		        
+		        if (j%2 == 0) {
+				    $(this).parent().css('background-color','rgba(0, 0, 0, 0.05)');
+				    for (var i = 1; i < rowspan; i++) {
+				      var nextRowCell = $(this).parent().siblings(':eq('+(count+i-1)+')');
+				      console.log("다음에 들어갈 것 "+nextRowCell.html());
+				      nextRowCell.css('background-color','rgba(0, 0, 0, 0.05)');
+				    }
+				}
 			    count=count+rowspan;
 			    console.log("count : "+count);
+				  j++;
 			  });
 			};
 	
@@ -295,6 +305,7 @@
 				var c1_rows = $(".po_code").filter(function(){
 					return $(this).text() == tempString;
 				});
+				console.log(c1_rows);
 				var a_rows =c1_rows.siblings('.A');
 				var b_rows =c1_rows.siblings('.B');
 				var c_rows =c1_rows.siblings('.C');
