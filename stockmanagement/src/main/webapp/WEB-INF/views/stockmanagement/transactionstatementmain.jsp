@@ -269,32 +269,42 @@
 	      });
 	</script>
 	<script>
-		function rowspan(){
-			 
-		    $(".po_code").each(function() {
-		 
-		          var id_rows = $(".po_code:contains('" + $(this).text() + "')");
-		          var a_rows = id_rows.siblings(".A");
-		          var b_rows = id_rows.siblings(".B");
-		          var c_rows = id_rows.siblings(".C");
-		          var d_rows = id_rows.siblings(".D");
-		 
-		         if (id_rows.length > 1) {
-		            id_rows.eq(0).attr("rowspan", id_rows.length);
-		            a_rows.eq(0).attr("rowspan", id_rows.length);
-		            b_rows.eq(0).attr("rowspan", id_rows.length);
-		            c_rows.eq(0).attr("rowspan", id_rows.length);
-		            d_rows.eq(0).attr("rowspan", id_rows.length);
-		 
-		            id_rows.not(":eq(0)").remove();
-		            a_rows.not(":eq(0)").remove();
-		            b_rows.not(":eq(0)").remove();
-		            c_rows.not(":eq(0)").remove();
-		            d_rows.not(":eq(0)").remove();
-		          }  
-		        });
-		}
-	rowspan();
+		$(document).ready(function(){
+			
+			$(".po_code").each(function(){
+				var tempString = $(this).text();
+				var c1_rows = $(".po_code").filter(function(){
+					return $(this).text() == tempString;
+				});
+				var a_rows =c1_rows.siblings('.A');
+				var b_rows =c1_rows.siblings('.B');
+				var c_rows =c1_rows.siblings('.C');
+				var d_rows =c1_rows.siblings('.D');
+				
+				if(c1_rows.length > 1){
+					c1_rows.eq(0).attr("rowspan", c1_rows.length);
+					a_rows.attr("rowspan", c1_rows.length);
+					b_rows.attr("rowspan", c1_rows.length);
+					c_rows.attr("rowspan", c1_rows.length);
+					d_rows.attr("rowspan", c1_rows.length);
+					c1_rows.not(":eq(0)").remove();
+					a_rows.not(":eq(0)").remove();
+					b_rows.not(":eq(0)").remove();
+					c_rows.not(":eq(0)").remove();
+					d_rows.not(":eq(0)").remove();
+					
+					console.log(c1_rows);
+					console.log(c1_rows.parent().siblings().html());
+					console.log(a_rows.html());
+					console.log(b_rows.html());
+					console.log(c_rows.html());
+					console.log(d_rows.html());
+
+
+				}
+			});
+			
+		});
 	
 	</script>
 
