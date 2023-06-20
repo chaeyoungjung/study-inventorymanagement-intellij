@@ -150,7 +150,7 @@
 		            </svg>
 		            
 					<table id='myTable'
-						class="table table-bordered table-striped table-hover caption-top">
+						class="table table-bordered caption-top">
 						<caption style="color: black;">
 							<b>입고완료 목록</b>
 						</caption>
@@ -169,18 +169,18 @@
 						</thead>
 						<tbody>
 							<c:forEach var="list" items="${poList}">
-								<tr class="myList">
-									<td style="text-align: center;"><input type="radio"
+								<tr >
+									<td style="text-align: center; vertical-align: middle;" class="A"><input type="radio"
 										name="po_code" value=${list.po_code}></td>
-									<td style="text-align: center;"><span>${list.po_code}</span></td>
-									<td style="text-align: center;"><span>${list.item_code}</span></td>
-									<td style="text-align: center;"><span>${list.item_name}</span></td>
-									<td style="text-align: center;"><span>${list.supplier}</span></td>
-									<td style="text-align: center;"><span><fmt:formatDate
-												value="${list.po_date}" pattern="yyyy-MM-dd (E)" /></span></td>
-									<td style="text-align: center;"><span> <c:if
+									<td style="text-align: center; vertical-align: middle;" class="po_code">${list.po_code}</td>
+									<td style="text-align: center;">${list.item_code}</td>
+									<td style="text-align: center;">${list.item_name}</td>
+									<td style="text-align: center; vertical-align: middle;" class="B">${list.supplier}</td>
+									<td style="text-align: center; vertical-align: middle;" class="C"><fmt:formatDate
+												value="${list.po_date}" pattern="yyyy-MM-dd (E)" /></td>
+									<td style="text-align: center; vertical-align: middle;" class="D"><c:if
 												test="${list.save == -1}">미발행</c:if> <c:if
-												test="${list.save != -1}">발행완료</c:if></span></td>
+												test="${list.save != -1}">발행완료</c:if></td>
 								</tr>
 							</c:forEach>
 
@@ -269,19 +269,32 @@
 	      });
 	</script>
 	<script>
-			var i = 0;
-			var arr = [];
-		<c:forEach var="list" items="${poList}">
-			arr[i] = '${list.po_code}';
-			i++;
-		</c:forEach>
-		console.log("발주서코드 배열"+arr);
-			var occurrences = {};
-			for (var v of arr) {
-			  occurrences[v] = occurrences[v] ? occurrences[v] + 1 : 1;
-			}
-			console.log(occurrences); // {b: 4, x: 1, o: 2}
-		console.log("테이블 값"+$(".myList").children().eq(1).text());
+		function rowspan(){
+			 
+		    $(".po_code").each(function() {
+		 
+		          var id_rows = $(".po_code:contains('" + $(this).text() + "')");
+		          var a_rows = id_rows.siblings(".A");
+		          var b_rows = id_rows.siblings(".B");
+		          var c_rows = id_rows.siblings(".C");
+		          var d_rows = id_rows.siblings(".D");
+		 
+		         if (id_rows.length > 1) {
+		            id_rows.eq(0).attr("rowspan", id_rows.length);
+		            a_rows.eq(0).attr("rowspan", id_rows.length);
+		            b_rows.eq(0).attr("rowspan", id_rows.length);
+		            c_rows.eq(0).attr("rowspan", id_rows.length);
+		            d_rows.eq(0).attr("rowspan", id_rows.length);
+		 
+		            id_rows.not(":eq(0)").remove();
+		            a_rows.not(":eq(0)").remove();
+		            b_rows.not(":eq(0)").remove();
+		            c_rows.not(":eq(0)").remove();
+		            d_rows.not(":eq(0)").remove();
+		          }  
+		        });
+		}
+	rowspan();
 	
 	</script>
 
