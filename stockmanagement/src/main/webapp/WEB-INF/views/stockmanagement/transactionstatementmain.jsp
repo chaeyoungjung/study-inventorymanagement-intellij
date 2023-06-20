@@ -173,8 +173,8 @@
 									<td style="text-align: center; vertical-align: middle;" class="A"><input type="radio"
 										name="po_code" value=${list.po_code}></td>
 									<td style="text-align: center; vertical-align: middle;" class="po_code">${list.po_code}</td>
-									<td style="text-align: center;">${list.item_code}</td>
-									<td style="text-align: center;">${list.item_name}</td>
+									<td style="text-align: center;" class="E">${list.item_code}</td>
+									<td style="text-align: center;" class="F">${list.item_name}</td>
 									<td style="text-align: center; vertical-align: middle;" class="B">${list.supplier}</td>
 									<td style="text-align: center; vertical-align: middle;" class="C"><fmt:formatDate
 												value="${list.po_date}" pattern="yyyy-MM-dd (E)" /></td>
@@ -269,6 +269,25 @@
 	      });
 	</script>
 	<script>
+	var count = 0;
+		function addWrapperDivs() {
+			  $('.A:even').each(function () {
+			    var rowspan = (Object.is(parseInt($(this).attr('rowspan')),NaN)? 1:parseInt($(this).attr('rowspan')));
+		        console.log("전 "+$(this).parent().html());
+		        console.log(rowspan);
+			    $(this).parent().css('background-color','#ECECEC');
+			    for (var i = 1; i < rowspan; i++) {
+			      var nextRowCell = $(this).parent().siblings(':eq('+(count+i-1)+')');
+			      console.log("다음에 들어갈 것 "+nextRowCell.html());
+			      nextRowCell.css('background-color','#ECECEC');
+			    }
+			    count=count+rowspan;
+			    console.log("count : "+count);
+			  });
+			};
+	
+	</script>
+	<script>
 		$(document).ready(function(){
 			
 			$(".po_code").each(function(){
@@ -292,17 +311,11 @@
 					b_rows.not(":eq(0)").remove();
 					c_rows.not(":eq(0)").remove();
 					d_rows.not(":eq(0)").remove();
-					
-					console.log(c1_rows);
-					console.log(c1_rows.parent().siblings().html());
-					console.log(a_rows.html());
-					console.log(b_rows.html());
-					console.log(c_rows.html());
-					console.log(d_rows.html());
-
 
 				}
 			});
+			
+			addWrapperDivs();
 			
 		});
 	
