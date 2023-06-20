@@ -248,29 +248,31 @@
 		});
 	</script>
 	<script>
-	var po_data=0;
-	$(document).on("change", 'input[type=radio][name="po_code"]', function() {
-		po_data=$('input[name=po_code]:checked').val();
-		console.log(po_data);
-	});
-	
-	function transactionstatement(){
-		var newForm=$('<form></form>')
-		newForm.attr("action","transactionstatement");
-		newForm.append($('<input/>',{type:'hidden', name:'po_code', value:po_data}))
-		newForm.appendTo('body')
+		var po_data=0;
+		$(document).on("change", 'input[type=radio][name="po_code"]', function() {
+			po_data=$('input[name=po_code]:checked').val();
+			console.log(po_data);
+		});
 		
-		newForm.submit();
-	}
+		function transactionstatement(){
+			var newForm=$('<form></form>')
+			newForm.attr("action","transactionstatement");
+			newForm.append($('<input/>',{type:'hidden', name:'po_code', value:po_data}))
+			newForm.appendTo('body')
+			
+			newForm.submit();
+		}
 	</script>
+	
 	<script>
 	    $(document).ready(function() {
 	        $('#myTable').tablesorter();
 	      });
 	</script>
+	
 	<script>
 		
-		function addWrapperDivs() {
+		function addBackgroundColor() {
 			  var j = 0;
 			  var count = 0;
 			  
@@ -296,8 +298,6 @@
 			  });
 			};
 	
-	</script>
-	<script>
 		$(document).ready(function(){
 			
 			$(".po_code").each(function(){
@@ -326,7 +326,7 @@
 				}
 			});
 			
-			addWrapperDivs();
+			addBackgroundColor();
 			
 		});
 	
