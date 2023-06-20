@@ -89,7 +89,7 @@
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
-						<b>출고요청목록</b>
+						<b>출고요청 목록</b>
 					</div>
 					<form action="outbound">
 						<div class="card-body">
