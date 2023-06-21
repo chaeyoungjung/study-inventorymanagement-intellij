@@ -36,6 +36,7 @@ public class OutBoundServiceImpl implements OutBoundService {
 	@Override
 	public Integer insertOutbound(List<OutBoundVO> list) {
 		log.info("*******************출고등록 서비스**********************");
+		list.forEach(vo -> log.info(vo));
 		return mapper.insertOutbound(list);
 	}
 
