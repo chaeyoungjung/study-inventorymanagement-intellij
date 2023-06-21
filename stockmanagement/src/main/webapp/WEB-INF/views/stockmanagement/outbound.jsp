@@ -89,7 +89,7 @@
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
-						<b>출고요청 목록</b>
+						<b>출고요청목록 조회</b>
 					</div>
 					<form action="outbound">
 						<div class="card-body">
@@ -158,7 +158,7 @@
 					<table id='myTable'
 						class="table table-bordered table-striped table-hover caption-top">
 						<caption style="color: black;">
-							<b>출고요청목록 조회</b>
+							<b>출고요청목록</b>
 						</caption>
 						<button type="submit" class="btn btn-primary"
 							style="position: absolute; left: 1220px;">출고등록</button>
