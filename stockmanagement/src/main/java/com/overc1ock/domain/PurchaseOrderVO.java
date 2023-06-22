@@ -10,6 +10,8 @@ import lombok.Data;
 @Component
 public class PurchaseOrderVO {
 	private Integer po_code;
+	private String item_code;
+	private String item_name;
 	private String supplier;
 	private Date po_date;
 	private Integer save;

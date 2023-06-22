@@ -28,6 +28,7 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 	crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.9.1/jquery.tablesorter.min.js"></script>
 </head>
 <body>
 	<div>
@@ -45,7 +46,7 @@
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inboundmain" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="transactionstatementmain" id="transactionStatement">거래명세서 발행</a>
 						</li>
@@ -88,7 +89,7 @@
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
-						<b>생산계획 조회</b>
+						<b>출고요청목록 조회</b>
 					</div>
 					<form action="outbound">
 						<div class="card-body">
@@ -97,7 +98,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">생산일 (From)</span> <input
 											type="date" id="startDate" class="form-control datepicker"
-											name="startDate" aria-label="Reported Date (From)"> <span
+											name="startDate" aria-label="Reported Date (From)" value="${cri.startDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span> <b
@@ -108,7 +109,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">생산일 (To)</span> <input
 											type="date" id="endDate" class="form-control datepicker"
-											name="endDate" aria-label="Reported Date (To)"> <span
+											name="endDate" aria-label="Reported Date (To)" value="${cri.endDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span>
@@ -118,7 +119,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">제품명</span> <input type="text"
 											name="word" list="productName"
-											style="border: 1px solid #ced4da;">
+											style="border: 1px solid #ced4da;" value="${cri.word}">
 										<datalist id="productName"
 											style="border: 1px solid #DBE0E4;">
 											<c:forEach var="list" items="${pnList }">
@@ -157,7 +158,7 @@
 					<table id='myTable'
 						class="table table-bordered table-striped table-hover caption-top">
 						<caption style="color: black;">
-							<b>생산계획 및 출고처리</b>
+							<b>출고요청목록</b>
 						</caption>
 						<button type="submit" class="btn btn-primary"
 							style="position: absolute; left: 1220px;">출고등록</button>
@@ -168,7 +169,7 @@
 								<th scope="col" style="text-align: center;">품목코드</th>
 								<th scope="col" style="text-align: center;">품목명</th>
 								<th scope="col" style="text-align: center;">생산일</th>
-								<th scope="col" style="text-align: center;">소요량</th>
+								<th scope="col" style="text-align: center;">출고요청수량</th>
 								<th scope="col" style="text-align: center;">재고수량</th>
 								<th scope="col" style="text-align: center;">총 출고량</th>
 								<th scope="col" style="text-align: center;">출고수량</th>
@@ -177,23 +178,28 @@
 						</thead>
 						<tbody>
 							<c:set value="0" var="no" />
+							<c:set var="now" value="<%=new java.util.Date()%>" />
+							<fmt:formatDate var="nowdate" type="date" value="${now}" pattern="yyyy-MM-dd"/>
 							<c:forEach var="list" items="${obList}">
+							<fmt:formatDate var="production_date" type="date" value="${list.production_date}" pattern="yyyy-MM-dd"/>
 								<tr>
 									<td style="text-align: center;">${no = no+1}</td>
 									<td style="text-align: center;"><span>${list.product_name}</span></td>
 									<td style="text-align: center;"><span>${list.item_code}</span></td>
 									<td style="text-align: center;"><span>${list.item_name}</span></td>
-									<td style="text-align: center;"><span><fmt:formatDate
-												value="${list.production_date}"
-												pattern="yyyy-MM-dd(E)" /></span></td>
-									<td style="text-align: center;"><span>${list.consumption}</span></td>
-									<td style="text-align: center;"><span id="stockAmount">${list.stock_amount}</span></td>
-									<td style="text-align: center;"><span>${list.total_amount}</span></td>
-									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" ></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
+									<td style="text-align: center;">
+											<span <c:if test="${production_date < nowdate}">style="color:red;" </c:if>><fmt:formatDate
+														value="${list.production_date}"
+														pattern="yyyy-MM-dd (E)" /></span>
+									</td>
+									<td style="text-align: center;"><span><fmt:formatNumber value="${list.consumption}" pattern="#,###"/></span></td>
+									<td style="text-align: center;"><span id="stockAmount"><fmt:formatNumber value="${list.stock_amount}" pattern="#,###"/></span></td>
+									<td style="text-align: center;"><span><fmt:formatNumber value="${list.total_amount}" pattern="#,###"/></span></td>
+									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="number" name="outBoundVOList[${no-1}].amount" id="amount" <c:if test="${list.consumption >= list.stock_amount}">max="${list.stock_amount}"</c:if> <c:if test="${list.consumption < list.stock_amount}">max="${list.consumption-list.total_amount }"</c:if>></c:if><c:if test="${list.stock_amount <= 0}">재고없음</c:if></td>
 									<td style="text-align: center;"><c:if test="${list.stock_amount > 0}"><input type="date" name="outBoundVOList[${no-1}].date" id="date" ></c:if></td>
-								</tr>
 								<input type="hidden" value="${list.iup_code}" name="outBoundVOList[${no-1}].iup_code">
 								<input type="hidden" value="${list.item_code}" name="outBoundVOList[${no-1}].item_code">
+								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
@@ -238,29 +244,36 @@
 				}
 			});
 			
-			$(document).on("change",'#amount',function() {
-				if ($('#amount').val() != ''){
-					$('#date').attr('required', true);
+			$(document).on("keyup",'#amount',function() {
+				if ($(this).val() != ''){
+					$(this).parent().parent().children().eq(9).children().attr('required', true);
+					$(this).parent().parent().children().eq(9).children().val(new Date().toISOString().slice(0,10));
 					console.log("출고량 값 있음");
 				}
 				else{
-					$('#date').attr('required', false);
+					$(this).parent().parent().children().eq(9).children().attr('required', false);
+					$(this).parent().parent().children().eq(9).children().val(null);
 					console.log("출고량 값 없음");
 				}
 			});
 			$(document).on("change",'#date',function() {
-				if ($('#date').val() != ''){
-					$('#amount').attr('required', true);
+				if ($(this).val() != ''){
+					$(this).parent().parent().children().eq(8).children().attr('required', true);
 					console.log("출고일 값 있음");
 				}
 				else{
-					$('#amount').attr('required', false);
+					$(this).parent().parent().children().eq(8).children().attr('required', false);
 					console.log("출고일 값 없음");
 				}
 			});
 
 
 		});
+	</script>
+	<script>
+	    $(document).ready(function() {
+	        $('#myTable').tablesorter();
+	      });
 	</script>
 
 </body>

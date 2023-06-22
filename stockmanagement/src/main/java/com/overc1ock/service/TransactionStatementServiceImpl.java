@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.PurchaseOrderVO;
-import com.overc1ock.domain.RequestTransactionStatementDTO;
 import com.overc1ock.domain.TransactionStatementVO;
 import com.overc1ock.mapper.StockManagementMapper;
 
@@ -25,6 +24,12 @@ public class TransactionStatementServiceImpl implements TransactionStatementServ
 		log.info("거래명세서 발행화면 구매발주서 목록 보여주기 서비스");
 		return mapper.getPurchaseOrderListAtTransactionStatement(cri);
 	}
+	
+	@Override
+	public List<PurchaseOrderVO> newGetPurchaseOrderListAtTransactionStatement(Criteria cri) {
+		log.info("새로운 거래명세서 발행화면 구매발주서 목록 보여주기 서비스");
+		return mapper.newGetPurchaseOrderListAtTransactionStatement(cri);
+	}
 
 	@Override
 	public List<TransactionStatementVO> getTransactionStatement(Integer po_code) {
@@ -33,15 +38,9 @@ public class TransactionStatementServiceImpl implements TransactionStatementServ
 	}
 
 	@Override
-	public Integer insertTransactionStatement(RequestTransactionStatementDTO dto) {
+	public Integer insertTransactionStatement(Integer po_code) {
 		log.info("거래명세서 등록 서비스");
-		return mapper.insertTransactionStatement(dto);
-	}
-
-	@Override
-	public Integer deleteTransactionStatement(Integer po_code) {
-		log.info("거래명세서 삭제 서비스");
-		return mapper.deleteTransactionStatement(po_code);
+		return mapper.insertTransactionStatement(po_code);
 	}
 
 }

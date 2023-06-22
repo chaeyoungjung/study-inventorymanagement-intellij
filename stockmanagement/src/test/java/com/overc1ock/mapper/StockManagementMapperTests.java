@@ -15,10 +15,8 @@ import com.overc1ock.domain.ProcurementPlanVO;
 import com.overc1ock.domain.ProductionPlanVO;
 import com.overc1ock.domain.PurchaseOrderVO;
 import com.overc1ock.domain.ReportVO;
-import com.overc1ock.domain.RequestTransactionStatementDTO;
 import com.overc1ock.domain.StockCalculationVO;
 import com.overc1ock.domain.Criteria;
-import com.overc1ock.domain.ExistingStockVO;
 import com.overc1ock.domain.InBoundVO;
 
 import lombok.extern.log4j.Log4j;
@@ -32,13 +30,6 @@ public class StockManagementMapperTests {
 	StockManagementMapper mapper;
 	
 	//출고처리
-	@Test
-	public void testGetOutboundList() {
-		List<ProductionPlanVO> list = mapper.getOutboundList();
-		for (ProductionPlanVO vo : list) {
-			log.info("*****************************"+vo);
-		}
-	}
 	
 	@Test
 	public void testGetOutboundListWithCriteria() {
@@ -64,13 +55,13 @@ public class StockManagementMapperTests {
 	public void testInsertOutbound() {
 		List<OutBoundVO> list = new ArrayList<OutBoundVO>();
 		OutBoundVO vo1 = new OutBoundVO();
-		vo1.setItem_code(1);
+		vo1.setItem_code("1");
 		vo1.setIup_code(1);
 		vo1.setAmount(20);
 		vo1.setDate(new Date());
 		list.add(vo1);
 		OutBoundVO vo2 = new OutBoundVO();
-		vo2.setItem_code(2);
+		vo2.setItem_code("2");
 		vo2.setIup_code(2);
 		vo2.setAmount(40);
 		vo2.setDate(new Date());
@@ -88,15 +79,6 @@ public class StockManagementMapperTests {
 	}
 	
 	@Test
-	public void testChartItemCode() {
-		Criteria cri = new Criteria();
-		cri.setStartDate("2023-06-08");
-//		cri.setNum(200000);
-		List<ReportVO> list = mapper.chartItemCode(cri);
-		list.forEach(vo -> log.info(vo));
-	}
-	
-	@Test
 	public void testChartItemCategory() {
 		Criteria cri = new Criteria();
 		cri.setStartDate("2023-06-08");
@@ -107,69 +89,39 @@ public class StockManagementMapperTests {
 	}
 	
 	//재고산출
-	@Test
-	public void testInsertExistingStock() {
-		ExistingStockVO vo = new ExistingStockVO();
-		vo.setAmount(20);
-		vo.setItem_code(3);
-		mapper.insertExistingStock(vo);
-	}
 	
 	@Test
 	public void testGetStockCalculationList() {
 		Criteria cri = new Criteria();
-		cri.setStartDate("2023-06-08");
+		cri.setStartDate("2023-06-14");
 		cri.setCategory("name");
 		cri.setWord("test");
 		mapper.getStockCalculationList(cri).forEach(vo -> log.info(vo));
 	}
 	
-	@Test
-	public void testGetItemCodeList() {
-		mapper.getItemCodeList().forEach(vo -> log.info(vo));
-	}
-	
 	//입고처리
-	@Test
-	public void testGetPurchaseOrderListAtInbound() {
-		Criteria cri = new Criteria();
-		cri.setStartDate("2023-06-01");
-		cri.setEndDate("2023-06-03");
-		cri.setWord("유");
-		mapper.getPurchaseOrderListAtInbound(cri).forEach(vo -> log.info(vo));
-	}
 	
 	@Test
 	public void testGetProcurementPlanList() {
 		mapper.getProcurementPlanList(3).forEach(vo -> log.info(vo));
 	}
-	
-	@Test
-	public void testGetOrderItemList() {
-		mapper.getOrderItemList(1).forEach(vo -> log.info(vo));
-	}
+
 	
 	@Test
 	public void testInsertInbound() {
-		List<InBoundVO> list = new ArrayList<InBoundVO>();
 		InBoundVO vo1 = new InBoundVO();
-		vo1.setItem_code(1);
+		vo1.setItem_code("1");
 		vo1.setPo_code(1);
 		vo1.setAmount(500);
 		vo1.setDate(new Date());
-		list.add(vo1);
-		InBoundVO vo2 = new InBoundVO();
-		vo2.setItem_code(2);
-		vo2.setPo_code(1);
-		vo2.setAmount(500);
-		vo2.setDate(new Date());
-		list.add(vo2);
-		log.info("insert inbound 수행결과 "+mapper.insertInbound(list));
+		log.info("insert inbound 수행결과 "+mapper.insertInbound(vo1));
 	}
 	
 	@Test
 	public void testUpdateProcurementPlanStatus() {
-		log.info(mapper.updateProcurementPlanStatus());
+		InBoundVO vo1 = new InBoundVO();
+		vo1.setItem_code("1");
+		log.info(mapper.updateProcurementPlanStatus(vo1));
 	}
 	
 	//거래명세서 발행
@@ -183,21 +135,22 @@ public class StockManagementMapperTests {
 	}
 	
 	@Test
+	public void testNewGetPurchaseOrderListAtTransactionStatement() {
+		Criteria cri = new Criteria();
+//		cri.setStartDate("2023-06-01");
+//		cri.setEndDate("2023-06-03");
+//		cri.setWord("유");
+		mapper.newGetPurchaseOrderListAtTransactionStatement(cri).forEach(vo -> log.info(vo));
+	}
+	
+	@Test
 	public void testGetTransactionStatement() {
 		mapper.getTransactionStatement(3).forEach(vo -> log.info(vo));
 	}
 	
 	@Test
 	public void testInsertTransactionStatement() {
-		RequestTransactionStatementDTO dto = new RequestTransactionStatementDTO();
-		dto.setPerson("인수한 사람");
-		dto.setDate(new Date());
-		dto.setPo_code(3);
-		log.info(mapper.insertTransactionStatement(dto));
+		log.info(mapper.insertTransactionStatement(3));
 	}
 	
-	@Test
-	public void testDeleteTransactionStatement() {
-		log.info(mapper.deleteTransactionStatement(3));
-	}
 }

@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class ProductionPlanVO {
 	private String product_name;
-	Integer item_code;
+	String item_code;
 	private String item_name;
 	private Integer consumption;
 	private Date production_date;

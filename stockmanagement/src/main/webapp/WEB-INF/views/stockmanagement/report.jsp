@@ -51,7 +51,7 @@
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inboundmain" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="transactionstatementmain"
 							id="transactionStatement">거래명세서 발행</a></li>
@@ -174,12 +174,6 @@
 				<button type="button" class="btn btn-primary" id="itemchartbtn">조회</button>
 			</div>
 		</div>
-		<div class="col-md-6">
-			<input type="checkbox" class="form-check-input"
-				id="itemCodeCheck" 
-				name="itemCodeCheck" onclick='check(this)' /> <label
-				class="form-check-label" for="includes"> 품목코드 기준 산출 </label>
-		</div>
 	</div>
 </div>`;
 
@@ -217,20 +211,6 @@ var dateReport = `<div class="card">
 				});
 		})
 		
-		function check(box){
-			if(box.checked == true){
-				$('#itemCategory').html('');
-			}else{
-				$('#itemCategory').html(`					<label class="input-group-text" for="txnReportMakeId">품목군</label>
-					<select class="form-select" id="category"
-						name="category" required>
-						<option value="" disabled selected><-- 품목군 선택 --></option>
-						<option value="L">대</option>
-						<option value="M">중
-						<option value="S">소
-					</select>`);
-			}
-		}
 </script>
 
 <script type="text/javascript">
@@ -238,22 +218,12 @@ var dateReport = `<div class="card">
 	$(document).ready(function(){
 		$(document).on("click","#itemchartbtn",function(){
 			var startDate = '';
-			var num = 0;
+			var num = '';
 			var url = '';
 			var category = '';
 			var title='';
 			
-			if($('#itemCodeCheck'). prop("checked") && $('#startDate').val() != ''){
-				console.log("품목코드 기준 데이터 요청")
-				
-				title="품목코드별 재고금액 현황관리 리포트";
-			    startDate = $('#startDate').val();
-				console.log("입력된 날짜 : "+startDate);
-			    num = $('#num').val();
-				console.log("입력된 재고금액 : "+num);
-				url = "chartitemcode?startDate="+startDate+"&num="+num
-						
-			}else if(!($('#itemCodeCheck'). prop("checked")) && $('#startDate').val() != ''){
+			if($('#startDate').val() != ''){
 				console.log("품목군 기준 데이터 요청");
 				
 				title="품목군별 재고금액 현황관리 리포트";
@@ -380,23 +350,23 @@ var dateReport = `<div class="card">
 			            
 			            var options = {
 			                    series: [{
-			                    data: chartData[0],
-			                    name: "재고금액"
+			                      name: "재고금액",
+			                      data: chartData[0]
 			                  }],
 			                    chart: {
-			                    type: 'bar',
-			                  },
-			                  plotOptions: {
-			                    bar: {
-			                      borderRadius: 4,
-			                      horizontal: true,
+			                    type: 'line',
+			                    zoom: {
+			                      enabled: false
 			                    }
 			                  },
 			                  dataLabels: {
 			                    enabled: false
 			                  },
+			                  stroke: {
+			                    curve: 'straight'
+			                  },
 			                  title: {
-			                      text: '날짜별 재고금액 현황관리 리포트',
+			                	  text: '날짜별 재고금액 현황관리 리포트',
 			                      align: 'center',
 			                      margin: 50,
 			                      offsetX: 0,
@@ -407,29 +377,41 @@ var dateReport = `<div class="card">
 			                        fontWeight:  'bold',
 			                        fontFamily:  undefined,
 			                      },
+			                  },
+			                  grid: {
+			                    row: {
+			                      colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+			                      opacity: 0.5
 			                    },
+			                  },
 			                  xaxis: {
-				                    categories: chartLabels[0],
-				                    labels: {
+			                	  categories: chartLabels[0],
+				                  
+
+			                  },
+			                  yaxis: {
+			                	  labels: {
 				                        formatter: function (val) {
 				                          return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 				                        }
 				                      }
-				                  },
-				                  tooltip: {
-				                	  y: {
-				                          formatter: function (val) {
-					                          return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+			                  },
+			                  tooltip: {
+			                	  y: {
+			                          formatter: function (val) {
+				                          return val.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
-				                      	  }
-				                	  
-				                  	  }
-				                  }
-			            };
-			            $('#chart').remove();
-			            $('#chartarea').append('<div id="chart" style="height: 80%; width: 100%;"></div>');
+			                      	  }
+			                	  
+			                  	  }
+			                  }
+			              };
+					          $('#chart').remove();
+					          $('#chartarea').append('<div id="chart" style="height: 80%; width: 100%;"></div>');
 			                  var chart = new ApexCharts(document.querySelector("#chart"), options);
 			                  chart.render();
+			            
+			            
 			        }
 			        
 			    })

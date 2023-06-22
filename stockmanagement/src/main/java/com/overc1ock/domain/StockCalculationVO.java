@@ -8,13 +8,14 @@ import lombok.Data;
 @Data
 public class StockCalculationVO {
 	
-	private Integer item_code;
+	private String item_code;
 	private String item_name;
 	private String standard;
 	private String material;
-	private String subcontractor_name;
+	private String mc_name;
+	private String sc_name;
 	private Integer inbound_amount;
 	private Integer outbound_amount;
 	private Integer stock_amount;
-	private Integer supply_price;
+	private Integer stock_price;
 }

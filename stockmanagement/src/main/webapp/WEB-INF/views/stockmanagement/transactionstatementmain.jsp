@@ -29,6 +29,7 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 	crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.9.1/jquery.tablesorter.min.js"></script>
 </head>
 <body>
 	<div>
@@ -46,7 +47,7 @@
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inboundmain" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="transactionstatementmain"
 							id="transactionStatement">거래명세서 발행</a></li>
@@ -89,16 +90,16 @@
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
-						<b>구매발주서 조회</b>
+						<b>입고완료목록 조회</b>
 					</div>
 					<form action="transactionstatementmain">
 						<div class="card-body">
 							<div class="row g-3">
 								<div class="col-md-3">
 									<div class="input-group mb-3">
-										<span class="input-group-text">등록일 (From)</span> <input
+										<span class="input-group-text">발주일 (From)</span> <input
 											type="date" id="startDate" class="form-control datepicker"
-											name="startDate" aria-label="Reported Date (From)"> <span
+											name="startDate" aria-label="Reported Date (From)"  value="${cri.startDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span> <b
@@ -107,9 +108,9 @@
 								</div>
 								<div class="col-md-3">
 									<div class="input-group mb-3">
-										<span class="input-group-text">등록일 (To)</span> <input
+										<span class="input-group-text">발주일 (To)</span> <input
 											type="date" id="endDate" class="form-control datepicker"
-											name="endDate" aria-label="Reported Date (To)"> <span
+											name="endDate" aria-label="Reported Date (To)"  value="${cri.endDate}"> <span
 											class="input-group-text"><img
 											src="/resources/img/calendar3.svg" alt="" width="16"
 											height="16" title="calendar" /></span>
@@ -119,7 +120,7 @@
 									<div class="input-group mb-3">
 										<span class="input-group-text">협력업체</span> <input type="text"
 											name="word" list="productName"
-											style="border: 1px solid #ced4da;">
+											style="border: 1px solid #ced4da;"  value="${cri.word}">
 									</div>
 								</div>
 								<div class="col-md-3">
@@ -148,46 +149,44 @@
 		                </symbol>
 		            </svg>
 		            
-				<form method="post" action="deletetransactionstatement" >
 					<table id='myTable'
-						class="table table-bordered table-striped table-hover caption-top">
+						class="table table-bordered caption-top">
 						<caption style="color: black;">
-							<b>구매발주서 목록</b>
+							<b>입고완료 목록</b>
 						</caption>
 						<button type="button" class="btn btn-primary"
-							style="position: absolute; left: 1020px;" onclick=transactionstatement()>거래명세서 발행</button>
-						<button type="submit" class="btn btn-primary"
-							style="position: absolute; left: 1170px; background-color: red; border-color: red;">거래명세서
-							삭제</button>
+							style="position: absolute; left: 1170px;" onclick=transactionstatement()>거래명세서 발행</button>
 						<thead class="table-dark">
 							<tr>
 								<th scope="col" style="text-align: center;">선택</th>
-								<th scope="col" style="text-align: center;">문서번호</th>
+								<th scope="col" style="text-align: center;">발주서 번호</th>
+								<th scope="col" style="text-align: center;">품목코드</th>
+								<th scope="col" style="text-align: center;">품목이름</th>
 								<th scope="col" style="text-align: center;">협력업체</th>
-								<th scope="col" style="text-align: center;">등록일</th>
-								<th scope="col" style="text-align: center;">거래명세서 저장여부</th>
+								<th scope="col" style="text-align: center;">발주일</th>
+								<th scope="col" style="text-align: center;">거래명세서 발행여부</th>
 							</tr>
 						</thead>
 						<tbody>
-
 							<c:forEach var="list" items="${poList}">
-								<tr>
-									<td style="text-align: center;"><input type="radio"
+								<tr >
+									<td style="text-align: center; vertical-align: middle;" class="A"><input type="radio"
 										name="po_code" value=${list.po_code}></td>
-									<td style="text-align: center;"><span>${list.po_code}</span></td>
-									<td style="text-align: center;"><span>${list.supplier}</span></td>
-									<td style="text-align: center;"><span><fmt:formatDate
-												value="${list.po_date}" pattern="yyyy-MM-dd HH:mm:ss(E)" /></span></td>
-									<td style="text-align: center;"><span> <c:if
-												test="${list.save == -1}">미저장</c:if> <c:if
-												test="${list.save != -1}">저장완료</c:if></span></td>
+									<td style="text-align: center; vertical-align: middle;" class="po_code">${list.po_code}</td>
+									<td style="text-align: center;" class="E">${list.item_code}</td>
+									<td style="text-align: center;" class="F">${list.item_name}</td>
+									<td style="text-align: center; vertical-align: middle;" class="B">${list.supplier}</td>
+									<td style="text-align: center; vertical-align: middle;" class="C"><fmt:formatDate
+												value="${list.po_date}" pattern="yyyy-MM-dd (E)" /></td>
+									<td style="text-align: center; vertical-align: middle;" class="D"><c:if
+												test="${list.save == -1}">미발행</c:if> <c:if
+												test="${list.save != -1}">발행완료</c:if></td>
 								</tr>
 							</c:forEach>
 
 
 						</tbody>
 					</table>
-				</form>
 			</div>
 		</div>
 	</div>
@@ -249,20 +248,88 @@
 		});
 	</script>
 	<script>
-	var po_data=0;
-	$(document).on("change", 'input[type=radio][name="po_code"]', function() {
-		po_data=$('input[name=po_code]:checked').val();
-		console.log(po_data);
-	});
-	
-	function transactionstatement(){
-		var newForm=$('<form></form>')
-		newForm.attr("action","transactionstatement");
-		newForm.append($('<input/>',{type:'hidden', name:'po_code', value:po_data}))
-		newForm.appendTo('body')
+		var po_data=0;
+		$(document).on("change", 'input[type=radio][name="po_code"]', function() {
+			po_data=$('input[name=po_code]:checked').val();
+			console.log(po_data);
+		});
 		
-		newForm.submit();
-	}
+		function transactionstatement(){
+			var newForm=$('<form></form>')
+			newForm.attr("action","transactionstatement");
+			newForm.append($('<input/>',{type:'hidden', name:'po_code', value:po_data}))
+			newForm.appendTo('body')
+			
+			newForm.submit();
+		}
+	</script>
+	
+	<script>
+	    $(document).ready(function() {
+	        $('#myTable').tablesorter();
+	      });
+	</script>
+	
+	<script>
+		
+		function addBackgroundColor() {
+			  var j = 0;
+			  var count = 0;
+			  
+			  $('.A').each(function () {
+			    var rowspan = (Object.is(parseInt($(this).attr('rowspan')),NaN)? 1:parseInt($(this).attr('rowspan')));
+			    
+		        console.log("전 "+$(this).parent().html());
+		        console.log("rowspan "+rowspan);
+		        console.log("j값 "+j);
+		        console.log("얘가 포함된 tr의 인덱스 "+$(this).parent().index());
+		        
+		        if (j%2 == 0) {
+				    $(this).parent().css('background-color','rgba(0, 0, 0, 0.05)');
+				    for (var i = 1; i < rowspan; i++) {
+				      var nextRowCell = $(this).parent().siblings(':eq('+(count+i-1)+')');
+				      console.log("다음에 들어갈 것 "+nextRowCell.html());
+				      nextRowCell.css('background-color','rgba(0, 0, 0, 0.05)');
+				    }
+				}
+			    count=count+rowspan;
+			    console.log("count : "+count);
+				  j++;
+			  });
+			};
+	
+		$(document).ready(function(){
+			
+			$(".po_code").each(function(){
+				var tempString = $(this).text();
+				var c1_rows = $(".po_code").filter(function(){
+					return $(this).text() == tempString;
+				});
+				console.log(c1_rows);
+				var a_rows =c1_rows.siblings('.A');
+				var b_rows =c1_rows.siblings('.B');
+				var c_rows =c1_rows.siblings('.C');
+				var d_rows =c1_rows.siblings('.D');
+				
+				if(c1_rows.length > 1){
+					c1_rows.eq(0).attr("rowspan", c1_rows.length);
+					a_rows.attr("rowspan", c1_rows.length);
+					b_rows.attr("rowspan", c1_rows.length);
+					c_rows.attr("rowspan", c1_rows.length);
+					d_rows.attr("rowspan", c1_rows.length);
+					c1_rows.not(":eq(0)").remove();
+					a_rows.not(":eq(0)").remove();
+					b_rows.not(":eq(0)").remove();
+					c_rows.not(":eq(0)").remove();
+					d_rows.not(":eq(0)").remove();
+
+				}
+			});
+			
+			addBackgroundColor();
+			
+		});
+	
 	</script>
 
 </body>

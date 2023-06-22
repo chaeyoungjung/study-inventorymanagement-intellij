@@ -50,7 +50,7 @@
 	                <button class="mybtn">발주 관리</button>
 	            </div>
 	            <div class="col-md-3">
-	                <button class="mybtn" onclick="location.href='stockmanagement/inboundmain'">자재 관리</button>
+	                <button class="mybtn" onclick="location.href='stockmanagement/inbound'">자재 관리</button>
 	            </div>
 	        </div>
 	    </div>

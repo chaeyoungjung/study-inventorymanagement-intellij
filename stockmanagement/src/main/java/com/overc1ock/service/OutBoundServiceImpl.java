@@ -22,12 +22,6 @@ public class OutBoundServiceImpl implements OutBoundService {
 	StockManagementMapper mapper;
 
 	@Override
-	public List<ProductionPlanVO> getOutboundList() {
-		log.info("*******************출고목록 서비스**********************");
-		return mapper.getOutboundList();
-	}
-
-	@Override
 	public List<ProductionPlanVO> getOutboundListWithCriteria(Criteria cri) {
 		log.info("*******************조건 포함 출고목록 서비스**********************");
 		return mapper.getOutboundListWithCriteria(cri);
@@ -42,6 +36,7 @@ public class OutBoundServiceImpl implements OutBoundService {
 	@Override
 	public Integer insertOutbound(List<OutBoundVO> list) {
 		log.info("*******************출고등록 서비스**********************");
+		list.forEach(vo -> log.info(vo));
 		return mapper.insertOutbound(list);
 	}
 

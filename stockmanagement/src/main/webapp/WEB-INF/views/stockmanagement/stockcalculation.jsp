@@ -28,6 +28,8 @@
 <script src="https://code.jquery.com/jquery-3.7.0.js"
 	integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
 	crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.9.1/jquery.tablesorter.min.js"></script>
+  
 <style>
 select option[value=""][disabled] {
 	display: none;
@@ -50,7 +52,7 @@ select option[value=""][disabled] {
 					style="position: absolute; left: 250px; top: 40px;">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item" style="margin-left: 10px;"><a
-							class="nav-link" href="inboundmain" id="inbound">입고처리(마감)</a></li>
+							class="nav-link" href="inbound" id="inbound">입고처리(마감)</a></li>
 						<li class="nav-item" style="margin-left: 10px;"><a
 							class="nav-link" href="transactionstatementmain"
 							id="transactionStatement">거래명세서 발행</a></li>
@@ -87,12 +89,10 @@ select option[value=""][disabled] {
 			<br />
 		</div>
 	</div>
+
 	<form action="stockcalculation" method="get">
 		<div class="container"
 			style="position: absolute; left: 250px; width: 3000px;">
-			<button type="button" class="btn btn-primary"
-				style="position: relative; left: 1300px;" data-bs-toggle="modal"
-				data-bs-target="#newInvoiceModal" id="modalbtn">기존재고등록</button>
 			<div class="wrap">
 				<div class="card">
 					<div class="card-header">
@@ -104,7 +104,7 @@ select option[value=""][disabled] {
 								<div class="input-group mb-3">
 									<span class="input-group-text">날짜</span> <input type="date"
 										id="txnReportStartDate" class="form-control datepicker"
-										name="startDate" aria-label="Reported Date (From)"> <span
+										name="startDate" aria-label="Reported Date (From)" value="${cri.startDate}"> <span
 										class="input-group-text"><img
 										src="/resources/img/calendar3.svg" alt="" width="16"
 										height="16" title="calendar" /></span>
@@ -118,11 +118,12 @@ select option[value=""][disabled] {
 										style="width: 90px;">
 										<option value="" disabled selected>선택</option>
 										<option value="name">품목명</option>
+										<option value="mc">대분류
+										<option value="sc">중분류
 										<option value="std">규격
 										<option value="mat">재질
-										<option value="sub">협력회사
 									</select> <input type="text" class="form-control" id="customerName"
-										name="word" value="" style="width: 150px";>
+										name="word" value="${cri.word}" style="width: 150px";>
 								</div>
 							</div>
 							<div class="col-md-3">
@@ -153,20 +154,21 @@ select option[value=""][disabled] {
 				<table id='myTable'
 					class="table table-bordered table-striped table-hover caption-top">
 					<caption style="color: black;">
-						<b>재고산출목록</b>
+						<b>재고산출 목록</b>
 					</caption>
 
 					<thead class="table-dark">
 						<tr>
 							<th scope="col" style="text-align: center;">품목코드</th>
 							<th scope="col" style="text-align: center;">품목명</th>
+							<th scope="col" style="text-align: center;">대분류</th>
+							<th scope="col" style="text-align: center;">중분류</th>
 							<th scope="col" style="text-align: center;">규격</th>
 							<th scope="col" style="text-align: center;">재질</th>
-							<th scope="col" style="text-align: center;">협력업체</th>
 							<th scope="col" style="text-align: center;">입고수량</th>
 							<th scope="col" style="text-align: center;">출고수량</th>
 							<th scope="col" style="text-align: center;">재고수량</th>
-							<th scope="col" style="text-align: center;">공급가격</th>
+							<th scope="col" style="text-align: center;">재고단가</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -174,13 +176,14 @@ select option[value=""][disabled] {
 							<tr>
 								<td style="text-align: center;"><span>${list.item_code}</span></td>
 								<td style="text-align: center;"><span>${list.item_name}</span></td>
+								<td style="text-align: center;"><span>${list.mc_name}</span></td>
+								<td style="text-align: center;"><span>${list.sc_name}</span></td>
 								<td style="text-align: center;"><span>${list.standard}</span></td>
 								<td style="text-align: center;"><span>${list.material}</span></td>
-								<td style="text-align: center;"><span>${list.subcontractor_name}</span></td>
-								<td style="text-align: center;"><span>${list.inbound_amount}</span></td>
-								<td style="text-align: center;"><span>${list.outbound_amount}</span></td>
-								<td style="text-align: center;"><span>${list.stock_amount}</span></td>
-								<td style="text-align: center;"><span><fmt:formatNumber value="${list.supply_price}" pattern="#,###"/></span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.inbound_amount}" pattern="#,###"/></span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.outbound_amount}" pattern="#,###"/></span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.stock_amount}" pattern="#,###"/></span></td>
+								<td style="text-align: center;"><span><fmt:formatNumber value="${list.stock_price}" pattern="#,###"/></span></td>
 									</span></td>
 							</tr>
 						</c:forEach>
@@ -190,54 +193,7 @@ select option[value=""][disabled] {
 			</div>
 		</div>
 	</form>
-		<div id="newInvoiceModal" class="modal fade" tabindex="-1"
-			aria-labelledby="newInvoiceModal" aria-hidden="true">
 
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">기존재고등록</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close" id="close"></button>
-					</div>
-					<div id="invoiceModalBody" class="modal-body">
-						<table id='myModalTable'
-							class="table table-bordered table-striped table-hover caption-top">
-							<thead class="table-dark">
-								<tr>
-									<th scope="col" style="text-align: center;">품목코드</th>
-									<th scope="col" style="text-align: center;">품목명</th>
-									<th scope="col" style="text-align: center;">기존재고수량</th>
-									<th scope="col" style="text-align: center;"></th>
-								</tr>
-							</thead>
-							<form method = "post" action="">
-							<tbody>
-								<tr>
-									<td style="text-align: center;"><span> <input
-											type="number" style="width: 90px;" name="item_code" list="itemCode">
-										<datalist id="itemCode"
-											style="border: 1px solid #DBE0E4;">
-											<c:forEach var="list" items="${icList}">
-												<option value="${list}"></option>
-											</c:forEach>
-											
-										</datalist>
-									</span></td>
-									<td style="text-align: center;"><span></span></td>
-									<td style="text-align: center;"><span><input
-											type="number" style="width: 90px;" name="amount"></span></td>
-									<td><button type="submit" id="saveModal"
-											class="btn btn-primary">등록</button></td>
-								</tr>
-							</tbody>
-							</form>
-						</table>
-					</div>
-					<div class="modal-footer"></div>
-				</div>
-			</div>
-		</div>
 	<input type="hidden" value="3" id="flag">
 	<script src="/resources/js/core/popper.min.js" type="text/javascript"></script>
 	<script src="/resources/js/core/bootstrap-5.min.js"
@@ -253,23 +209,11 @@ select option[value=""][disabled] {
 
 		}
 	</script>
+
 	<script>
-		$("#modalbtn").click(function() {
-			$("#newInvoiceModal").fadeIn();
-		}); //로그인버튼을 누르면 모달창 생성 
-		$("#close").click(function() {
-			$("#newInvoiceModal").fadeOut(); //닫기를 누르면 모달창 사라짐
-		});
-	</script>
-	<script>
-	var item_code = "${svo.item_code}";
-	var amount = "${svo.amount}";
-	console.log("컨트롤러에서 전달한 기존재고 정보 >> 품목코드: "+item_code+"기존재고 등록량: "+amount);
-	if(item_code != null && amount != null  && item_code != "" && amount != ""){
-		alert("품목코드 : "+item_code+"\n"+amount+"개의 기존재고 등록이 완료되었습니다.");
-		item_code = 0;
-		amount = 0;
-	}
+    $(document).ready(function() {
+        $('#myTable').tablesorter();
+      });
 	</script>
 </body>
 </html>

@@ -23,14 +23,6 @@ public class OutBoundServiceTests {
 	OutBoundService service;
 	
 	@Test
-	public void testGetOutboundList() {
-		List<ProductionPlanVO> list = service.getOutboundList();
-		for (ProductionPlanVO vo : list) {
-			log.info("*************service test****************"+vo);
-		}
-	}
-	
-	@Test
 	public void testGetOutboundListWithCriteria() {
 		Criteria cri = new Criteria();
 		cri.setStartDate("2023-06-01");

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.domain.InBoundVO;
@@ -22,26 +23,24 @@ public class InboundServiceImpl implements InboundService {
 	StockManagementMapper mapper;
 
 	@Override
-	public List<PurchaseOrderVO> getPurchaseOrderListAtInbound(Criteria cri) {
-		log.info("입고처리(마감) 구매발주서 목록 요청 서비스"); 
-		return mapper.getPurchaseOrderListAtInbound(cri);
-	}
-
-	@Override
-	public List<ProcurementPlanVO> getProcurementPlanList(Integer po_code) {
-		log.info("입고처리(마감) 조달계획 목록 요청 서비스"); 
-		return mapper.getProcurementPlanList(po_code);
-	}
-
-	@Override
-	public List<ProcurementPlanVO> getOrderItemList(Integer po_code) {
+	public List<ProcurementPlanVO> getOrderItemList(Criteria cri) {
 		log.info("입고처리(마감) 발주품목 목록 요청 서비스"); 
-		return mapper.getOrderItemList(po_code);
+		return mapper.getOrderItemList(cri);
 	}
 
 	@Override
-	public Integer insertInbound(List<InBoundVO> list) {
+	@Transactional
+	public Integer insertInbound(InBoundVO vo) {
+		log.info("입고처리(마감) 입고등록 요청 서비스"); 
+		mapper.insertInbound(vo);
+		mapper.updateProcurementPlanStatus(vo);
 		return null;
+	}
+
+	@Override
+	public List<Integer> checkOrderList() {
+		log.info("완료된 구매발주서 있는지 확인");
+		return mapper.checkOrderList();
 	}
 
 }

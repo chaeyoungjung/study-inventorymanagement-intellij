@@ -178,6 +178,14 @@
 		    <version>2.8.2</version>
 		</dependency>
 		
+		<!-- 메일보내기 위한 라이브러리(javax.mail.internet.MimeMessage) -->
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>1.4.7</version>
+		</dependency>
+		
+		
 
 	</dependencies>
     <build>

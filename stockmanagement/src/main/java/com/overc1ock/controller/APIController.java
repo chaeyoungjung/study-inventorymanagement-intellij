@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.overc1ock.domain.ChartReportVO;
 import com.overc1ock.domain.Criteria;
 import com.overc1ock.service.ReportService;
+import com.overc1ock.service.StockCalculationService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -18,7 +19,8 @@ import lombok.extern.log4j.Log4j;
 @AllArgsConstructor
 public class APIController {	
 	
-	ReportService service;
+	ReportService rService;
+	StockCalculationService scService;
 	
 	@GetMapping("/chartdate")
 	public ChartReportVO getchartdate(String month) {
@@ -28,21 +30,15 @@ public class APIController {
 		Criteria cri = new Criteria();
 		cri.setStartDate(startDate);
 		
-		return service.chartDate(cri);
+		return rService.chartDate(cri);
 	}
 	
-	@GetMapping("/chartitemcode")
-	public ChartReportVO getchartItemCode(Criteria cri) {
-		log.info("품목별 재고금액리포트 >>품목코드 restcontroller");
-
-		return service.chartItemCode(cri);
-	}
 	
 	@GetMapping("/chartitemcategory")
 	public ChartReportVO getchartItemCategory(Criteria cri) {
 		log.info("품목별 재고금액리포트 >>품목군 restcontroller");
-
-		return service.chartItemCategory(cri);
+		
+		return rService.chartItemCategory(cri);
 	}
 	
 
