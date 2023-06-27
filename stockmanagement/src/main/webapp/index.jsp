@@ -44,13 +44,16 @@
 	    <div class="wrap">
 	        <div class="row g-3">
 	            <div class="col-md-3">
-	                <button class="mybtn">조달 관리</button>
+	                <button class="mybtn"onclick="location.href='/orderplanning/iteminfo'">조달 관리</button>
 	            </div>
 	            <div class="col-md-3">
-	                <button class="mybtn">발주 관리</button>
+	                <button class="mybtn"onclick="location.href='/purchaseorder/'">발주 관리</button>
 	            </div>
 	            <div class="col-md-3">
-	                <button class="mybtn" onclick="location.href='stockmanagement/inbound'">자재 관리</button>
+	                <button class="mybtn" onclick="location.href='/stockmanagement/inbound'">자재 관리</button>
+	            </div>
+	            <div class="col-md-3">
+	                <button class="mybtn" onclick="location.href='/registerinfo/subcontractor'">정보입력</button>
 	            </div>
 	        </div>
 	    </div>

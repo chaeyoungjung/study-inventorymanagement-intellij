@@ -65,20 +65,27 @@
 			<div class="area"></div>
 			<nav class="main-menu">
 				<ul>
-					<li class="has-subnav" style="font-size: 10px;"><a href="#"
-						style="height: 50px;" id="procurement">
+					<li class="has-subnav" style="font-size: 10px;"><a
+						href="/orderplanning/iteminfo" style="height: 50px;"
+						id="procurement">
 							<div class="nav-text" style="position: relative; left: 10px;">
 								조달 관리</div>
 					</a></li>
-					<li class="has-subnav" style="font-size: 10px;"><a href="#"
-						style="height: 50px;" id="order">
+					<li class="has-subnav" style="font-size: 10px;"><a
+						href="/purchaseorder/issue" style="height: 50px;" id="order">
 							<div class="nav-text" style="position: relative; left: 10px;">
 								발주 관리</div>
 					</a></li>
-					<li class="has-subnav" style="font-size: 10px;"><a href="#"
-						style="height: 50px;" id="stock">
+					<li class="has-subnav" style="font-size: 10px;"><a
+						href="/stockmanagement/inbound" style="height: 50px;" id="stock">
 							<div class="nav-text" style="position: relative; left: 10px;">
 								자재 관리</div>
+					</a></li>
+					<li class="has-subnav" style="font-size: 10px;"><a
+						href="/registerinfo/subcontractor" style="height: 50px;"
+						id="register">
+							<div class="nav-text" style="position: relative; left: 10px;">
+								정보 등록</div>
 					</a></li>
 				</ul>
 			</nav>
