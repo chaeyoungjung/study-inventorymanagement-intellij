@@ -15,8 +15,12 @@
 		<!-- log4jdbc.log4j2 사용을 위해 세팅 -->
 		<property name="driverClassName"
 		value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
-		<property name="jdbcUrl" value="jdbc:log4jdbc:mysql://mit305.iptime.org:3306/mesdb?allowMultiQueries=true"></property>   <!-- 개발용 -->
-		<!-- <property name="jdbcUrl" value="jdbc:log4jdbc:mysql://192.168.137.6:3306/mesdb?allowMultiQueries=true"></property>  --> <!-- 운영용 -->	
+		
+		<!-- 개발용 -->
+		<property name="jdbcUrl" value="jdbc:log4jdbc:mysql://mit305.iptime.org:3306/mesdb?allowMultiQueries=true"></property>   
+		<!-- 운영용 -->
+<!-- 		<property name="jdbcUrl" value="jdbc:log4jdbc:mysql://192.168.137.6:3306/mesdb?allowMultiQueries=true"></property>   	 -->
+
 		<property name="username" value = "mit"></property>
 		<property name="password" value = "pw1234"></property>
 	</bean>
