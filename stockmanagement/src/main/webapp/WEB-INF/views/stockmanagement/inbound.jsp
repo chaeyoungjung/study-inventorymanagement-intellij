@@ -38,7 +38,7 @@
 			<nav class="navbar navbar-expand-lg navbar-dark bg-dark"
 				style="position: relative;">
 				<div class="container-fluid">
-					<a class="navbar-brand" href="#" onclick="goToHome();">
+					<a class="navbar-brand" href="/">
 						<h2>
 							<b>조달구매시스템</b>
 						</h2>
